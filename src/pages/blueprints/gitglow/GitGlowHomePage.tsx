@@ -1059,224 +1059,199 @@ export const GitGlowHomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#161B22] overflow-x-hidden selection:bg-[#dafbe1] selection:text-[#1a7f37]">
 
-      {/* ─── SECTION 01: HERO (Matching Reference media_1794412454162_773fcfec.jpg) ─── */}
+      {/* ─── SECTION 01: HERO (Clean Centered Typography & Interaction) ─── */}
       <section
         id="hero"
-        className="relative w-full pt-28 pb-12 sm:pt-32 sm:pb-16 lg:pt-36 lg:pb-16 bg-[#FAF9F5] text-[#161B22] overflow-hidden border-b border-[#E1E4E8]/60"
+        className="relative w-full pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 bg-[#FAF9F5] text-[#161B22] overflow-hidden border-b border-[#E1E4E8]/60"
       >
-        {/* Top-Right Lime Ambient 3D Orb */}
-        <div
-          aria-hidden="true"
-          className="absolute -top-20 -right-12 sm:-top-16 sm:right-[-40px] w-[240px] sm:w-[320px] h-[240px] sm:h-[320px] rounded-full bg-gradient-to-br from-[#E2FB5B] via-[#B4EE2B] to-[#84CC16]/30 opacity-85 blur-[2px] pointer-events-none select-none"
-        />
+        <div className="relative max-w-4xl mx-auto px-6 sm:px-10 lg:px-12">
+          <div className="flex flex-col items-center text-center z-20">
+            {/* Eyebrow Pill */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: EASING.PREMIUM }}
+              className="mb-6 inline-flex"
+            >
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#F4F8E8]/90 text-[#24292F] border border-[#B7CE63]/60 text-[10.5px] sm:text-[11px] font-mono font-semibold uppercase tracking-[0.12em] select-none shadow-2xs">
+                <span className="w-4 h-4 rounded-full bg-[#D4F843] flex items-center justify-center shrink-0">
+                  <SparkleStar size={9} className="text-[#161B22]" />
+                </span>
+                <span>GUIDED MISSIONS · REAL GITHUB ACHIEVEMENTS</span>
+              </div>
+            </motion.div>
 
-        {/* Soft Bottom-Left Ambient Glow */}
-        <div
-          aria-hidden="true"
-          className="absolute -bottom-24 -left-24 w-[380px] h-[380px] rounded-full bg-gradient-to-tr from-[#D4F843]/25 via-[#A3E635]/15 to-transparent blur-[85px] pointer-events-none select-none"
-        />
+            {/* Main Headline */}
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: EASING.PREMIUM, delay: 0.06 }}
+              className="mb-5"
+            >
+              <h1 className="text-[44px] sm:text-[60px] lg:text-[68px] xl:text-[74px] font-extrabold text-[#161B22] tracking-[-0.04em] leading-[1.02] select-none">
+                Your GitHub <br />
+                profile is about <br />
+                to get{' '}
+                <span className="relative inline-block ml-1">
+                  <span
+                    aria-hidden="true"
+                    className="absolute -inset-x-2 inset-y-0.5 bg-[#D4F843] -skew-x-6 rounded-[4px]"
+                  />
+                  <span className="relative italic font-serif font-bold text-[#161B22] px-1">
+                    interesting.
+                  </span>
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 220 12"
+                    className="absolute -bottom-2 left-0 w-full h-3 overflow-visible pointer-events-none"
+                    fill="none"
+                  >
+                    <path
+                      d="M 4 7 Q 110 1 216 6"
+                      stroke="#161B22"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>
+              </h1>
+            </motion.div>
 
-        <div className="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-6">
-            {/* ── LEFT COLUMN: Eyebrow, Headline, Subtitle, Input, Chips, CTAs ── */}
-            <div className="relative w-full lg:w-[52%] xl:w-[50%] shrink-0 text-left z-20">
-              {/* Floating Sparkle Star near upper-right of headline */}
-              <div className="hidden sm:block absolute top-10 right-[12%] pointer-events-none select-none">
-                <SparkleStar size={18} className="text-[#161B22]" />
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: EASING.PREMIUM, delay: 0.12 }}
+              className="text-[15px] sm:text-[18px] text-[#374151] font-normal leading-relaxed max-w-[540px] mx-auto mt-4 mb-8"
+            >
+              Earn real GitHub achievements through guided missions, meaningful contributions, and hands-on developer challenges.
+            </motion.p>
+
+            {/* Search Input Capsule + Try Chips */}
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: EASING.PREMIUM, delay: 0.16 }}
+              className="max-w-[520px] w-full mx-auto mb-7"
+            >
+              <form onSubmit={handleScanProfile} className="relative">
+                <div className="relative flex items-center w-full rounded-full bg-white border border-[#161B22]/25 shadow-[0_6px_24px_rgba(0,0,0,0.05)] hover:border-[#161B22]/45 p-1.5 pl-4 transition-all duration-200 focus-within:border-[#84CC16] focus-within:ring-3 focus-within:ring-[#D4F843]/40">
+                  <Search size={16} className="text-[#57606A] shrink-0 mr-2.5" />
+                  <span className="text-[#57606A] text-[13px] font-mono shrink-0 select-none">
+                    github.com/&nbsp;
+                  </span>
+                  <input
+                    type="text"
+                    value={usernameInput}
+                    onChange={(e) => setUsernameInput(e.target.value)}
+                    placeholder="username (e.g. torvalds)"
+                    aria-label="GitHub username"
+                    className="flex-1 min-w-0 bg-transparent text-[13px] font-mono text-[#161B22] placeholder:text-[#9CA3AF] focus:outline-none py-1.5 text-left"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isScanning}
+                    className="shrink-0 h-10 px-4 sm:px-5 rounded-full bg-[#0D1117] hover:bg-[#1C2128] text-white text-[13px] font-semibold border-2 border-[#D4F843] shadow-[0_0_14px_rgba(212,248,67,0.45)] flex items-center gap-2 transition-transform active:scale-95 cursor-pointer"
+                    aria-label="Scan Profile"
+                  >
+                    {isScanning ? (
+                      <>
+                        <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>Scanning</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Scan Profile</span>
+                        <ArrowRight size={14} />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+
+              {/* Quick-try chips */}
+              <div className="flex items-center justify-center flex-wrap gap-2 pt-3.5">
+                <span className="text-[#57606A] text-[11.5px] font-medium mr-1">Try with:</span>
+                {[
+                  { handle: 'torvalds', color: 'bg-[#374151]' },
+                  { handle: 'shadcn', color: 'bg-[#78350F]' },
+                  { handle: 'leerob', color: 'bg-[#1E293B]' },
+                  { handle: 'gaearon', color: 'bg-[#312E81]' },
+                ].map((item) => (
+                  <button
+                    key={item.handle}
+                    type="button"
+                    onClick={() => { setUsernameInput(item.handle); simulateProfileScan(item.handle); }}
+                    className="inline-flex items-center gap-1.5 pl-1 pr-2.5 py-0.5 rounded-full bg-[#ECEBE4]/80 hover:bg-[#E2E0D6] border border-[#D0D7DE]/70 text-[#24292F] text-[11px] font-mono transition-colors cursor-pointer"
+                  >
+                    <span className={cn("w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white uppercase", item.color)}>
+                      {item.handle[0]}
+                    </span>
+                    <span>@{item.handle}</span>
+                  </button>
+                ))}
               </div>
 
-              {/* Eyebrow Pill */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: EASING.PREMIUM }}
-                className="mb-6 inline-flex"
-              >
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#F4F8E8]/90 text-[#24292F] border border-[#B7CE63]/60 text-[10.5px] sm:text-[11px] font-mono font-semibold uppercase tracking-[0.12em] select-none shadow-2xs">
-                  <span className="w-4 h-4 rounded-full bg-[#D4F843] flex items-center justify-center shrink-0">
-                    <SparkleStar size={9} className="text-[#161B22]" />
-                  </span>
-                  <span>GUIDED MISSIONS · REAL GITHUB ACHIEVEMENTS</span>
-                </div>
-              </motion.div>
-
-              {/* Main Headline */}
-              <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: EASING.PREMIUM, delay: 0.06 }}
-                className="mb-5"
-              >
-                <h1 className="text-[44px] sm:text-[58px] lg:text-[64px] xl:text-[72px] font-extrabold text-[#161B22] tracking-[-0.04em] leading-[1.02] select-none">
-                  Your GitHub <br />
-                  profile is about <br />
-                  to get{' '}
-                  <span className="relative inline-block ml-1">
-                    <span
-                      aria-hidden="true"
-                      className="absolute -inset-x-2 inset-y-0.5 bg-[#D4F843] -skew-x-6 rounded-[4px]"
-                    />
-                    <span className="relative italic font-serif font-bold text-[#161B22] px-1">
-                      interesting.
-                    </span>
-                    <svg
-                      aria-hidden="true"
-                      viewBox="0 0 220 12"
-                      className="absolute -bottom-2 left-0 w-full h-3 overflow-visible pointer-events-none"
-                      fill="none"
-                    >
-                      <path
-                        d="M 4 7 Q 110 1 216 6"
-                        stroke="#161B22"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </span>
-                </h1>
-              </motion.div>
-
-              {/* Subtitle */}
-              <motion.p
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: EASING.PREMIUM, delay: 0.12 }}
-                className="text-[15px] sm:text-[17px] text-[#374151] font-normal leading-relaxed max-w-[490px] mt-5 mb-7"
-              >
-                Earn real GitHub achievements through guided missions, meaningful contributions, and hands-on developer challenges.
-              </motion.p>
-
-              {/* Search Input Capsule + Try Chips */}
-              <motion.div
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, ease: EASING.PREMIUM, delay: 0.16 }}
-                className="max-w-[500px] w-full mb-6"
-              >
-                <form onSubmit={handleScanProfile} className="relative">
-                  <div className="relative flex items-center w-full rounded-full bg-white border border-[#161B22]/25 shadow-[0_6px_24px_rgba(0,0,0,0.05)] hover:border-[#161B22]/45 p-1.5 pl-4 transition-all duration-200 focus-within:border-[#84CC16] focus-within:ring-3 focus-within:ring-[#D4F843]/40">
-                    <Search size={16} className="text-[#57606A] shrink-0 mr-2.5" />
-                    <span className="text-[#57606A] text-[13px] font-mono shrink-0 select-none">
-                      github.com/&nbsp;
-                    </span>
-                    <input
-                      type="text"
-                      value={usernameInput}
-                      onChange={(e) => setUsernameInput(e.target.value)}
-                      placeholder="username (e.g. torvalds)"
-                      aria-label="GitHub username"
-                      className="flex-1 min-w-0 bg-transparent text-[13px] font-mono text-[#161B22] placeholder:text-[#9CA3AF] focus:outline-none py-1.5"
-                    />
-                    <button
-                      type="submit"
-                      disabled={isScanning}
-                      className="shrink-0 h-10 px-4 sm:px-5 rounded-full bg-[#0D1117] hover:bg-[#1C2128] text-white text-[13px] font-semibold border-2 border-[#D4F843] shadow-[0_0_14px_rgba(212,248,67,0.45)] flex items-center gap-2 transition-transform active:scale-95 cursor-pointer"
-                      aria-label="Scan Profile"
-                    >
-                      {isScanning ? (
-                        <>
-                          <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          <span>Scanning</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>Scan Profile</span>
-                          <ArrowRight size={14} />
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </form>
-
-                {/* Quick-try chips */}
-                <div className="flex items-center flex-wrap gap-2 pt-3 pl-1">
-                  <span className="text-[#57606A] text-[11.5px] font-medium mr-1">Try with:</span>
-                  {[
-                    { handle: 'torvalds', color: 'bg-[#374151]' },
-                    { handle: 'shadcn', color: 'bg-[#78350F]' },
-                    { handle: 'leerob', color: 'bg-[#1E293B]' },
-                    { handle: 'gaearon', color: 'bg-[#312E81]' },
-                  ].map((item) => (
-                    <button
-                      key={item.handle}
-                      type="button"
-                      onClick={() => { setUsernameInput(item.handle); simulateProfileScan(item.handle); }}
-                      className="inline-flex items-center gap-1.5 pl-1 pr-2.5 py-0.5 rounded-full bg-[#ECEBE4]/80 hover:bg-[#E2E0D6] border border-[#D0D7DE]/70 text-[#24292F] text-[11px] font-mono transition-colors cursor-pointer"
-                    >
-                      <span className={cn("w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white uppercase", item.color)}>
-                        {item.handle[0]}
-                      </span>
-                      <span>@{item.handle}</span>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Scan result notification if scanned */}
-                {scanResult && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-4 px-4 py-3 rounded-2xl bg-[#EAFBEE] border border-[#2DA44E]/30 flex items-center justify-between gap-3"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-2 h-2 rounded-full bg-[#2DA44E] animate-pulse shrink-0" />
-                      <div>
-                        <div className="text-[12px] font-semibold text-[#1A7F37]">@{scanResult.handle} — ready</div>
-                        <div className="text-[11px] text-[#444D56]">Start with: <strong>{scanResult.targetName}</strong></div>
-                      </div>
+              {/* Scan result notification if scanned */}
+              {scanResult && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-4 px-4 py-3 rounded-2xl bg-[#EAFBEE] border border-[#2DA44E]/30 flex items-center justify-between gap-3 text-left"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2 h-2 rounded-full bg-[#2DA44E] animate-pulse shrink-0" />
+                    <div>
+                      <div className="text-[12px] font-semibold text-[#1A7F37]">@{scanResult.handle} — ready</div>
+                      <div className="text-[11px] text-[#444D56]">Start with: <strong>{scanResult.targetName}</strong></div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => { setSelectedBadgeId(scanResult.targetId); document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' }); }}
-                      className="px-3 py-1.5 rounded-full bg-[#2DA44E] hover:bg-[#238636] text-white text-[11px] font-semibold shrink-0 cursor-pointer transition-colors"
-                    >
-                      View Mission →
-                    </button>
-                  </motion.div>
-                )}
-              </motion.div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setSelectedBadgeId(scanResult.targetId); document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' }); }}
+                    className="px-3 py-1.5 rounded-full bg-[#2DA44E] hover:bg-[#238636] text-white text-[11px] font-semibold shrink-0 cursor-pointer transition-colors"
+                  >
+                    View Mission →
+                  </button>
+                </motion.div>
+              )}
+            </motion.div>
 
-              {/* Dual CTA Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, ease: EASING.PREMIUM, delay: 0.2 }}
-                className="flex flex-wrap items-center gap-3.5"
+            {/* Dual CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: EASING.PREMIUM, delay: 0.2 }}
+              className="flex flex-wrap items-center justify-center gap-3.5"
+            >
+              <a
+                href="#first-achievement"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="h-12 pl-5 pr-2.5 rounded-full bg-[#0D1117] hover:bg-[#1C2128] text-white text-[13px] font-semibold inline-flex items-center gap-3 shadow-[0_8px_20px_rgba(0,0,0,0.16)] transition-all duration-200 hover:-translate-y-[1px] active:scale-[0.98] cursor-pointer select-none"
               >
-                <a
-                  href="#first-achievement"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="h-12 pl-5 pr-2.5 rounded-full bg-[#0D1117] hover:bg-[#1C2128] text-white text-[13px] font-semibold inline-flex items-center gap-3 shadow-[0_8px_20px_rgba(0,0,0,0.16)] transition-all duration-200 hover:-translate-y-[1px] active:scale-[0.98] cursor-pointer select-none"
-                >
-                  <Rocket size={15} />
-                  <span>Start Your First Mission</span>
-                  <span className="w-7 h-7 rounded-full bg-[#D4F843] text-[#0D1117] flex items-center justify-center shrink-0">
-                    <ChevronRight size={15} strokeWidth={2.5} />
-                  </span>
-                </a>
+                <Rocket size={15} />
+                <span>Start Your First Mission</span>
+                <span className="w-7 h-7 rounded-full bg-[#D4F843] text-[#0D1117] flex items-center justify-center shrink-0">
+                  <ChevronRight size={15} strokeWidth={2.5} />
+                </span>
+              </a>
 
-                <a
-                  href="#achievements"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="h-12 px-5 rounded-full bg-white/85 hover:bg-white text-[#161B22] border border-[#161B22]/25 text-[13px] font-semibold inline-flex items-center gap-2 shadow-2xs transition-all duration-200 hover:-translate-y-[1px] active:scale-[0.98] cursor-pointer select-none"
-                >
-                  <Trophy size={15} className="text-[#161B22]" />
-                  <span>Explore Achievements</span>
-                </a>
-              </motion.div>
-            </div>
-
-            {/* ── RIGHT COLUMN: 3D Medallion Monument + Orbiting Cards ── */}
-            <div className="w-full lg:w-[48%] xl:w-[50%] flex items-center justify-center lg:justify-end z-20">
-              <HeroMonument3D />
-            </div>
+              <a
+                href="#achievements"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="h-12 px-5 rounded-full bg-white/85 hover:bg-white text-[#161B22] border border-[#161B22]/25 text-[13px] font-semibold inline-flex items-center gap-2 shadow-2xs transition-all duration-200 hover:-translate-y-[1px] active:scale-[0.98] cursor-pointer select-none"
+              >
+                <Trophy size={15} className="text-[#161B22]" />
+                <span>Explore Achievements</span>
+              </a>
+            </motion.div>
           </div>
 
           {/* ── BOTTOM CENTER FLOATING FROSTED TRUST BAR ── */}
