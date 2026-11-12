@@ -729,241 +729,264 @@ const AnubiOrbitalHeroStage: React.FC<{
 // ─── 3D GitHub Achievement Medallion & Orbiting Badge Cards ──────────────────
 const HERO_ACHIEVEMENT_CARDS = [
   {
-    id: 'pr-expert',
-    title: 'Pull Request Expert',
+    id: 'pull-shark',
+    title: 'Pull Shark',
     badgeImage: '/images/badges/pull-shark.png',
     badgeAlt: 'GitHub Pull Shark Achievement Badge',
-    statusText: '95%',
-    progress: 95,
-    complete: false,
-    positionClass: 'top-[3%] left-0 sm:left-[2%]',
-    tiltClass: 'rotate-[-1.5deg]',
+    statusText: '2 / 2 PRs',
+    progress: 100,
+    complete: true,
+    positionClass: 'top-[4%] left-0',
     floatDelay: 0,
   },
   {
-    id: 'star-collector',
-    title: 'Star Collector',
+    id: 'starstruck',
+    title: 'Starstruck',
     badgeImage: '/images/badges/starstruck.png',
     badgeAlt: 'GitHub Starstruck Achievement Badge',
-    statusText: '96%',
-    progress: 96,
+    statusText: '15 / 16 ★',
+    progress: 94,
     complete: false,
-    positionClass: 'top-[8%] right-0 sm:right-[1%]',
-    tiltClass: 'rotate-[1.2deg]',
+    positionClass: 'top-[8%] right-0',
     floatDelay: 0.4,
   },
   {
-    id: 'builder',
-    title: 'Builder',
+    id: 'quickdraw',
+    title: 'Quickdraw',
     badgeImage: '/images/badges/quickdraw.png',
     badgeAlt: 'GitHub Quickdraw Achievement Badge',
-    statusText: '75%',
+    statusText: '< 5 min',
     progress: 75,
     complete: false,
-    positionClass: 'bottom-[10%] left-0 sm:left-[3%]',
-    tiltClass: 'rotate-[1deg]',
+    positionClass: 'bottom-[10%] left-0',
     floatDelay: 0.8,
   },
   {
-    id: 'verified',
-    title: 'Verified',
+    id: 'pair-extraordinaire',
+    title: 'Pair Extraordinaire',
     badgeImage: '/images/badges/pair-extraordinaire.png',
     badgeAlt: 'GitHub Pair Extraordinaire Achievement Badge',
-    statusText: 'Complete',
+    statusText: 'Unlocked',
     progress: 100,
     complete: true,
-    positionClass: 'bottom-[5%] right-0 sm:right-[2%]',
-    tiltClass: 'rotate-[-1deg]',
+    positionClass: 'bottom-[6%] right-0',
     floatDelay: 1.2,
   },
 ] as const;
 
 const HeroMonument3D: React.FC = () => {
   return (
-    <div className="relative w-full max-w-[580px] xl:max-w-[620px] h-[440px] sm:h-[490px] lg:h-[520px] flex items-center justify-center select-none">
-      {/* ── Thin Orbital Acid-Lime Connecting Lines ── */}
-      <svg
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible"
-        viewBox="0 0 600 520"
-        fill="none"
-      >
-        {/* Primary orbital ellipse connecting top-right & bottom-left cards */}
-        <ellipse
-          cx="300"
-          cy="260"
-          rx="236"
-          ry="84"
-          transform="rotate(-18 300 260)"
-          stroke="#A3E635"
-          strokeWidth="1.5"
-          strokeOpacity="0.85"
-        />
-        {/* Secondary orbital ellipse connecting top-left & bottom-right cards */}
-        <ellipse
-          cx="300"
-          cy="262"
-          rx="212"
-          ry="118"
-          transform="rotate(14 300 262)"
-          stroke="#A3E635"
-          strokeWidth="1.15"
-          strokeOpacity="0.45"
-        />
-        {/* Subtle ground orbital ring beneath medallion */}
-        <ellipse
-          cx="300"
-          cy="412"
-          rx="105"
-          ry="20"
-          stroke="#A3E635"
-          strokeWidth="1.25"
-          strokeOpacity="0.55"
-        />
-      </svg>
+    <div className="relative w-full max-w-[580px] xl:max-w-[620px] flex flex-col items-center justify-center select-none">
+      <div className="relative w-full h-[270px] sm:h-[470px] lg:h-[520px] flex items-center justify-center">
+        {/* ── Thin Orbital Acid-Lime Connecting Lines ── */}
+        <svg
+          aria-hidden="true"
+          className="hidden sm:block absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible"
+          viewBox="0 0 600 520"
+          fill="none"
+        >
+          {/* Primary orbital ellipse connecting top-right & bottom-left cards */}
+          <ellipse
+            cx="300"
+            cy="260"
+            rx="236"
+            ry="82"
+            transform="rotate(-18 300 260)"
+            stroke="#A3E635"
+            strokeWidth="1.25"
+            strokeOpacity="0.5"
+          />
+          {/* Secondary orbital ellipse connecting top-left & bottom-right cards */}
+          <ellipse
+            cx="300"
+            cy="262"
+            rx="212"
+            ry="116"
+            transform="rotate(14 300 262)"
+            stroke="#A3E635"
+            strokeWidth="1.1"
+            strokeOpacity="0.26"
+          />
+          {/* Subtle ground orbital ring beneath medallion */}
+          <ellipse
+            cx="300"
+            cy="404"
+            rx="94"
+            ry="17"
+            stroke="#A3E635"
+            strokeWidth="1.15"
+            strokeOpacity="0.38"
+          />
+        </svg>
 
-      {/* ── Floating Black GitHub Octocat Medallion (Center-Right Visual Anchor) ── */}
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="relative z-20 flex flex-col items-center justify-center"
-      >
-        <div
-          style={{ perspective: 1100 }}
-          className="relative cursor-pointer group"
+        {/* ── Floating Black GitHub Octocat Medallion (Center-Right Visual Anchor) ── */}
+        <motion.div
+          animate={{ y: [0, -5, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          className="relative z-20 flex flex-col items-center justify-center"
         >
           <div
-            style={{
-              transform: 'rotateY(-15deg) rotateX(7deg) rotateZ(-2deg)',
-              transformStyle: 'preserve-3d',
-            }}
-            className="relative w-[178px] h-[178px] sm:w-[204px] sm:h-[204px] lg:w-[218px] lg:h-[218px] rounded-full transition-transform duration-300 group-hover:scale-[1.03]"
+            style={{ perspective: 1100 }}
+            className="relative cursor-pointer group"
           >
-            {/* Outer Sculpted Metallic Black Rim */}
             <div
-              className="absolute inset-0 rounded-full"
               style={{
-                background: 'linear-gradient(140deg, #3A414C 0%, #1E242C 45%, #0D1117 100%)',
-                boxShadow: `
-                  inset 0 2px 5px rgba(255,255,255,0.34),
-                  inset 0 -5px 10px rgba(0,0,0,0.85),
-                  0 26px 46px -10px rgba(22,27,34,0.28),
-                  0 10px 20px -4px rgba(22,27,34,0.16)
-                `,
-                padding: '13px',
+                transform: 'rotateY(-14deg) rotateX(6deg) rotateZ(-2deg)',
+                transformStyle: 'preserve-3d',
               }}
+              className="relative w-[160px] h-[160px] sm:w-[176px] sm:h-[176px] lg:w-[188px] lg:h-[188px] rounded-full transition-transform duration-300 group-hover:scale-[1.03]"
             >
-              {/* Recessed Charcoal Medallion Well */}
+              {/* Outer Sculpted Metallic Black Rim */}
               <div
-                className="w-full h-full rounded-full flex items-center justify-center relative overflow-hidden"
+                className="absolute inset-0 rounded-full"
                 style={{
-                  background: 'radial-gradient(circle at 36% 30%, #1F252E 0%, #12161C 68%, #090C10 100%)',
-                  boxShadow: 'inset 0 3px 9px rgba(0,0,0,0.92), inset 0 0 0 1.5px #2D343F',
+                  background: 'linear-gradient(140deg, #3A414C 0%, #1E242C 45%, #0D1117 100%)',
+                  boxShadow: `
+                    inset 0 2px 5px rgba(255,255,255,0.34),
+                    inset 0 -5px 10px rgba(0,0,0,0.85),
+                    0 24px 42px -10px rgba(22,27,34,0.24),
+                    0 10px 18px -4px rgba(22,27,34,0.14)
+                  `,
+                  padding: '12px',
                 }}
               >
-                {/* Subtle Editorial Metallic Sheen */}
+                {/* Recessed Charcoal Medallion Well */}
                 <div
-                  className="absolute inset-0 rounded-full opacity-15 pointer-events-none"
+                  className="w-full h-full rounded-full flex items-center justify-center relative overflow-hidden"
                   style={{
-                    background: 'linear-gradient(130deg, white 0%, transparent 42%, transparent 65%, rgba(255,255,255,0.1) 100%)',
-                  }}
-                />
-
-                {/* Existing GitHub Octocat Artwork Preserved */}
-                <div
-                  className="relative z-10 flex items-center justify-center"
-                  style={{
-                    filter: 'drop-shadow(0 5px 10px rgba(0,0,0,0.75))',
+                    background: 'radial-gradient(circle at 36% 30%, #1F252E 0%, #12161C 68%, #090C10 100%)',
+                    boxShadow: 'inset 0 3px 9px rgba(0,0,0,0.92), inset 0 0 0 1.5px #2D343F',
                   }}
                 >
-                  <Github
-                    size={104}
-                    className="text-[#E5E7EB] fill-[#E5E7EB]"
+                  {/* Subtle Editorial Metallic Sheen */}
+                  <div
+                    className="absolute inset-0 rounded-full opacity-15 pointer-events-none"
                     style={{
-                      filter: 'drop-shadow(0 -1px 1px rgba(255,255,255,0.55))',
+                      background: 'linear-gradient(130deg, white 0%, transparent 42%, transparent 65%, rgba(255,255,255,0.1) 100%)',
                     }}
                   />
+
+                  {/* Existing GitHub Octocat Artwork Preserved */}
+                  <div
+                    className="relative z-10 flex items-center justify-center"
+                    style={{
+                      filter: 'drop-shadow(0 5px 10px rgba(0,0,0,0.75))',
+                    }}
+                  >
+                    <Github
+                      size={88}
+                      className="text-[#E5E7EB] fill-[#E5E7EB]"
+                      style={{
+                        filter: 'drop-shadow(0 -1px 1px rgba(255,255,255,0.55))',
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Soft Natural Ground Shadow Beneath Medallion */}
-        <div
-          aria-hidden="true"
-          className="mt-7 w-[140px] sm:w-[165px] h-[18px] rounded-full bg-[#161B22]/12 blur-[8px] pointer-events-none"
-        />
-      </motion.div>
+          {/* Soft Natural Ground Shadow Beneath Medallion */}
+          <div
+            aria-hidden="true"
+            className="mt-6 w-[124px] sm:w-[144px] h-[16px] rounded-full bg-[#161B22]/10 blur-[8px] pointer-events-none"
+          />
+        </motion.div>
 
-      {/* ── ONLY FOUR Editorial Achievement Cards ── */}
-      {HERO_ACHIEVEMENT_CARDS.map((card) => (
-        <motion.div
-          key={card.id}
-          animate={{ y: [0, card.floatDelay % 0.8 === 0 ? -4 : 4, 0] }}
-          transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: card.floatDelay }}
-          className={cn(
-            'hidden sm:block absolute z-30 w-[192px] lg:w-[206px] rounded-2xl bg-[#FFFFFF] border border-[#E5E7EB] p-3.5 shadow-[0_14px_32px_rgba(22,27,34,0.07),0_2px_6px_rgba(22,27,34,0.03)]',
-            card.positionClass,
-            card.tiltClass
-          )}
-        >
-          <div className="flex items-center gap-3 mb-2.5">
-            {/* Actual GitHub Achievement Badge Icon in 3D Black Coin Frame */}
-            <div
-              style={{
-                perspective: 500,
-              }}
-              className="shrink-0"
-            >
+        {/* ── ONLY FOUR Editorial Achievement Cards (Desktop/Tablet Orbit) ── */}
+        {HERO_ACHIEVEMENT_CARDS.map((card) => (
+          <motion.div
+            key={card.id}
+            animate={{ y: [0, card.floatDelay % 0.8 === 0 ? -4 : 4, 0] }}
+            transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: card.floatDelay }}
+            className={cn(
+              'hidden sm:block absolute z-30 w-[166px] lg:w-[178px] rounded-2xl bg-[#FFFFFF] border border-[#E5E7EB]/90 p-3 shadow-[0_14px_30px_rgba(22,27,34,0.06),0_2px_6px_rgba(22,27,34,0.03)]',
+              card.positionClass
+            )}
+          >
+            <div className="flex items-center gap-2.5 mb-2">
+              {/* Actual GitHub Achievement Badge Icon in 3D Black Coin Frame */}
+              <div style={{ perspective: 500 }} className="shrink-0">
+                <div
+                  style={{
+                    transform: 'rotateY(-10deg) rotateX(6deg)',
+                    background: 'linear-gradient(155deg, #2B313B 0%, #161B22 65%, #0D1117 100%)',
+                    boxShadow:
+                      'inset 0 1px 1px rgba(255,255,255,0.28), inset 0 -2px 4px rgba(0,0,0,0.65), 0 4px 10px rgba(22,27,34,0.18)',
+                  }}
+                  className="w-9 h-9 rounded-full border border-[#30363D] flex items-center justify-center p-1.5"
+                >
+                  <img
+                    src={card.badgeImage}
+                    alt={card.badgeAlt}
+                    className="w-full h-full object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.5)]"
+                  />
+                </div>
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="text-[12px] font-bold text-[#161B22] leading-[1.2] tracking-tight truncate">
+                  {card.title}
+                </div>
+              </div>
+
+              {card.complete && (
+                <span
+                  aria-label="Completed"
+                  className="w-4 h-4 rounded-full bg-[#A3E635] text-[#161B22] flex items-center justify-center shrink-0"
+                >
+                  <Check size={10} strokeWidth={3} />
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between text-[10.5px] font-mono text-[#57606A] mb-1.5">
+              <span>{card.complete ? 'Status' : 'Progress'}</span>
+              <span className={cn('font-semibold', card.complete ? 'text-[#3F6212]' : 'text-[#161B22]')}>
+                {card.statusText}
+              </span>
+            </div>
+
+            <div className="w-full h-1.5 rounded-full bg-[#ECEEE7] overflow-hidden">
+              <div
+                className="h-full rounded-full bg-[#A3E635] transition-all duration-500"
+                style={{ width: `${card.progress}%` }}
+              />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Compact 2x2 Badge Grid on Small Mobile Viewports */}
+      <div className="grid sm:hidden grid-cols-2 gap-3 mt-4 w-full max-w-[360px]">
+        {HERO_ACHIEVEMENT_CARDS.map((card) => (
+          <div
+            key={card.id}
+            className="rounded-xl bg-[#FFFFFF] border border-[#E5E7EB] p-2.5 shadow-[0_6px_16px_rgba(22,27,34,0.05)]"
+          >
+            <div className="flex items-center gap-2 mb-1.5">
               <div
                 style={{
-                  transform: 'rotateY(-10deg) rotateX(6deg)',
                   background: 'linear-gradient(155deg, #2B313B 0%, #161B22 65%, #0D1117 100%)',
-                  boxShadow:
-                    'inset 0 1px 1px rgba(255,255,255,0.28), inset 0 -2px 4px rgba(0,0,0,0.65), 0 5px 12px rgba(22,27,34,0.2)',
                 }}
-                className="w-10 h-10 rounded-full border border-[#30363D] flex items-center justify-center p-1.5"
+                className="w-7 h-7 rounded-full border border-[#30363D] flex items-center justify-center p-1 shrink-0"
               >
-                <img
-                  src={card.badgeImage}
-                  alt={card.badgeAlt}
-                  className="w-full h-full object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.5)]"
-                />
+                <img src={card.badgeImage} alt={card.badgeAlt} className="w-full h-full object-contain" />
               </div>
+              <div className="text-[11px] font-bold text-[#161B22] truncate flex-1">{card.title}</div>
             </div>
-
-            <div className="min-w-0 flex-1">
-              <div className="text-[12.5px] font-bold text-[#161B22] leading-[1.25] tracking-tight">
-                {card.title}
-              </div>
-            </div>
-
-            {card.complete && (
-              <span
-                aria-label="Completed"
-                className="w-5 h-5 rounded-full bg-[#A3E635] text-[#161B22] flex items-center justify-center shrink-0 shadow-2xs"
-              >
-                <Check size={12} strokeWidth={2.75} />
+            <div className="flex items-center justify-between text-[10px] font-mono text-[#57606A] mb-1">
+              <span>{card.complete ? 'Status' : 'Progress'}</span>
+              <span className={cn('font-semibold', card.complete ? 'text-[#3F6212]' : 'text-[#161B22]')}>
+                {card.statusText}
               </span>
-            )}
+            </div>
+            <div className="w-full h-1 rounded-full bg-[#ECEEE7] overflow-hidden">
+              <div className="h-full rounded-full bg-[#A3E635]" style={{ width: `${card.progress}%` }} />
+            </div>
           </div>
-
-          <div className="flex items-center justify-between text-[11px] font-mono text-[#57606A] mb-1.5">
-            <span>{card.complete ? 'Status' : 'Progress'}</span>
-            <span className={cn('font-semibold', card.complete ? 'text-[#3F6212]' : 'text-[#161B22]')}>
-              {card.statusText}
-            </span>
-          </div>
-
-          <div className="w-full h-1.5 rounded-full bg-[#ECEEE7] overflow-hidden">
-            <div
-              className="h-full rounded-full bg-[#A3E635] transition-all duration-500"
-              style={{ width: `${card.progress}%` }}
-            />
-          </div>
-        </motion.div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
@@ -1092,28 +1115,27 @@ export const GitGlowHomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#161B22] overflow-x-hidden selection:bg-[#dafbe1] selection:text-[#1a7f37]">
 
-      {/* ─── SECTION 01: HERO (2-Column Structure, Visuals Reserved for Later) ─── */}
+      {/* ─── SECTION 01: HERO (Airy 2-Column Editorial Layout, 3-Second Clarity) ─── */}
       <section
         id="hero"
-        className="relative w-full pt-28 pb-12 sm:pt-32 sm:pb-16 lg:pt-36 lg:pb-16 bg-[#FAF9F5] text-[#161B22] overflow-hidden border-b border-[#E1E4E8]/60"
+        className="relative w-full pt-36 pb-16 sm:pt-40 sm:pb-20 lg:pt-44 lg:pb-24 bg-[#FAF9F5] text-[#161B22] overflow-hidden border-b border-[#E1E4E8]/60"
       >
         <div className="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-6">
-            {/* ── LEFT COLUMN: Eyebrow, Headline, Subtitle, Input, Chips, CTAs ── */}
-            <div className="relative w-full lg:w-[52%] xl:w-[50%] shrink-0 text-left z-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-12 lg:gap-12 xl:gap-16">
+            {/* ── LEFT COLUMN: Eyebrow, 2-Line Headline, Value Prop, Primary Scanner ── */}
+            <div className="lg:col-span-6 text-left z-20">
               {/* Eyebrow Pill */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: EASING.PREMIUM }}
-                className="mb-6 inline-flex"
+                className="mb-7 inline-flex"
               >
-                <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#F5F7EC] text-[#161B22] border border-[#DCE6BE] text-[12.5px] sm:text-[13px] font-medium tracking-tight select-none">
-                  <span className="relative flex items-center justify-center w-4 h-4 shrink-0">
-                    <span aria-hidden="true" className="absolute inset-0 rounded-full bg-[#C8FA32]/75 blur-[3px]" />
+                <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#F5F7EC] text-[#161B22] border border-[#DCE6BE] text-[12.5px] font-medium tracking-tight select-none">
+                  <span className="relative flex items-center justify-center w-3.5 h-3.5 shrink-0">
                     <SparkleStar size={12} className="relative text-[#161B22]" />
                   </span>
-                  <span>Turn your GitHub profile into an achievement hub</span>
+                  <span>Official GitHub Profile Badges · Zero OAuth</span>
                 </div>
               </motion.div>
 
@@ -1122,33 +1144,19 @@ export const GitGlowHomePage: React.FC = () => {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: EASING.PREMIUM, delay: 0.06 }}
-                className="mb-5"
+                className="mb-6"
               >
-                <h1 className="text-[44px] sm:text-[58px] lg:text-[64px] xl:text-[72px] font-extrabold text-[#161B22] tracking-[-0.04em] leading-[1.02] select-none">
-                  Your GitHub <br />
-                  profile is about <br />
-                  to get{' '}
+                <h1 className="text-[42px] sm:text-[54px] lg:text-[58px] xl:text-[66px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.08] select-none">
+                  Unlock official GitHub <br />
+                  badges{' '}
                   <span className="relative inline-block ml-1">
                     <span
                       aria-hidden="true"
                       className="absolute -inset-x-2 inset-y-0.5 bg-[#D4F843] -skew-x-6 rounded-[4px]"
                     />
                     <span className="relative italic font-serif font-bold text-[#161B22] px-1">
-                      interesting.
+                      in minutes.
                     </span>
-                    <svg
-                      aria-hidden="true"
-                      viewBox="0 0 220 12"
-                      className="absolute -bottom-2 left-0 w-full h-3 overflow-visible pointer-events-none"
-                      fill="none"
-                    >
-                      <path
-                        d="M 4 7 Q 110 1 216 6"
-                        stroke="#161B22"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
                   </span>
                 </h1>
               </motion.div>
@@ -1158,20 +1166,20 @@ export const GitGlowHomePage: React.FC = () => {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: EASING.PREMIUM, delay: 0.12 }}
-                className="text-[15px] sm:text-[17px] text-[#374151] font-normal leading-relaxed max-w-[490px] mt-5 mb-7"
+                className="text-[15.5px] sm:text-[17px] text-[#4B5563] font-normal leading-[1.65] max-w-[470px] mb-9"
               >
-                Earn real GitHub achievements through guided missions, meaningful contributions, and hands-on developer challenges.
+                GitHub hides the rules behind every profile badge. Scan your username for 60-second PR &amp; merge missions that earn Pull Shark, Quickdraw, and YOLO—on your real profile.
               </motion.p>
 
-              {/* Search Input Capsule + Try Chips */}
+              {/* Primary Search Action Block */}
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, ease: EASING.PREMIUM, delay: 0.16 }}
-                className="max-w-[500px] w-full mb-6"
+                className="max-w-[480px] w-full"
               >
                 <form onSubmit={handleScanProfile} className="relative">
-                  <div className="relative flex items-center w-full rounded-full bg-white border border-[#161B22]/25 shadow-[0_6px_24px_rgba(0,0,0,0.05)] hover:border-[#161B22]/45 p-1.5 pl-4 transition-all duration-200 focus-within:border-[#84CC16] focus-within:ring-3 focus-within:ring-[#D4F843]/40">
+                  <div className="relative flex items-center w-full rounded-full bg-white border border-[#D0D7DE] shadow-[0_8px_24px_rgba(22,27,34,0.05)] hover:border-[#161B22]/40 p-1.5 pl-4 transition-all duration-200 focus-within:border-[#84CC16] focus-within:ring-3 focus-within:ring-[#D4F843]/40">
                     <Search size={16} className="text-[#57606A] shrink-0 mr-2.5" />
                     <span className="text-[#57606A] text-[13px] font-mono shrink-0 select-none">
                       github.com/&nbsp;
@@ -1180,24 +1188,24 @@ export const GitGlowHomePage: React.FC = () => {
                       type="text"
                       value={usernameInput}
                       onChange={(e) => setUsernameInput(e.target.value)}
-                      placeholder="username (e.g. torvalds)"
+                      placeholder="your-username"
                       aria-label="GitHub username"
                       className="flex-1 min-w-0 bg-transparent text-[13px] font-mono text-[#161B22] placeholder:text-[#9CA3AF] focus:outline-none py-1.5"
                     />
                     <button
                       type="submit"
                       disabled={isScanning}
-                      className="shrink-0 h-10 px-4 sm:px-5 rounded-full bg-[#0D1117] hover:bg-[#1C2128] text-white text-[13px] font-semibold border-2 border-[#D4F843] shadow-[0_0_14px_rgba(212,248,67,0.45)] flex items-center gap-2 transition-transform active:scale-95 cursor-pointer"
-                      aria-label="Scan Profile"
+                      className="shrink-0 h-10 px-4 sm:px-5 rounded-full bg-[#0D1117] hover:bg-[#1C2128] text-white text-[13px] font-semibold flex items-center gap-2 transition-transform active:scale-95 cursor-pointer"
+                      aria-label="Check My Badges"
                     >
                       {isScanning ? (
                         <>
                           <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          <span>Scanning</span>
+                          <span>Checking</span>
                         </>
                       ) : (
                         <>
-                          <span>Scan Profile</span>
+                          <span>Check My Badges</span>
                           <ArrowRight size={14} />
                         </>
                       )}
@@ -1205,27 +1213,37 @@ export const GitGlowHomePage: React.FC = () => {
                   </div>
                 </form>
 
-                {/* Quick-try chips */}
-                <div className="flex items-center flex-wrap gap-2 pt-3 pl-1">
-                  <span className="text-[#57606A] text-[11.5px] font-medium mr-1">Try with:</span>
-                  {[
-                    { handle: 'torvalds', color: 'bg-[#374151]' },
-                    { handle: 'shadcn', color: 'bg-[#78350F]' },
-                    { handle: 'leerob', color: 'bg-[#1E293B]' },
-                    { handle: 'gaearon', color: 'bg-[#312E81]' },
-                  ].map((item) => (
-                    <button
-                      key={item.handle}
-                      type="button"
-                      onClick={() => { setUsernameInput(item.handle); simulateProfileScan(item.handle); }}
-                      className="inline-flex items-center gap-1.5 pl-1 pr-2.5 py-0.5 rounded-full bg-[#ECEBE4]/80 hover:bg-[#E2E0D6] border border-[#D0D7DE]/70 text-[#24292F] text-[11px] font-mono transition-colors cursor-pointer"
-                    >
-                      <span className={cn("w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white uppercase", item.color)}>
-                        {item.handle[0]}
-                      </span>
-                      <span>@{item.handle}</span>
-                    </button>
-                  ))}
+                {/* Quiet Demo Handles + Secondary Escape Link */}
+                <div className="mt-4 px-1 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-[12px] text-[#57606A]">
+                  <div className="flex items-center flex-wrap gap-x-2.5 gap-y-1">
+                    <span className="font-medium text-[#6B7280]">Demo:</span>
+                    {['torvalds', 'shadcn', 'gaearon'].map((handle, idx) => (
+                      <React.Fragment key={handle}>
+                        {idx > 0 && <span aria-hidden="true" className="text-[#D0D7DE]">·</span>}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUsernameInput(handle);
+                            simulateProfileScan(handle);
+                          }}
+                          className="font-mono text-[#374151] hover:text-[#161B22] underline underline-offset-4 decoration-[#D0D7DE] hover:decoration-[#161B22] transition-colors cursor-pointer"
+                        >
+                          @{handle}
+                        </button>
+                      </React.Fragment>
+                    ))}
+                  </div>
+
+                  <a
+                    href="#achievements"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="font-medium text-[#374151] hover:text-[#161B22] transition-colors whitespace-nowrap"
+                  >
+                    Browse all 10 badge guides ↓
+                  </a>
                 </div>
 
                 {/* Scan result notification if scanned */}
@@ -1234,7 +1252,7 @@ export const GitGlowHomePage: React.FC = () => {
                     initial={{ opacity: 0, y: 8, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ duration: 0.3 }}
-                    className="mt-4 px-4 py-3 rounded-2xl bg-[#EAFBEE] border border-[#2DA44E]/30 flex items-center justify-between gap-3"
+                    className="mt-5 px-4 py-3 rounded-2xl bg-[#EAFBEE] border border-[#2DA44E]/30 flex items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-2.5">
                       <span className="w-2 h-2 rounded-full bg-[#2DA44E] animate-pulse shrink-0" />
@@ -1253,75 +1271,40 @@ export const GitGlowHomePage: React.FC = () => {
                   </motion.div>
                 )}
               </motion.div>
-
-              {/* Dual CTA Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, ease: EASING.PREMIUM, delay: 0.2 }}
-                className="flex flex-wrap items-center gap-3.5"
-              >
-                <a
-                  href="#first-achievement"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="h-12 pl-5 pr-2.5 rounded-full bg-[#0D1117] hover:bg-[#1C2128] text-white text-[13px] font-semibold inline-flex items-center gap-3 shadow-[0_8px_20px_rgba(0,0,0,0.16)] transition-all duration-200 hover:-translate-y-[1px] active:scale-[0.98] cursor-pointer select-none"
-                >
-                  <Rocket size={15} />
-                  <span>Start Your First Mission</span>
-                  <span className="w-7 h-7 rounded-full bg-[#D4F843] text-[#0D1117] flex items-center justify-center shrink-0">
-                    <ChevronRight size={15} strokeWidth={2.5} />
-                  </span>
-                </a>
-
-                <a
-                  href="#achievements"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="h-12 px-5 rounded-full bg-white/85 hover:bg-white text-[#161B22] border border-[#161B22]/25 text-[13px] font-semibold inline-flex items-center gap-2 shadow-2xs transition-all duration-200 hover:-translate-y-[1px] active:scale-[0.98] cursor-pointer select-none"
-                >
-                  <Trophy size={15} className="text-[#161B22]" />
-                  <span>Explore Achievements</span>
-                </a>
-              </motion.div>
             </div>
 
             {/* ── RIGHT COLUMN: 3D GitHub Achievement Visualization ── */}
-            <div className="w-full lg:w-[48%] xl:w-[50%] flex items-center justify-center lg:justify-end z-20">
+            <div className="lg:col-span-6 flex items-center justify-center lg:justify-end z-20">
               <HeroMonument3D />
             </div>
           </div>
 
-          {/* ── BOTTOM CENTER FLOATING FROSTED TRUST BAR ── */}
+          {/* ── BOTTOM CENTER UNDERSTATED PROOF STRIP ── */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.28 }}
-            className="mt-8 sm:mt-10 flex justify-center relative z-30"
+            transition={{ duration: 0.5, delay: 0.24 }}
+            className="mt-14 lg:mt-16 flex justify-center relative z-30"
           >
-            <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-7 px-6 sm:px-8 py-3 rounded-full bg-white/80 backdrop-blur-md border border-[#E1E4E8]/90 shadow-[0_12px_32px_rgba(0,0,0,0.08)] text-[12px] sm:text-[13px] font-medium text-[#161B22]">
+            <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-7 px-6 sm:px-8 py-3 rounded-full bg-white/75 backdrop-blur-sm border border-[#E1E4E8] shadow-[0_8px_24px_rgba(22,27,34,0.04)] text-[12px] sm:text-[12.5px] font-medium text-[#374151]">
               <div className="flex items-center gap-2">
-                <Compass size={15} className="text-[#161B22]" />
-                <span>Guided Missions</span>
+                <Compass size={14} className="text-[#161B22]" />
+                <span>Real GitHub Triggers</span>
               </div>
               <span className="hidden sm:inline text-[#D0D7DE]">|</span>
               <div className="flex items-center gap-2">
-                <Zap size={15} className="text-[#161B22]" />
-                <span>Real Pull Requests</span>
+                <Zap size={14} className="text-[#161B22]" />
+                <span>Step-by-Step PR Recipes</span>
               </div>
               <span className="hidden sm:inline text-[#D0D7DE]">|</span>
               <div className="flex items-center gap-2">
-                <Award size={15} className="text-[#161B22]" />
-                <span>Verified Badges</span>
+                <Award size={14} className="text-[#161B22]" />
+                <span>Verified on Your Profile</span>
               </div>
               <span className="hidden sm:inline text-[#D0D7DE]">|</span>
               <div className="flex items-center gap-2">
-                <Shield size={15} className="text-[#161B22]" />
-                <span>No OAuth Required</span>
+                <Shield size={14} className="text-[#161B22]" />
+                <span>No Login Required</span>
               </div>
             </div>
           </motion.div>
