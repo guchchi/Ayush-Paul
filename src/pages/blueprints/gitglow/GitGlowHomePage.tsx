@@ -46,6 +46,7 @@ import {
 import { cn } from '../../../lib/utils';
 import { DURATION, EASING } from '../../../lib/motion-presets';
 import { GITHUB_BADGES, GitHubBadge } from '../../../data/gitglow/github-badges';
+import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
 
 // ─── Badge Terminal Recipes Definition ────────────────────────────────────────
 interface BadgeRecipe {
@@ -1090,32 +1091,49 @@ export const GitGlowHomePage: React.FC = () => {
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
   const [activeFaqId, setActiveFaqId] = useState<number | null>(null);
 
-  // Centered Username Scanner State
-  const [usernameInput, setUsernameInput] = useState<string>('');
-  const [isScanning, setIsScanning] = useState<boolean>(false);
-  const [scanResult, setScanResult] = useState<{ handle: string; targetId: string; targetName: string } | null>(null);
+  const {
+    targetUsername,
+    setTargetUsername,
+    runScan,
+    isScanning,
+    scanAnalysis,
+    completedMissionIds,
+    toggleMission,
+  } = useGitGlowStore();
 
-  const simulateProfileScan = (handle: string) => {
+  const [usernameInput, setUsernameInput] = useState<string>(targetUsername || '');
+  const [scanResult, setScanResult] = useState<{ handle: string; targetId: string; targetName: string; prs?: number } | null>(null);
+
+  const executeRealProfileScan = async (handle: string) => {
     const cleanHandle = handle.trim().replace(/^@/, '') || 'developer';
-    setIsScanning(true);
-    setScanResult(null);
-    setTimeout(() => {
-      setIsScanning(false);
+    setTargetUsername(cleanHandle);
+    const analysis = await runScan(cleanHandle);
+    if (analysis) {
+      const topBadge = analysis.totalMergedPrs >= 2 ? 'pull-shark' : 'quickdraw';
+      setScanResult({
+        handle: cleanHandle,
+        targetId: topBadge,
+        targetName: topBadge === 'pull-shark' ? 'Pull Shark (Unlocked!)' : 'Quickdraw (120-Second Loop)',
+        prs: analysis.totalMergedPrs,
+      });
+      setSelectedBadgeId(topBadge);
+    } else {
+      // Fallback
       setScanResult({
         handle: cleanHandle,
         targetId: 'pull-shark',
         targetName: 'Pull Shark (First PR Merge)',
       });
-    }, 650);
+    }
   };
 
   const handleScanProfile = (e: React.FormEvent) => {
     e.preventDefault();
     if (!usernameInput.trim()) {
-      simulateProfileScan('developer');
+      executeRealProfileScan('developer');
       return;
     }
-    simulateProfileScan(usernameInput);
+    executeRealProfileScan(usernameInput);
   };
 
   const handleCopy = (text: string, label: string) => {
@@ -1342,7 +1360,7 @@ export const GitGlowHomePage: React.FC = () => {
                         type="button"
                         onClick={() => {
                           setUsernameInput(item.handle);
-                          simulateProfileScan(item.handle);
+                          executeRealProfileScan(item.handle);
                         }}
                         className="inline-flex items-center gap-1.5 font-mono text-[#101114] hover:text-[#4D7C0F] transition-colors cursor-pointer shrink-0"
                       >
@@ -2040,36 +2058,42 @@ export const GitGlowHomePage: React.FC = () => {
                   Missions Done
                 </span>
                 <span className="text-2xl sm:text-3xl font-extrabold text-[#101114] mt-0.5 block">
-                  3 of 6
+                  {completedMissionIds.length} of {GUIDED_MISSIONS.length}
                 </span>
-                <span className="text-[10px] text-[#65A30D] font-semibold">Starter Track 50%</span>
+                <span className="text-[10px] text-[#65A30D] font-semibold">
+                  Track {Math.round((completedMissionIds.length / GUIDED_MISSIONS.length) * 100)}%
+                </span>
               </div>
               <div>
                 <span className="text-[11px] font-mono text-[#65666A] uppercase tracking-wider block">
                   Pull Requests Merged
                 </span>
                 <span className="text-2xl sm:text-3xl font-extrabold text-[#101114] mt-0.5 block">
-                  2 Merged
+                  {scanAnalysis ? `${scanAnalysis.totalMergedPrs} Merged` : '2 Merged'}
                 </span>
-                <span className="text-[10px] text-[#65A30D] font-semibold">Pull Shark Unlocked</span>
+                <span className="text-[10px] text-[#65A30D] font-semibold">
+                  {scanAnalysis && scanAnalysis.totalMergedPrs >= 2 ? 'Pull Shark Unlocked' : 'In Progress'}
+                </span>
               </div>
               <div>
                 <span className="text-[11px] font-mono text-[#65666A] uppercase tracking-wider block">
-                  Co-Authored Commits
+                  Public Repositories
                 </span>
                 <span className="text-2xl sm:text-3xl font-extrabold text-[#101114] mt-0.5 block">
-                  1 Verified
+                  {scanAnalysis ? scanAnalysis.user.public_repos : '1 Verified'}
                 </span>
-                <span className="text-[10px] text-[#65A30D] font-semibold">Git Trailer Valid</span>
+                <span className="text-[10px] text-[#65A30D] font-semibold">
+                  {scanAnalysis ? `@${scanAnalysis.user.login}` : 'Git Trailer Valid'}
+                </span>
               </div>
               <div>
                 <span className="text-[11px] font-mono text-[#65666A] uppercase tracking-wider block">
-                  Badges Earned
+                  Badges Qualified
                 </span>
                 <span className="text-2xl sm:text-3xl font-extrabold text-[#101114] mt-0.5 block">
-                  2 Official
+                  {completedMissionIds.length} Badges
                 </span>
-                <span className="text-[10px] text-[#65A30D] font-semibold">Indexed on GitHub</span>
+                <span className="text-[10px] text-[#65A30D] font-semibold">Official Webhooks</span>
               </div>
             </div>
 
