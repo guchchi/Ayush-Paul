@@ -270,10 +270,10 @@ const FlyingBadgeCard: React.FC<{
         transform: `rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg)`,
         transformStyle: 'preserve-3d',
       }}
-      className="relative p-2.5 sm:p-3 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_16px_36px_-6px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.04)] group-hover:shadow-[0_22px_44px_-8px_rgba(0,0,0,0.18)] transition-all duration-300 group-hover:scale-105 group-hover:border-[#2da44e]/60"
+      className="relative p-2.5 sm:p-3 rounded-2xl bg-white/95 backdrop-blur-md border border-[#E5E3DA] shadow-[0_16px_36px_-6px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.04)] group-hover:shadow-[0_22px_44px_-8px_rgba(0,0,0,0.18)] transition-all duration-300 group-hover:scale-105 group-hover:border-[#84CC16]/60"
     >
       <div className="flex items-center gap-2.5 sm:gap-3">
-        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#F6F8FA] border border-[#E1E4E8] flex items-center justify-center p-1 shrink-0 shadow-2xs group-hover:border-[#2da44e]/30 transition-colors">
+        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-center p-1 shrink-0 shadow-2xs group-hover:border-[#84CC16]/30 transition-colors">
           <img
             src={badgeImg}
             alt={name}
@@ -282,11 +282,11 @@ const FlyingBadgeCard: React.FC<{
           />
         </div>
         <div className="text-left pr-1">
-          <div className="text-xs sm:text-[13px] font-bold text-[#161B22] leading-tight flex items-center gap-1.5">
+          <div className="text-xs sm:text-[13px] font-bold text-[#101114] leading-tight flex items-center gap-1.5">
             <span>{name}</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
           </div>
-          <div className="text-[10px] font-mono text-[#656D76] font-medium mt-0.5">
+          <div className="text-[10px] font-mono text-[#65666A] font-medium mt-0.5">
             {tag}
           </div>
         </div>
@@ -383,24 +383,24 @@ const FloatingStatusPill: React.FC<{
         transform: `rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg)`,
         transformStyle: 'preserve-3d',
       }}
-      className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_16px_36px_-6px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.04)] group-hover:shadow-[0_20px_40px_-6px_rgba(0,0,0,0.18)] transition-all duration-300 group-hover:scale-105"
+      className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#E5E3DA] shadow-[0_16px_36px_-6px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.04)] group-hover:shadow-[0_20px_40px_-6px_rgba(0,0,0,0.18)] transition-all duration-300 group-hover:scale-105"
     >
       {type === 'pr' ? (
         <>
           <div className="w-7 h-7 rounded-full bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 shadow-2xs">
             <Trophy size={14} />
           </div>
-          <span className="text-xs sm:text-[13px] font-bold text-[#161B22] tracking-tight">Pull Request Merged</span>
-          <div className="w-5 h-5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/40 flex items-center justify-center ml-0.5">
-            <Check size={11} strokeWidth={3} />
+          <span className="text-xs sm:text-[13px] font-bold text-[#101114] tracking-tight">Pull Request Merged</span>
+          <div className="w-5 h-5 rounded-full bg-[#F7F8EF] text-[#101114] border border-[#DCE89E] flex items-center justify-center ml-0.5">
+            <Check size={11} strokeWidth={3} className="text-[#84CC16]" />
           </div>
         </>
       ) : (
         <>
-          <div className="w-5 h-5 rounded-full bg-[#2da44e] text-white flex items-center justify-center shadow-2xs">
+          <div className="w-5 h-5 rounded-full bg-[#84CC16] text-white flex items-center justify-center shadow-2xs">
             <Check size={11} strokeWidth={3} />
           </div>
-          <span className="text-xs sm:text-[13px] font-bold text-[#161B22] tracking-tight">Mission Completed!</span>
+          <span className="text-xs sm:text-[13px] font-bold text-[#101114] tracking-tight">Mission Completed!</span>
         </>
       )}
     </div>
@@ -409,7 +409,7 @@ const FloatingStatusPill: React.FC<{
 
 // ─── 4-Point Sparkle Icon ────────────────────────────────────────────────────
 const SparkleStar: React.FC<{ size?: number; className?: string }> = ({ size = 16, className }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={cn('text-[#2da44e]', className)}>
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={cn('text-[#84CC16]', className)}>
     <path d="M12 0C12 6.627 6.627 12 0 12C6.627 12 12 17.373 12 24C12 17.373 17.373 12 24 12C17.373 12 12 6.627 12 0Z" />
   </svg>
 );
@@ -576,7 +576,7 @@ const AnubiOrbitalHeroStage: React.FC<{
               height: radii.ry * 2,
               transform: `translate(-50%, -50%) rotate(-10deg)`,
             }}
-            className="pointer-events-none absolute left-1/2 top-1/2 rounded-[100%] border border-[#2da44e]/20 border-dashed"
+            className="pointer-events-none absolute left-1/2 top-1/2 rounded-[100%] border border-[#84CC16]/20 border-dashed"
           />
           <div
             aria-hidden="true"
@@ -585,7 +585,7 @@ const AnubiOrbitalHeroStage: React.FC<{
               height: radii.ry * 2 - 20,
               transform: `translate(-50%, -50%) rotate(-6deg)`,
             }}
-            className="pointer-events-none absolute left-1/2 top-1/2 rounded-[100%] border border-[#2da44e]/10"
+            className="pointer-events-none absolute left-1/2 top-1/2 rounded-[100%] border border-[#84CC16]/10"
           />
         </>
       )}
@@ -654,13 +654,13 @@ const AnubiOrbitalHeroStage: React.FC<{
                   }}
                   className={cn(
                     'transition-all duration-200',
-                    isHovered && 'filter drop-shadow-[0_16px_32px_rgba(45,164,78,0.35)]'
+                    isHovered && 'filter drop-shadow-[0_16px_32px_rgba(132,204,22,0.35)]'
                   )}
                 >
                   {item.type === 'badge' && item.badgeImg && (
-                    <div className="relative p-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] hover:border-[#2da44e] transition-colors">
+                    <div className="relative p-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#E5E3DA] shadow-[0_12px_28px_rgba(0,0,0,0.1)] hover:border-[#84CC16] transition-colors">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-10 h-10 rounded-xl bg-[#F6F8FA] border border-[#E1E4E8] flex items-center justify-center p-1 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-center p-1 shrink-0">
                           <img
                             src={item.badgeImg}
                             alt={item.name}
@@ -669,34 +669,34 @@ const AnubiOrbitalHeroStage: React.FC<{
                           />
                         </div>
                         <div className="text-left pr-1 whitespace-nowrap">
-                          <div className="text-xs font-bold text-[#161B22] flex items-center gap-1.5">
+                          <div className="text-xs font-bold text-[#101114] flex items-center gap-1.5">
                             <span>{item.name}</span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
                           </div>
-                          <div className="text-[10px] font-mono text-[#656D76]">{item.tag}</div>
+                          <div className="text-[10px] font-mono text-[#65666A]">{item.tag}</div>
                         </div>
                       </div>
                     </div>
                   )}
 
                   {item.type === 'pr-pill' && (
-                    <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] whitespace-nowrap">
+                    <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#E5E3DA] shadow-[0_12px_28px_rgba(0,0,0,0.1)] whitespace-nowrap">
                       <div className="w-7 h-7 rounded-full bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600">
                         <Trophy size={14} />
                       </div>
-                      <span className="text-xs font-bold text-[#161B22]">Pull Request Merged</span>
-                      <div className="w-5 h-5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/40 flex items-center justify-center">
-                        <Check size={11} strokeWidth={3} />
+                      <span className="text-xs font-bold text-[#101114]">Pull Request Merged</span>
+                      <div className="w-5 h-5 rounded-full bg-[#F7F8EF] text-[#101114] border border-[#DCE89E] flex items-center justify-center">
+                        <Check size={11} strokeWidth={3} className="text-[#84CC16]" />
                       </div>
                     </div>
                   )}
 
                   {item.type === 'mission-pill' && (
-                    <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] whitespace-nowrap">
-                      <div className="w-6 h-6 rounded-full bg-[#2da44e] text-white flex items-center justify-center">
+                    <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#E5E3DA] shadow-[0_12px_28px_rgba(0,0,0,0.1)] whitespace-nowrap">
+                      <div className="w-6 h-6 rounded-full bg-[#84CC16] text-white flex items-center justify-center">
                         <Check size={11} strokeWidth={3} />
                       </div>
-                      <span className="text-xs font-bold text-[#161B22]">Mission Completed!</span>
+                      <span className="text-xs font-bold text-[#101114]">Mission Completed!</span>
                     </div>
                   )}
 
@@ -716,8 +716,8 @@ const AnubiOrbitalHeroStage: React.FC<{
 
       {/* ── ANUBI-INSPIRED ORBIT CONTROLS & HINT BAR (Preserved, hidden for now) ── */}
       {SHOW_FLOATING_ELEMENTS && (
-        <div className="hidden lg:flex absolute bottom-2 left-1/2 -translate-x-1/2 items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#D0D7DE] text-[11px] font-mono text-[#656D76] shadow-2xs select-none pointer-events-auto z-30">
-          <span className="w-2 h-2 rounded-full bg-[#2da44e] animate-pulse" />
+        <div className="hidden lg:flex absolute bottom-2 left-1/2 -translate-x-1/2 items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#E5E3DA] text-[11px] font-mono text-[#65666A] shadow-2xs select-none pointer-events-auto z-30">
+          <span className="w-2 h-2 rounded-full bg-[#84CC16] animate-pulse" />
           <span>3D Orbital Stage</span>
           <span className="text-slate-300">·</span>
           <span className="text-slate-500">Drag to rotate orbit · Click any badge to inspect mission</span>
@@ -1204,7 +1204,7 @@ export const GitGlowHomePage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#161B22] overflow-x-hidden selection:bg-[#dafbe1] selection:text-[#1a7f37]">
+    <div className="min-h-screen bg-[#FAF9F5] text-[#101114] overflow-x-hidden selection:bg-[#D7FF36] selection:text-[#101114]">
 
       {/* ─── SECTION 01: HERO (Full-Viewport 1672x941 Editorial Reconstruction) ─── */}
       <section
@@ -1229,44 +1229,6 @@ export const GitGlowHomePage: React.FC = () => {
               'radial-gradient(circle at 97% 14%, rgba(215,255,54,0.68) 0%, rgba(223,255,131,0.34) 22%, transparent 52%), radial-gradient(ellipse 46% 58% at 74% 48%, rgba(223,255,131,0.58) 0%, transparent 72%)',
           }}
         />
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 1672 843"
-          preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-x-0 bottom-0 w-full h-full z-0"
-          fill="none"
-        >
-          <defs>
-            <linearGradient id="bgCurveLimeRight" x1="1260" y1="620" x2="1672" y2="843" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#D7FF36" />
-              <stop offset="100%" stopColor="#B8E91F" />
-            </linearGradient>
-            <linearGradient id="bgCurveLimeLeft" x1="0" y1="700" x2="170" y2="843" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#D7FF36" />
-              <stop offset="100%" stopColor="#DFFF83" />
-            </linearGradient>
-          </defs>
-          {/* Smooth Bottom-Right Sweeping Acid-Lime Ribbon Border + Near-Black Arc */}
-          <path
-            d="M 1220 843 C 1320 695 1475 565 1672 520 L 1672 843 Z"
-            fill="url(#bgCurveLimeRight)"
-          />
-          <path
-            d="M 1272 843 C 1365 708 1510 585 1672 544 L 1672 843 Z"
-            fill="#101114"
-          />
-          {/* Smooth Bottom-Left Curved Acid-Lime Accent */}
-          <path
-            d="M 0 678 C 82 702 142 762 162 843 L 0 843 Z"
-            fill="url(#bgCurveLimeLeft)"
-          />
-          <path
-            d="M 0 678 C 82 702 142 762 162 843"
-            stroke="#9FD21C"
-            strokeOpacity="0.45"
-            strokeWidth="2"
-          />
-        </svg>
 
         <div className="relative w-full px-5 sm:px-8 lg:px-[6%] pt-7 sm:pt-9 lg:pt-[clamp(18px,3.2vh,38px)] pb-6 sm:pb-8 lg:pb-[clamp(18px,2.8vh,32px)] flex-1 flex flex-col justify-between z-20">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-8 my-auto">
@@ -1415,19 +1377,19 @@ export const GitGlowHomePage: React.FC = () => {
                     initial={{ opacity: 0, y: 8, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ duration: 0.3 }}
-                    className="mt-4 px-4 py-3 rounded-2xl bg-[#EAFBEE] border border-[#2DA44E]/30 flex items-center justify-between gap-3"
+                    className="mt-4 px-4 py-3 rounded-2xl bg-[#F7F8EF] border border-[#DCE89E] flex items-center justify-between gap-3 shadow-2xs"
                   >
                     <div className="flex items-center gap-2.5">
-                      <span className="w-2 h-2 rounded-full bg-[#2DA44E] animate-pulse shrink-0" />
+                      <span className="w-2 h-2 rounded-full bg-[#84CC16] animate-pulse shrink-0" />
                       <div>
-                        <div className="text-[12px] font-semibold text-[#1A7F37]">@{scanResult.handle} — ready</div>
-                        <div className="text-[11px] text-[#444D56]">Start with: <strong>{scanResult.targetName}</strong></div>
+                        <div className="text-[12px] font-semibold text-[#101114]">@{scanResult.handle} — ready</div>
+                        <div className="text-[11px] text-[#65666A]">Start with: <strong>{scanResult.targetName}</strong></div>
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => { setSelectedBadgeId(scanResult.targetId); document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' }); }}
-                      className="px-3 py-1.5 rounded-full bg-[#2DA44E] hover:bg-[#238636] text-white text-[11px] font-semibold shrink-0 cursor-pointer transition-colors"
+                      className="px-3 py-1.5 rounded-full bg-[#101114] hover:bg-[#23272F] text-[#D7FF36] border border-[#D7FF36]/40 text-[11px] font-semibold shrink-0 cursor-pointer transition-colors shadow-2xs"
                     >
                       View Mission →
                     </button>
@@ -1477,19 +1439,19 @@ export const GitGlowHomePage: React.FC = () => {
       {/* ─── SECTION 02: ACHIEVEMENT WALL ─────────────────────────────────── */}
       <section
         id="achievements"
-        className="scroll-mt-20 py-20 bg-[#F6F8FA] border-b border-[#D0D7DE] select-none text-left"
+        className="scroll-mt-20 py-20 bg-[#FAF9F5] border-b border-[#E5E3DA] select-none text-left"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center space-y-3 mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F7F8EF] text-[#101114] border border-[#DCE89E] text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
               <span>Official GitHub Achievement Wall</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#101114] tracking-[-0.035em] leading-[1.12]">
               These aren't profile decorations.
             </h2>
-            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+            <p className="text-base sm:text-lg text-[#65666A] max-w-2xl mx-auto font-normal leading-relaxed">
               Every achievement represents something you actually did on GitHub. Authenticated by GitHub server webhooks.
             </p>
           </div>
@@ -1508,8 +1470,8 @@ export const GitGlowHomePage: React.FC = () => {
                 className={cn(
                   'px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer select-none',
                   badgeCategoryFilter === tab.id
-                    ? 'bg-[#161B22] text-white shadow-xs'
-                    : 'bg-white text-[#656D76] border border-[#D0D7DE] hover:bg-slate-100 hover:text-[#161B22]'
+                    ? 'bg-[#101114] text-white shadow-xs'
+                    : 'bg-white text-[#65666A] border border-[#E5E3DA] hover:bg-[#F7F8EF] hover:text-[#101114] hover:border-[#DCE89E]'
                 )}
               >
                 {tab.label}
@@ -1525,10 +1487,10 @@ export const GitGlowHomePage: React.FC = () => {
                 <div
                   key={badge.id}
                   className={cn(
-                    'p-5 rounded-2xl bg-white border transition-all duration-200 flex flex-col justify-between group hover:-translate-y-1 hover:shadow-md cursor-pointer',
+                    'p-5 rounded-2xl bg-white border transition-all duration-200 flex flex-col justify-between group hover:-translate-y-1 hover:shadow-[0_16px_36px_-6px_rgba(16,17,20,0.08)] cursor-pointer',
                     isSelected
-                      ? 'border-[#2da44e] ring-2 ring-[#2da44e]/20 shadow-sm'
-                      : 'border-[#D0D7DE]'
+                      ? 'border-[#84CC16] ring-2 ring-[#D7FF36]/40 shadow-sm'
+                      : 'border-[#E5E3DA]'
                   )}
                   onClick={() => {
                     setSelectedBadgeId(badge.id);
@@ -1537,7 +1499,7 @@ export const GitGlowHomePage: React.FC = () => {
                 >
                   <div className="space-y-4">
                     {/* Badge Image Pedestal */}
-                    <div className="w-full h-32 rounded-xl bg-[#F6F8FA] border border-[#E1E4E8] flex items-center justify-center relative overflow-hidden group-hover:border-[#2da44e]/40 transition-colors">
+                    <div className="w-full h-32 rounded-xl bg-[#FAF9F5] border border-[#ECEAE1] flex items-center justify-center relative overflow-hidden group-hover:border-[#84CC16]/40 transition-colors">
                       <img
                         src={badge.image}
                         alt={badge.name}
@@ -1545,7 +1507,7 @@ export const GitGlowHomePage: React.FC = () => {
                         loading="lazy"
                       />
                       {badge.tiers && badge.tiers.length > 0 && (
-                        <span className="absolute top-2.5 right-2.5 text-[9px] font-mono font-bold bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 px-2 py-0.5 rounded-full shadow-2xs">
+                        <span className="absolute top-2.5 right-2.5 text-[9px] font-mono font-bold bg-[#F7F8EF] text-[#101114] border border-[#DCE89E] px-2 py-0.5 rounded-full shadow-2xs">
                           {badge.tiers.length} Tiers
                         </span>
                       )}
@@ -1554,21 +1516,21 @@ export const GitGlowHomePage: React.FC = () => {
                     {/* Badge Title & Status */}
                     <div>
                       <div className="flex items-center justify-between gap-2">
-                        <h3 className="text-lg font-bold text-[#161B22] tracking-tight">
+                        <h3 className="text-lg font-bold text-[#101114] tracking-tight">
                           {badge.name}
                         </h3>
-                        <span className="text-[10px] font-mono font-bold text-[#1a7f37] bg-[#dafbe1] px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] font-mono font-bold text-[#101114] bg-[#F7F8EF] border border-[#DCE89E] px-2 py-0.5 rounded-full">
                           Official
                         </span>
                       </div>
-                      <p className="text-xs text-[#656D76] font-medium leading-relaxed mt-1">
+                      <p className="text-xs text-[#65666A] font-medium leading-relaxed mt-1">
                         {badge.tagline}
                       </p>
                     </div>
 
                     {/* Requirement Note */}
-                    <div className="pt-2 border-t border-[#E1E4E8] text-[11px] text-[#656D76] leading-relaxed">
-                      <strong className="text-[#161B22]">Activity:</strong> {badge.howToGet}
+                    <div className="pt-2 border-t border-[#ECEAE1] text-[11px] text-[#65666A] leading-relaxed">
+                      <strong className="text-[#101114]">Activity:</strong> {badge.howToGet}
                     </div>
                   </div>
 
@@ -1576,7 +1538,7 @@ export const GitGlowHomePage: React.FC = () => {
                   <div className="pt-4 mt-2">
                     <button
                       type="button"
-                      className="w-full py-2 px-3 rounded-lg bg-[#F6F8FA] group-hover:bg-[#161B22] group-hover:text-white border border-[#D0D7DE] text-xs font-bold text-[#161B22] inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                      className="w-full py-2 px-3 rounded-lg bg-[#FAF9F5] group-hover:bg-[#101114] group-hover:text-white border border-[#E5E3DA] group-hover:border-[#101114] text-xs font-bold text-[#101114] inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                     >
                       <span>Start Mission</span>
                       <ArrowRight size={12} />
@@ -1592,19 +1554,19 @@ export const GitGlowHomePage: React.FC = () => {
       {/* ─── SECTION 03: UNLOCK YOUR FIRST ACHIEVEMENT (Interactive Workbench) ── */}
       <section
         id="first-achievement"
-        className="scroll-mt-20 py-20 bg-[#FFFFFF] border-b border-[#D0D7DE] select-none text-left"
+        className="scroll-mt-20 py-20 bg-white border-b border-[#E5E3DA] select-none text-left"
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center space-y-3 mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F7F8EF] text-[#101114] border border-[#DCE89E] text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
               <span>Interactive Mission Runner</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#101114] tracking-[-0.035em] leading-[1.12]">
               Your first achievement starts with one mission.
             </h2>
-            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+            <p className="text-base sm:text-lg text-[#65666A] max-w-2xl mx-auto font-normal leading-relaxed">
               Choose an achievement below, inspect its exact server criteria, and execute the verified Git commands.
             </p>
           </div>
@@ -1620,13 +1582,13 @@ export const GitGlowHomePage: React.FC = () => {
             ].map((step, idx) => (
               <div
                 key={step.num}
-                className="p-3.5 rounded-xl bg-[#F6F8FA] border border-[#D0D7DE] space-y-1 shadow-2xs"
+                className="p-3.5 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-1 shadow-2xs"
               >
-                <div className="text-[10px] font-mono font-bold text-[#2da44e] uppercase tracking-wider">
+                <div className="text-[10px] font-mono font-bold text-[#65A30D] uppercase tracking-wider">
                   Step {step.num}
                 </div>
-                <div className="text-xs font-bold text-[#161B22]">{step.title}</div>
-                <div className="text-[11px] text-[#656D76]">{step.desc}</div>
+                <div className="text-xs font-bold text-[#101114]">{step.title}</div>
+                <div className="text-[11px] text-[#65666A]">{step.desc}</div>
               </div>
             ))}
           </div>
@@ -1645,8 +1607,8 @@ export const GitGlowHomePage: React.FC = () => {
                     className={cn(
                       'px-3.5 py-1.5 rounded-full text-xs font-bold inline-flex items-center gap-2 border transition-all cursor-pointer',
                       isSelected
-                        ? 'bg-[#161B22] text-white border-[#161B22] shadow-xs'
-                        : 'bg-white text-[#656D76] border-[#D0D7DE] hover:bg-slate-100 hover:text-[#161B22]'
+                        ? 'bg-[#101114] text-white border-[#101114] shadow-xs'
+                        : 'bg-white text-[#65666A] border-[#E5E3DA] hover:bg-[#F7F8EF] hover:text-[#101114]'
                     )}
                   >
                     <img src={badge.image} alt={badge.name} className="w-4 h-4 object-contain" />
@@ -1658,28 +1620,28 @@ export const GitGlowHomePage: React.FC = () => {
           </div>
 
           {/* Dual-Pane Mission Workbench */}
-          <div className="rounded-[28px] border border-[#D0D7DE] bg-white divide-y md:divide-y-0 md:divide-x divide-[#D0D7DE] grid md:grid-cols-12 overflow-hidden shadow-sm">
+          <div className="rounded-[28px] border border-[#E5E3DA] bg-white divide-y md:divide-y-0 md:divide-x divide-[#E5E3DA] grid md:grid-cols-12 overflow-hidden shadow-sm">
             {/* Left Column: Requirements & Pedestal (5 cols) */}
             <div className="md:col-span-5 p-6 sm:p-7 flex flex-col justify-between space-y-6 bg-[#FFFFFF]">
               <div className="space-y-5">
                 {/* Badge Header Bar */}
-                <div className="flex items-start justify-between gap-3 pb-3 border-b border-[#E1E4E8]">
+                <div className="flex items-start justify-between gap-3 pb-3 border-b border-[#ECEAE1]">
                   <div>
-                    <span className="text-[11px] font-mono text-[#2da44e] font-bold uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono text-[#65A30D] font-bold uppercase tracking-wider block">
                       Target Medal
                     </span>
-                    <h3 className="text-2xl font-extrabold text-[#161B22] tracking-tight mt-0.5">
+                    <h3 className="text-2xl font-extrabold text-[#101114] tracking-tight mt-0.5">
                       {activeBadge.name}
                     </h3>
                   </div>
-                  <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30">
+                  <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-[#F7F8EF] text-[#101114] border border-[#DCE89E]">
                     {activeBadge.difficulty}
                   </span>
                 </div>
 
                 {/* 3D Showcase Pedestal */}
-                <div className="rounded-2xl border border-[#D0D7DE] bg-[#F6F8FA] p-4 flex items-center gap-3.5 shadow-2xs">
-                  <div className="w-14 h-14 shrink-0 flex items-center justify-center rounded-xl bg-white border border-[#D0D7DE] p-1.5 shadow-sm">
+                <div className="rounded-2xl border border-[#E5E3DA] bg-[#FAF9F5] p-4 flex items-center gap-3.5 shadow-2xs">
+                  <div className="w-14 h-14 shrink-0 flex items-center justify-center rounded-xl bg-white border border-[#E5E3DA] p-1.5 shadow-sm">
                     <img
                       src={activeBadge.image}
                       alt={activeBadge.name}
@@ -1687,12 +1649,12 @@ export const GitGlowHomePage: React.FC = () => {
                     />
                   </div>
                   <div className="min-w-0 space-y-1">
-                    <div className="text-sm font-semibold text-[#161B22] leading-snug">
+                    <div className="text-sm font-semibold text-[#101114] leading-snug">
                       {activeBadge.tagline}
                     </div>
-                    <div className="text-xs font-mono text-[#656D76]">
+                    <div className="text-xs font-mono text-[#65666A]">
                       Est. time:{' '}
-                      <span className="text-[#161B22] font-bold">
+                      <span className="text-[#101114] font-bold">
                         {activeRecipe.estimatedTime}
                       </span>
                     </div>
@@ -1701,23 +1663,23 @@ export const GitGlowHomePage: React.FC = () => {
 
                 {/* Mission Context */}
                 <div className="space-y-1.5">
-                  <span className="text-xs font-bold text-[#161B22] block">
+                  <span className="text-xs font-bold text-[#101114] block">
                     Mission Purpose:
                   </span>
-                  <p className="text-xs text-[#656D76] leading-relaxed">
+                  <p className="text-xs text-[#65666A] leading-relaxed">
                     {activeRecipe.missionContext}
                   </p>
                 </div>
 
                 {/* GitHub Verification Rule */}
                 <div className="space-y-2 pt-1">
-                  <span className="text-xs font-bold text-[#161B22] tracking-tight block">
+                  <span className="text-xs font-bold text-[#101114] tracking-tight block">
                     Official Verification Criteria:
                   </span>
-                  <ul className="space-y-1.5 text-xs text-[#656D76] leading-relaxed font-medium">
+                  <ul className="space-y-1.5 text-xs text-[#65666A] leading-relaxed font-medium">
                     {activeBadge.requirements.slice(0, 3).map((req, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle2 size={14} className="text-[#2da44e] shrink-0 mt-0.5" />
+                        <CheckCircle2 size={14} className="text-[#84CC16] shrink-0 mt-0.5" />
                         <span>{req}</span>
                       </li>
                     ))}
@@ -1738,11 +1700,11 @@ export const GitGlowHomePage: React.FC = () => {
             {/* Right Column: Authentic GitHub CLI Terminal & Commands (7 cols) */}
             <div
               id="recipes"
-              className="md:col-span-7 p-6 sm:p-7 bg-[#0D1117] text-[#c9d1d9] flex flex-col justify-between space-y-6 rounded-b-[28px] md:rounded-b-none md:rounded-r-[28px]"
+              className="md:col-span-7 p-6 sm:p-7 bg-[#101114] text-[#c9d1d9] flex flex-col justify-between space-y-6 rounded-b-[28px] md:rounded-b-none md:rounded-r-[28px]"
             >
               <div className="space-y-4">
                 {/* Terminal Window Header Bar */}
-                <div className="flex items-center justify-between pb-3.5 border-b border-[#30363D]">
+                <div className="flex items-center justify-between pb-3.5 border-b border-[#272B33]">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1.5" aria-hidden="true">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
@@ -1750,7 +1712,7 @@ export const GitGlowHomePage: React.FC = () => {
                       <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-mono text-[#7ee787] font-bold uppercase tracking-wider">
+                      <span className="text-[11px] font-mono text-[#D7FF36] font-bold uppercase tracking-wider">
                         Terminal
                       </span>
                       <span className="text-[#8b949e] font-mono text-xs select-none">/</span>
@@ -1763,17 +1725,17 @@ export const GitGlowHomePage: React.FC = () => {
                   {/* Master Copy All Button */}
                   <button
                     onClick={() => handleCopy(allActiveCommands, `${activeBadge.id}-all`)}
-                    className="h-8 px-3 rounded-lg bg-[#21262d] hover:bg-[#30363d] text-white border border-[#30363d] text-[11px] font-mono font-semibold transition-all flex items-center gap-1.5 cursor-pointer select-none active:scale-95"
+                    className="h-8 px-3 rounded-lg bg-[#1F2329] hover:bg-[#2A2F37] text-white border border-[#30363D] text-[11px] font-mono font-semibold transition-all flex items-center gap-1.5 cursor-pointer select-none active:scale-95"
                     title="Copy full 3-station bash script"
                   >
                     {copiedSnippet === `${activeBadge.id}-all` ? (
                       <>
-                        <Check size={12} className="text-[#3fb950]" />
-                        <span className="text-[#3fb950] font-bold">Script Copied!</span>
+                        <Check size={12} className="text-[#D7FF36]" />
+                        <span className="text-[#D7FF36] font-bold">Script Copied!</span>
                       </>
                     ) : (
                       <>
-                        <Zap size={12} className="text-[#3fb950] fill-[#3fb950]" />
+                        <Zap size={12} className="text-[#D7FF36] fill-[#D7FF36]" />
                         <span>Copy All Steps</span>
                       </>
                     )}
@@ -1796,22 +1758,22 @@ export const GitGlowHomePage: React.FC = () => {
                           Step {idx + 1} of 3
                         </span>
                       </div>
-                      <div className="rounded-xl border border-[#30363D] bg-[#161B22] px-3.5 py-2.5 flex items-center justify-between gap-3 shadow-inner hover:border-[#8b949e]/40 transition-colors">
+                      <div className="rounded-xl border border-[#272B33] bg-[#17191E] px-3.5 py-2.5 flex items-center justify-between gap-3 shadow-inner hover:border-[#8b949e]/40 transition-colors">
                         <div className="flex items-center gap-2 font-mono text-xs overflow-hidden">
                           <span className="text-[#8b949e] select-none">$</span>
-                          <code className="text-[#7ee787] truncate font-semibold">
+                          <code className="text-[#D7FF36] truncate font-semibold">
                             {step.cmd}
                           </code>
                         </div>
                         <button
                           onClick={() => handleCopy(step.cmd, `${activeBadge.id}-${idx}`)}
-                          className="shrink-0 text-xs text-[#c9d1d9] hover:text-white px-2 py-1 rounded bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] transition-all flex items-center gap-1 cursor-pointer select-none active:scale-95"
+                          className="shrink-0 text-xs text-[#c9d1d9] hover:text-white px-2 py-1 rounded bg-[#1F2329] hover:bg-[#2A2F37] border border-[#30363D] transition-all flex items-center gap-1 cursor-pointer select-none active:scale-95"
                           title="Copy command"
                         >
                           {copiedSnippet === `${activeBadge.id}-${idx}` ? (
                             <>
-                              <Check size={12} className="text-[#3fb950]" />
-                              <span className="text-[#3fb950] text-[11px] font-mono font-bold">
+                              <Check size={12} className="text-[#D7FF36]" />
+                              <span className="text-[#D7FF36] text-[11px] font-mono font-bold">
                                 Copied
                               </span>
                             </>
@@ -1832,7 +1794,7 @@ export const GitGlowHomePage: React.FC = () => {
               <div className="pt-2">
                 <Link
                   to={`/blueprints/gitglow/engine?badge=${activeBadge.id}`}
-                  className="w-full py-3 rounded-xl bg-[#238636] hover:bg-[#2ea043] text-white text-xs font-bold uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                  className="w-full py-3 rounded-xl bg-[#D7FF36] hover:bg-[#cbf527] text-[#101114] text-xs font-bold uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
                 >
                   <Play size={13} className="fill-current" />
                   <span>Launch Live Mission Session →</span>
@@ -1846,19 +1808,19 @@ export const GitGlowHomePage: React.FC = () => {
       {/* ─── SECTION 04: HOW GITGLOW WORKS ─────────────────────────────────── */}
       <section
         id="how-it-works"
-        className="scroll-mt-20 py-20 bg-[#F6F8FA] border-b border-[#D0D7DE] select-none text-left"
+        className="scroll-mt-20 py-20 bg-[#FAF9F5] border-b border-[#E5E3DA] select-none text-left"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center space-y-3 mb-14">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F7F8EF] text-[#101114] border border-[#DCE89E] text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
               <span>4-Step Execution Pipeline</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#101114] tracking-[-0.035em] leading-[1.12]">
               Learn it. Do it. Earn it.
             </h2>
-            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+            <p className="text-base sm:text-lg text-[#65666A] max-w-2xl mx-auto font-normal leading-relaxed">
               No boring video playlists or fake README badges. A structured engineering workflow from zero to real contribution.
             </p>
           </div>
@@ -1870,52 +1832,52 @@ export const GitGlowHomePage: React.FC = () => {
                 step: '01',
                 title: 'Discover a Mission',
                 desc: 'Browse beginner-friendly challenges mapped directly to official GitHub profile achievements.',
-                icon: <Search className="text-[#2da44e]" size={20} />,
+                icon: <Search className="text-[#84CC16]" size={20} />,
                 chip: 'Target Identification',
               },
               {
                 step: '02',
                 title: 'Follow the Guided Workflow',
                 desc: 'Get exact CLI commands, branch conventions, and anti-mistake gotchas before pushing any code.',
-                icon: <Terminal className="text-[#2da44e]" size={20} />,
+                icon: <Terminal className="text-[#84CC16]" size={20} />,
                 chip: 'Command Guidance',
               },
               {
                 step: '03',
                 title: 'Complete Real GitHub Activity',
                 desc: 'Push commits, author pull requests, and co-author branches on live, indexed repositories.',
-                icon: <GitPullRequest className="text-[#2da44e]" size={20} />,
+                icon: <GitPullRequest className="text-[#84CC16]" size={20} />,
                 chip: 'Live Git Execution',
               },
               {
                 step: '04',
                 title: 'Track Verified Progress',
                 desc: 'GitHub official event webhooks register your activity and award the genuine medallion to your profile.',
-                icon: <Award className="text-[#2da44e]" size={20} />,
+                icon: <Award className="text-[#84CC16]" size={20} />,
                 chip: 'Webhook Verification',
               },
             ].map((card) => (
               <div
                 key={card.step}
-                className="p-6 rounded-2xl bg-white border border-[#D0D7DE] flex flex-col justify-between space-y-5 hover:-translate-y-1 transition-all duration-200 shadow-2xs hover:shadow-sm"
+                className="p-6 rounded-2xl bg-white border border-[#E5E3DA] flex flex-col justify-between space-y-5 hover:-translate-y-1 transition-all duration-200 shadow-2xs hover:shadow-[0_16px_36px_-6px_rgba(16,17,20,0.08)] hover:border-[#84CC16]/60"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-mono font-extrabold text-[#2da44e]">
+                    <span className="text-2xl font-mono font-extrabold text-[#65A30D]">
                       {card.step}
                     </span>
-                    <div className="w-10 h-10 rounded-xl bg-[#F6F8FA] border border-[#D0D7DE] flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-center">
                       {card.icon}
                     </div>
                   </div>
-                  <h3 className="text-lg font-bold text-[#161B22] tracking-tight">
+                  <h3 className="text-lg font-bold text-[#101114] tracking-tight">
                     {card.title}
                   </h3>
-                  <p className="text-xs text-[#656D76] font-medium leading-relaxed">
+                  <p className="text-xs text-[#65666A] font-medium leading-relaxed">
                     {card.desc}
                   </p>
                 </div>
-                <div className="pt-3 border-t border-[#E1E4E8] text-[10px] font-mono text-[#656D76] font-bold uppercase tracking-wider">
+                <div className="pt-3 border-t border-[#ECEAE1] text-[10px] font-mono text-[#65666A] font-bold uppercase tracking-wider">
                   {card.chip}
                 </div>
               </div>
@@ -1927,19 +1889,19 @@ export const GitGlowHomePage: React.FC = () => {
       {/* ─── SECTION 05: EXPLORE MISSIONS ──────────────────────────────────── */}
       <section
         id="missions"
-        className="scroll-mt-20 py-20 bg-[#FFFFFF] border-b border-[#D0D7DE] select-none text-left"
+        className="scroll-mt-20 py-20 bg-white border-b border-[#E5E3DA] select-none text-left"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center space-y-3 mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F7F8EF] text-[#101114] border border-[#DCE89E] text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
               <span>Guided Missions Explorer</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#101114] tracking-[-0.035em] leading-[1.12]">
               Your next contribution starts here.
             </h2>
-            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+            <p className="text-base sm:text-lg text-[#65666A] max-w-2xl mx-auto font-normal leading-relaxed">
               Step-by-step developer challenges designed to build genuine muscle memory across core Git workflows.
             </p>
           </div>
@@ -1959,8 +1921,8 @@ export const GitGlowHomePage: React.FC = () => {
                 className={cn(
                   'px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer select-none',
                   missionCategoryFilter === cat.id
-                    ? 'bg-[#161B22] text-white shadow-xs'
-                    : 'bg-[#F6F8FA] text-[#656D76] border border-[#D0D7DE] hover:bg-slate-100 hover:text-[#161B22]'
+                    ? 'bg-[#101114] text-white shadow-xs'
+                    : 'bg-[#FAF9F5] text-[#65666A] border border-[#E5E3DA] hover:bg-[#F7F8EF] hover:text-[#101114]'
                 )}
               >
                 {cat.label}
@@ -1973,61 +1935,61 @@ export const GitGlowHomePage: React.FC = () => {
             {filteredMissions.map((mission) => (
               <div
                 key={mission.id}
-                className="p-6 rounded-2xl bg-white border border-[#D0D7DE] flex flex-col justify-between space-y-5 hover:-translate-y-1 hover:shadow-md transition-all duration-200"
+                className="p-6 rounded-2xl bg-white border border-[#E5E3DA] flex flex-col justify-between space-y-5 hover:-translate-y-1 hover:shadow-[0_16px_36px_-6px_rgba(16,17,20,0.08)] hover:border-[#84CC16]/60 transition-all duration-200"
               >
                 <div className="space-y-4">
                   {/* Top Tags */}
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#F6F8FA] text-[#656D76] border border-[#D0D7DE]">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#FAF9F5] text-[#65666A] border border-[#E5E3DA]">
                       {mission.category}
                     </span>
-                    <span className="text-[10px] font-mono font-bold text-[#1a7f37] bg-[#dafbe1] px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-mono font-bold text-[#101114] bg-[#F7F8EF] border border-[#DCE89E] px-2 py-0.5 rounded-full">
                       {mission.difficulty}
                     </span>
                   </div>
 
                   {/* Title & Target Medal Pill */}
                   <div>
-                    <h3 className="text-xl font-bold text-[#161B22] tracking-tight">
+                    <h3 className="text-xl font-bold text-[#101114] tracking-tight">
                       {mission.title}
                     </h3>
-                    <p className="text-xs text-[#656D76] font-medium leading-relaxed mt-2">
+                    <p className="text-xs text-[#65666A] font-medium leading-relaxed mt-2">
                       {mission.summary}
                     </p>
                   </div>
 
                   {/* Target Achievement preview */}
-                  <div className="p-3 rounded-xl bg-[#F6F8FA] border border-[#E1E4E8] flex items-center justify-between gap-3">
+                  <div className="p-3 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5">
                       <img
                         src={mission.targetBadgeImage}
                         alt={mission.targetBadgeName}
                         className="w-7 h-7 object-contain"
                       />
-                      <span className="text-xs font-bold text-[#161B22]">
+                      <span className="text-xs font-bold text-[#101114]">
                         Unlocks: {mission.targetBadgeName}
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono text-[#656D76] font-bold">
+                    <span className="text-[10px] font-mono text-[#65666A] font-bold">
                       {mission.estimatedTime}
                     </span>
                   </div>
 
                   {/* Skills Practiced */}
-                  <div className="text-[11px] text-[#656D76] space-y-1">
-                    <strong className="text-[#161B22]">Skill Practiced:</strong>{' '}
+                  <div className="text-[11px] text-[#65666A] space-y-1">
+                    <strong className="text-[#101114]">Skill Practiced:</strong>{' '}
                     <span>{mission.skillPracticed}</span>
                   </div>
                 </div>
 
                 {/* Card Action */}
-                <div className="pt-4 border-t border-[#E1E4E8] flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-[#1a7f37] font-bold">
+                <div className="pt-4 border-t border-[#ECEAE1] flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-[#65A30D] font-bold">
                     {mission.completionRate}
                   </span>
                   <Link
                     to={`/blueprints/gitglow/engine?badge=${mission.id.replace(/^m\d+-/, '')}`}
-                    className="text-xs font-bold text-[#161B22] hover:text-[#2da44e] inline-flex items-center gap-1 transition-colors"
+                    className="text-xs font-bold text-[#101114] hover:text-[#84CC16] inline-flex items-center gap-1 transition-colors"
                   >
                     <span>Start Mission</span>
                     <ArrowRight size={13} />
@@ -2041,7 +2003,7 @@ export const GitGlowHomePage: React.FC = () => {
           <div className="text-center">
             <Link
               to="/blueprints/gitglow/engine"
-              className="h-12 px-8 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg"
+              className="h-12 px-8 rounded-full bg-[#101114] hover:bg-[#1C1E24] text-white text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg border border-[#D7FF36]/40"
             >
               <span>Explore All Missions →</span>
             </Link>
@@ -2052,80 +2014,80 @@ export const GitGlowHomePage: React.FC = () => {
       {/* ─── SECTION 06: YOUR DEVELOPER PROGRESS ───────────────────────────── */}
       <section
         id="progress"
-        className="scroll-mt-20 py-20 bg-[#F6F8FA] border-b border-[#D0D7DE] select-none text-left"
+        className="scroll-mt-20 py-20 bg-[#FAF9F5] border-b border-[#E5E3DA] select-none text-left"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center space-y-3 mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F7F8EF] text-[#101114] border border-[#DCE89E] text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
               <span>Real Progress Tracking</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#101114] tracking-[-0.035em] leading-[1.12]">
               Your progress should be visible.
             </h2>
-            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+            <p className="text-base sm:text-lg text-[#65666A] max-w-2xl mx-auto font-normal leading-relaxed">
               Track completed missions, commit milestones, skills practiced, and achievement unlocks on one unified dashboard.
             </p>
           </div>
 
           {/* Product Dashboard Preview */}
-          <div className="max-w-5xl mx-auto rounded-[28px] bg-white border border-[#D0D7DE] shadow-sm p-6 sm:p-8 space-y-8">
+          <div className="max-w-5xl mx-auto rounded-[28px] bg-white border border-[#E5E3DA] shadow-sm p-6 sm:p-8 space-y-8">
             {/* Top Stat Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-6 border-b border-[#E1E4E8]">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-6 border-b border-[#ECEAE1]">
               <div>
-                <span className="text-[11px] font-mono text-[#656D76] uppercase tracking-wider block">
+                <span className="text-[11px] font-mono text-[#65666A] uppercase tracking-wider block">
                   Missions Done
                 </span>
-                <span className="text-2xl sm:text-3xl font-extrabold text-[#161B22] mt-0.5 block">
+                <span className="text-2xl sm:text-3xl font-extrabold text-[#101114] mt-0.5 block">
                   3 of 6
                 </span>
-                <span className="text-[10px] text-[#2da44e] font-semibold">Starter Track 50%</span>
+                <span className="text-[10px] text-[#65A30D] font-semibold">Starter Track 50%</span>
               </div>
               <div>
-                <span className="text-[11px] font-mono text-[#656D76] uppercase tracking-wider block">
+                <span className="text-[11px] font-mono text-[#65666A] uppercase tracking-wider block">
                   Pull Requests Merged
                 </span>
-                <span className="text-2xl sm:text-3xl font-extrabold text-[#161B22] mt-0.5 block">
+                <span className="text-2xl sm:text-3xl font-extrabold text-[#101114] mt-0.5 block">
                   2 Merged
                 </span>
-                <span className="text-[10px] text-[#2da44e] font-semibold">Pull Shark Unlocked</span>
+                <span className="text-[10px] text-[#65A30D] font-semibold">Pull Shark Unlocked</span>
               </div>
               <div>
-                <span className="text-[11px] font-mono text-[#656D76] uppercase tracking-wider block">
+                <span className="text-[11px] font-mono text-[#65666A] uppercase tracking-wider block">
                   Co-Authored Commits
                 </span>
-                <span className="text-2xl sm:text-3xl font-extrabold text-[#161B22] mt-0.5 block">
+                <span className="text-2xl sm:text-3xl font-extrabold text-[#101114] mt-0.5 block">
                   1 Verified
                 </span>
-                <span className="text-[10px] text-[#2da44e] font-semibold">Git Trailer Valid</span>
+                <span className="text-[10px] text-[#65A30D] font-semibold">Git Trailer Valid</span>
               </div>
               <div>
-                <span className="text-[11px] font-mono text-[#656D76] uppercase tracking-wider block">
+                <span className="text-[11px] font-mono text-[#65666A] uppercase tracking-wider block">
                   Badges Earned
                 </span>
-                <span className="text-2xl sm:text-3xl font-extrabold text-[#161B22] mt-0.5 block">
+                <span className="text-2xl sm:text-3xl font-extrabold text-[#101114] mt-0.5 block">
                   2 Official
                 </span>
-                <span className="text-[10px] text-[#2da44e] font-semibold">Indexed on GitHub</span>
+                <span className="text-[10px] text-[#65A30D] font-semibold">Indexed on GitHub</span>
               </div>
             </div>
 
             {/* Contribution Activity Heatmap Preview */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#161B22]">
+                <span className="text-xs font-bold text-[#101114]">
                   Contribution Heatmap Simulation
                 </span>
-                <span className="text-[11px] font-mono text-[#656D76]">
+                <span className="text-[11px] font-mono text-[#65666A]">
                   Real Commit Attribution
                 </span>
               </div>
               {/* Heatmap Grid */}
-              <div className="p-4 rounded-2xl bg-[#F6F8FA] border border-[#D0D7DE] overflow-x-auto">
+              <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] overflow-x-auto">
                 <div className="flex items-center gap-1.5 min-w-[500px]">
                   {Array.from({ length: 32 }).map((_, i) => {
-                    const levels = ['bg-[#EBEDF0]', 'bg-[#9BE9A8]', 'bg-[#40C463]', 'bg-[#30A14E]', 'bg-[#216E39]'];
+                    const levels = ['bg-[#EBEDF0]', 'bg-[#D7FF36]/50', 'bg-[#D7FF36]', 'bg-[#A3E635]', 'bg-[#4D7C0F]'];
                     const level = i % 7 === 0 ? levels[3] : i % 3 === 0 ? levels[2] : i % 5 === 0 ? levels[1] : levels[0];
                     return (
                       <div
@@ -2141,31 +2103,31 @@ export const GitGlowHomePage: React.FC = () => {
 
             {/* Skill Mastery Row */}
             <div className="grid md:grid-cols-3 gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-[#F6F8FA] border border-[#D0D7DE] space-y-2">
+              <div className="p-4 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#161B22]">Git Branching</span>
-                  <span className="font-mono text-[#2da44e] font-bold">Level 2</span>
+                  <span className="font-bold text-[#101114]">Git Branching</span>
+                  <span className="font-mono text-[#65A30D] font-bold">Level 2</span>
                 </div>
-                <div className="w-full h-1.5 rounded-full bg-[#E1E4E8] overflow-hidden">
-                  <div className="h-full bg-[#2da44e] w-[80%]" />
+                <div className="w-full h-1.5 rounded-full bg-[#E5E3DA] overflow-hidden">
+                  <div className="h-full bg-[#84CC16] w-[80%]" />
                 </div>
               </div>
-              <div className="p-4 rounded-xl bg-[#F6F8FA] border border-[#D0D7DE] space-y-2">
+              <div className="p-4 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#161B22]">PR Etiquette</span>
-                  <span className="font-mono text-[#2da44e] font-bold">Level 3</span>
+                  <span className="font-bold text-[#101114]">PR Etiquette</span>
+                  <span className="font-mono text-[#65A30D] font-bold">Level 3</span>
                 </div>
-                <div className="w-full h-1.5 rounded-full bg-[#E1E4E8] overflow-hidden">
-                  <div className="h-full bg-[#2da44e] w-[100%]" />
+                <div className="w-full h-1.5 rounded-full bg-[#E5E3DA] overflow-hidden">
+                  <div className="h-full bg-[#84CC16] w-[100%]" />
                 </div>
               </div>
-              <div className="p-4 rounded-xl bg-[#F6F8FA] border border-[#D0D7DE] space-y-2">
+              <div className="p-4 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#161B22]">Git Trailers</span>
-                  <span className="font-mono text-[#2da44e] font-bold">Level 1</span>
+                  <span className="font-bold text-[#101114]">Git Trailers</span>
+                  <span className="font-mono text-[#65A30D] font-bold">Level 1</span>
                 </div>
-                <div className="w-full h-1.5 rounded-full bg-[#E1E4E8] overflow-hidden">
-                  <div className="h-full bg-[#2da44e] w-[60%]" />
+                <div className="w-full h-1.5 rounded-full bg-[#E5E3DA] overflow-hidden">
+                  <div className="h-full bg-[#84CC16] w-[60%]" />
                 </div>
               </div>
             </div>
@@ -2176,34 +2138,34 @@ export const GitGlowHomePage: React.FC = () => {
       {/* ─── SECTION 07: REAL WORK. REAL CONTRIBUTIONS. ────────────────────── */}
       <section
         id="comparison"
-        className="scroll-mt-20 py-20 bg-[#FFFFFF] border-b border-[#D0D7DE] select-none text-left"
+        className="scroll-mt-20 py-20 bg-[#FFFFFF] border-b border-[#E5E3DA] select-none text-left"
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center space-y-3 mb-14">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F7F8EF] text-[#101114] border border-[#DCE89E] text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
               <span>Authenticity First</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#101114] tracking-[-0.035em] leading-[1.12]">
               Not another GitHub profile generator.
             </h2>
-            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+            <p className="text-base sm:text-lg text-[#65666A] max-w-2xl mx-auto font-normal leading-relaxed">
               Why tech leads and engineering hiring managers respect official profile achievements instead of copy-pasted README shields.
             </p>
           </div>
 
           {/* Comparison Cards Grid */}
-          <div className="rounded-[28px] border border-[#D0D7DE] bg-white divide-y md:divide-y-0 md:divide-x divide-[#D0D7DE] grid md:grid-cols-2 overflow-hidden shadow-sm">
+          <div className="rounded-[28px] border border-[#E5E3DA] bg-white divide-y md:divide-y-0 md:divide-x divide-[#E5E3DA] grid md:grid-cols-2 overflow-hidden shadow-sm">
             {/* Left Card: Typical README Generators */}
-            <div className="p-7 sm:p-9 space-y-6 bg-[#F6F8FA]/60 flex flex-col justify-between">
+            <div className="p-7 sm:p-9 space-y-6 bg-[#FAF9F5]/70 flex flex-col justify-between">
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#E1E4E8]">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E5E3DA]">
                   <div>
-                    <span className="text-[11px] font-mono text-[#656D76] font-bold uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono text-[#65666A] font-bold uppercase tracking-wider block">
                       Typical Tools
                     </span>
-                    <h3 className="text-xl font-extrabold text-[#161B22] tracking-tight mt-0.5">
+                    <h3 className="text-xl font-extrabold text-[#101114] tracking-tight mt-0.5">
                       README Profile Generators
                     </h3>
                   </div>
@@ -2212,7 +2174,7 @@ export const GitGlowHomePage: React.FC = () => {
                   </span>
                 </div>
 
-                <ul className="space-y-3.5 text-xs sm:text-[13px] text-[#656D76] leading-relaxed">
+                <ul className="space-y-3.5 text-xs sm:text-[13px] text-[#65666A] leading-relaxed">
                   <li className="flex items-start gap-2.5">
                     <XCircle size={16} className="text-rose-500 shrink-0 mt-0.5" />
                     <span><strong>Static image decorations:</strong> Anyone can copy markdown badges into a README in under 10 seconds.</span>
@@ -2236,35 +2198,35 @@ export const GitGlowHomePage: React.FC = () => {
             {/* Right Card: GitGlow Guided Missions */}
             <div className="p-7 sm:p-9 space-y-6 bg-white flex flex-col justify-between">
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#E1E4E8]">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E5E3DA]">
                   <div>
-                    <span className="text-[11px] font-mono text-[#2da44e] font-bold uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono text-[#65A30D] font-bold uppercase tracking-wider block">
                       The GitGlow Way
                     </span>
-                    <h3 className="text-xl font-extrabold text-[#161B22] tracking-tight mt-0.5">
+                    <h3 className="text-xl font-extrabold text-[#101114] tracking-tight mt-0.5">
                       Guided Missions &amp; Real Activity
                     </h3>
                   </div>
-                  <span className="text-[10px] font-mono text-[#1a7f37] bg-[#dafbe1] border border-[#2da44e]/30 px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1">
-                    <Check size={11} /> Server Verified
+                  <span className="text-[10px] font-mono text-[#101114] bg-[#F7F8EF] border border-[#DCE89E] px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1">
+                    <Check size={11} className="text-[#84CC16]" /> Server Verified
                   </span>
                 </div>
 
-                <ul className="space-y-3.5 text-xs sm:text-[13px] text-[#161B22] leading-relaxed">
+                <ul className="space-y-3.5 text-xs sm:text-[13px] text-[#101114] leading-relaxed">
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle2 size={16} className="text-[#2da44e] shrink-0 mt-0.5" />
+                    <CheckCircle2 size={16} className="text-[#84CC16] shrink-0 mt-0.5" />
                     <span><strong>Guided hands-on missions:</strong> Step-by-step CLI execution that builds genuine muscle memory for feature branching.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle2 size={16} className="text-[#2da44e] shrink-0 mt-0.5" />
+                    <CheckCircle2 size={16} className="text-[#84CC16] shrink-0 mt-0.5" />
                     <span><strong>Real pull requests &amp; merges:</strong> Authentic GitHub commits indexed by GitHub official event webhooks.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle2 size={16} className="text-[#2da44e] shrink-0 mt-0.5" />
+                    <CheckCircle2 size={16} className="text-[#84CC16] shrink-0 mt-0.5" />
                     <span><strong>Multi-tier multipliers:</strong> Track progress toward Pull Shark x16 and Galaxy Brain x32 milestones.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle2 size={16} className="text-[#2da44e] shrink-0 mt-0.5" />
+                    <CheckCircle2 size={16} className="text-[#84CC16] shrink-0 mt-0.5" />
                     <span><strong>Actual developer growth:</strong> You earn achievements by doing real work, producing a profile that tech leads respect.</span>
                   </li>
                 </ul>
@@ -2277,14 +2239,14 @@ export const GitGlowHomePage: React.FC = () => {
       {/* ─── SECTION 08: FINAL CTA & FOOTER ────────────────────────────────── */}
       <section
         id="community"
-        className="scroll-mt-20 py-20 bg-[#FFFFFF] select-none text-left"
+        className="scroll-mt-20 py-20 bg-[#FAF9F5] select-none text-left"
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Action Ribbon Card */}
-          <div className="rounded-[32px] bg-[#0D1117] text-white p-8 sm:p-14 text-center space-y-6 mb-20 relative overflow-hidden shadow-2xl border border-[#30363D]">
+          <div className="rounded-[32px] bg-[#101114] text-white p-8 sm:p-14 text-center space-y-6 mb-20 relative overflow-hidden shadow-2xl border border-[#272B33]">
             <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#238636]/30 border border-[#2ea043]/40 text-[#7ee787] text-[11px] font-mono font-bold uppercase tracking-[0.16em]">
-                <span className="w-1.5 h-1.5 bg-[#7ee787] rounded-full animate-pulse" />
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D7FF36]/15 border border-[#D7FF36]/40 text-[#D7FF36] text-[11px] font-mono font-bold uppercase tracking-[0.16em]">
+                <span className="w-1.5 h-1.5 bg-[#D7FF36] rounded-full animate-pulse" />
                 1-Click Mission Execution
               </span>
               <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-white tracking-[-0.035em] leading-[1.12]">
@@ -2300,7 +2262,7 @@ export const GitGlowHomePage: React.FC = () => {
                     e.preventDefault();
                     document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#A3E635] hover:bg-[#bef264] text-[#0D1117] font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-md hover:shadow-lg cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#D7FF36] hover:bg-[#e2ff6b] text-[#101114] font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-md hover:shadow-lg cursor-pointer"
                 >
                   Start Your First Mission →
                 </a>
@@ -2319,68 +2281,68 @@ export const GitGlowHomePage: React.FC = () => {
           </div>
 
           {/* Clean Dedicated GitGlow Footer */}
-          <footer className="pt-12 border-t border-[#D0D7DE]">
+          <footer className="pt-12 border-t border-[#E5E3DA]">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
               {/* Brand Column */}
               <div className="col-span-2 space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-[8px] bg-[#0D1117] border border-white/15 flex items-center justify-center relative">
+                  <div className="w-7 h-7 rounded-[8px] bg-[#101114] border border-white/15 flex items-center justify-center relative">
                     <Github size={15} className="text-white fill-current" />
-                    <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-[#A3E635]" />
+                    <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-[#D7FF36]" />
                   </div>
-                  <span className="text-lg font-bold text-[#161B22] tracking-tight">
+                  <span className="text-lg font-bold text-[#101114] tracking-tight">
                     GitGlow
                   </span>
                 </div>
-                <p className="text-xs text-[#656D76] leading-relaxed max-w-sm font-medium">
+                <p className="text-xs text-[#65666A] leading-relaxed max-w-sm font-medium">
                   The guided mission platform for authentic GitHub developer achievements. Built to help beginners contribute meaningfully.
                 </p>
               </div>
 
               {/* Column 1: Missions */}
               <div className="space-y-2.5">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#161B22]">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#101114]">
                   Missions
                 </h4>
-                <ul className="space-y-2 text-xs text-[#656D76]">
-                  <li><a href="#missions" className="hover:text-[#161B22] transition-colors">Quickdraw (120s)</a></li>
-                  <li><a href="#missions" className="hover:text-[#161B22] transition-colors">Pull Shark (PR Merge)</a></li>
-                  <li><a href="#missions" className="hover:text-[#161B22] transition-colors">Pair Programming</a></li>
-                  <li><a href="#missions" className="hover:text-[#161B22] transition-colors">Open Source Track</a></li>
+                <ul className="space-y-2 text-xs text-[#65666A]">
+                  <li><a href="#missions" className="hover:text-[#101114] transition-colors">Quickdraw (120s)</a></li>
+                  <li><a href="#missions" className="hover:text-[#101114] transition-colors">Pull Shark (PR Merge)</a></li>
+                  <li><a href="#missions" className="hover:text-[#101114] transition-colors">Pair Programming</a></li>
+                  <li><a href="#missions" className="hover:text-[#101114] transition-colors">Open Source Track</a></li>
                 </ul>
               </div>
 
               {/* Column 2: Achievements */}
               <div className="space-y-2.5">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#161B22]">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#101114]">
                   Achievements
                 </h4>
-                <ul className="space-y-2 text-xs text-[#656D76]">
-                  <li><a href="#achievements" className="hover:text-[#161B22] transition-colors">Official Badges</a></li>
-                  <li><a href="#achievements" className="hover:text-[#161B22] transition-colors">Multi-Tier Multipliers</a></li>
-                  <li><a href="#first-achievement" className="hover:text-[#161B22] transition-colors">Webhook Rules</a></li>
-                  <li><a href="#how-it-works" className="hover:text-[#161B22] transition-colors">How It Works</a></li>
+                <ul className="space-y-2 text-xs text-[#65666A]">
+                  <li><a href="#achievements" className="hover:text-[#101114] transition-colors">Official Badges</a></li>
+                  <li><a href="#achievements" className="hover:text-[#101114] transition-colors">Multi-Tier Multipliers</a></li>
+                  <li><a href="#first-achievement" className="hover:text-[#101114] transition-colors">Webhook Rules</a></li>
+                  <li><a href="#how-it-works" className="hover:text-[#101114] transition-colors">How It Works</a></li>
                 </ul>
               </div>
 
               {/* Column 3: Community & Legal */}
               <div className="space-y-2.5">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#161B22]">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#101114]">
                   Community
                 </h4>
-                <ul className="space-y-2 text-xs text-[#656D76]">
-                  <li><Link to="/blueprints" className="hover:text-[#161B22] transition-colors">All Blueprints</Link></li>
-                  <li><a href="https://github.com/guchchi" target="_blank" rel="noopener noreferrer" className="hover:text-[#161B22] transition-colors">GitHub Repository</a></li>
-                  <li><Link to="/privacy" className="hover:text-[#161B22] transition-colors">Privacy Policy</Link></li>
-                  <li><Link to="/terms" className="hover:text-[#161B22] transition-colors">Terms of Service</Link></li>
+                <ul className="space-y-2 text-xs text-[#65666A]">
+                  <li><Link to="/blueprints" className="hover:text-[#101114] transition-colors">All Blueprints</Link></li>
+                  <li><a href="https://github.com/guchchi" target="_blank" rel="noopener noreferrer" className="hover:text-[#101114] transition-colors">GitHub Repository</a></li>
+                  <li><Link to="/privacy" className="hover:text-[#101114] transition-colors">Privacy Policy</Link></li>
+                  <li><Link to="/terms" className="hover:text-[#101114] transition-colors">Terms of Service</Link></li>
                 </ul>
               </div>
             </div>
 
             {/* Bottom Disclaimer */}
-            <div className="pt-8 border-t border-[#E1E4E8] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#656D76]">
+            <div className="pt-8 border-t border-[#ECEAE1] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#65666A]">
               <p>© 2026 GitGlow. An independent open-source blueprint platform.</p>
-              <p className="text-[11px] text-[#8b949e]">
+              <p className="text-[11px] text-[#8E9094]">
                 GitHub and the GitHub logo are registered trademarks of GitHub, Inc.
               </p>
             </div>
