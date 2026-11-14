@@ -304,7 +304,9 @@ export async function executeRealMergePullRequest(
   accessToken: string,
   owner: string,
   repo: string,
-  pullNumber: number
+  pullNumber: number,
+  commitTitle?: string,
+  commitMessage?: string
 ): Promise<GitHubPullRequestResult> {
   const headers = {
     Accept: 'application/vnd.github.v3+json',
@@ -316,8 +318,8 @@ export async function executeRealMergePullRequest(
     method: 'PUT',
     headers,
     body: JSON.stringify({
-      commit_title: `Merge pull request #${pullNumber} from GitGlow Engine`,
-      commit_message: `Official Pull Shark qualification merged successfully.`,
+      commit_title: commitTitle || `Merge pull request #${pullNumber} from GitGlow Engine`,
+      commit_message: commitMessage || `Official qualification merged successfully without code review.`,
       merge_method: 'merge',
     }),
   });
@@ -341,6 +343,190 @@ export async function executeRealMergePullRequest(
     merged_at: pr.merged_at || new Date().toISOString(),
     headBranch: pr.head?.ref || '',
     baseBranch: pr.base?.ref || 'main',
+  };
+}
+
+/**
+ * Real GitHub YOLO Action: Create Hotfix Branch, Commit Patch, and Open PR with Zero Reviewers
+ */
+export async function executeRealYoloPullRequest(
+  accessToken: string,
+  owner: string,
+  repo: string,
+  defaultBranch = 'main'
+): Promise<GitHubPullRequestResult> {
+  const headers = {
+    Accept: 'application/vnd.github.v3+json',
+    Authorization: `Bearer ${accessToken}`,
+    'Content-Type': 'application/json',
+  };
+
+  // 1. Get default branch commit SHA
+  const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${defaultBranch}`, { headers });
+  if (!refRes.ok) {
+    throw new Error(`Could not resolve branch refs/heads/${defaultBranch} (Status: ${refRes.status})`);
+  }
+  const refData = await refRes.json();
+  const baseSha = refData.object.sha;
+
+  // 2. Create emergency hotfix branch
+  const branchSuffix = Date.now().toString().slice(-4);
+  const hotfixBranch = `hotfix/yolo-bypass-${branchSuffix}`;
+  const branchRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      ref: `refs/heads/${hotfixBranch}`,
+      sha: baseSha,
+    }),
+  });
+
+  if (!branchRes.ok) {
+    const err = await branchRes.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to create hotfix branch.');
+  }
+
+  // 3. Commit atomic hotfix patch file
+  const filePath = `patches/yolo-hotfix-${branchSuffix}.md`;
+  const fileContent = `# YOLO Emergency Patch\n\n- **Target Badge**: YOLO (Merged without code review)\n- **Author**: @${owner}\n- **Engine**: GitGlow Sandbox Engine\n- **Timestamp**: ${new Date().toISOString()}\n- **Review Rule**: Zero Reviewers Assigned (Bypass SLA)\n`;
+  const encodedContent = btoa(fileContent);
+
+  const fileRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      message: `fix(emergency): direct patch for YOLO qualification #${branchSuffix}`,
+      content: encodedContent,
+      branch: hotfixBranch,
+    }),
+  });
+
+  if (!fileRes.ok) {
+    const err = await fileRes.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to commit patch file on hotfix branch.');
+  }
+
+  // 4. Open Pull Request with ZERO reviewers assigned
+  const prRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/pulls`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      title: `fix(emergency): direct patch for YOLO achievement #${branchSuffix}`,
+      head: hotfixBranch,
+      base: defaultBranch,
+      body: `### YOLO Achievement Qualification\n\nMerged directly into \`${defaultBranch}\` without code review.\n- **Author**: @${owner}\n- **Engine**: GitGlow Achievements Engine\n- **Zero-Review Rule**: Verified (0 reviewers assigned)\n`,
+    }),
+  });
+
+  if (!prRes.ok) {
+    const err = await prRes.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to open Pull Request on GitHub.');
+  }
+
+  const pr = await prRes.json();
+  return {
+    number: pr.number,
+    id: pr.id,
+    title: pr.title,
+    html_url: pr.html_url,
+    state: pr.state,
+    merged: pr.merged || false,
+    headBranch: hotfixBranch,
+    baseBranch: defaultBranch,
+  };
+}
+
+/**
+ * Real GitHub Pair Extraordinaire Action: Commit with RFC Co-Authored Trailer and Open PR
+ */
+export async function executeRealPairExtraordinairePullRequest(
+  accessToken: string,
+  owner: string,
+  repo: string,
+  coAuthorName = 'GitGlow Pairing Bot',
+  coAuthorEmail = 'bot@gitglow.dev',
+  defaultBranch = 'main'
+): Promise<GitHubPullRequestResult> {
+  const headers = {
+    Accept: 'application/vnd.github.v3+json',
+    Authorization: `Bearer ${accessToken}`,
+    'Content-Type': 'application/json',
+  };
+
+  // 1. Get default branch commit SHA
+  const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${defaultBranch}`, { headers });
+  if (!refRes.ok) {
+    throw new Error(`Could not resolve branch refs/heads/${defaultBranch} (Status: ${refRes.status})`);
+  }
+  const refData = await refRes.json();
+  const baseSha = refData.object.sha;
+
+  // 2. Create pair branch
+  const branchSuffix = Date.now().toString().slice(-4);
+  const pairBranch = `feat/pair-collab-${branchSuffix}`;
+  const branchRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      ref: `refs/heads/${pairBranch}`,
+      sha: baseSha,
+    }),
+  });
+
+  if (!branchRes.ok) {
+    const err = await branchRes.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to create feature branch.');
+  }
+
+  // 3. Commit file with RFC Git Trailer: "Co-authored-by: Name <email>"
+  const filePath = `pair-sessions/session-${branchSuffix}.md`;
+  const fileContent = `# Pair Programming Sprint\n\n- Primary Author: @${owner}\n- Co-Author: ${coAuthorName} <${coAuthorEmail}>\n- Engine: GitGlow Achievements Engine\n- Timestamp: ${new Date().toISOString()}\n`;
+  const encodedContent = btoa(fileContent);
+
+  const commitMessage = `feat(collab): pair programming session #${branchSuffix}\n\nCo-authored-by: ${coAuthorName} <${coAuthorEmail}>`;
+
+  const fileRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      message: commitMessage,
+      content: encodedContent,
+      branch: pairBranch,
+    }),
+  });
+
+  if (!fileRes.ok) {
+    const err = await fileRes.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to commit co-authored file.');
+  }
+
+  // 4. Open Pull Request
+  const prRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/pulls`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      title: `feat(collab): pair programming session with ${coAuthorName} #${branchSuffix}`,
+      head: pairBranch,
+      base: defaultBranch,
+      body: `### Pair Extraordinaire Qualification\n\nThis pull request contains a verified RFC Git Trailer:\n\`\`\`\nCo-authored-by: ${coAuthorName} <${coAuthorEmail}>\n\`\`\`\n\nMerged into \`${defaultBranch}\` to qualify for the official GitHub **Pair Extraordinaire** badge.\n`,
+    }),
+  });
+
+  if (!prRes.ok) {
+    const err = await prRes.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to open Pull Request.');
+  }
+
+  const pr = await prRes.json();
+  return {
+    number: pr.number,
+    id: pr.id,
+    title: pr.title,
+    html_url: pr.html_url,
+    state: pr.state,
+    merged: pr.merged || false,
+    headBranch: pairBranch,
+    baseBranch: defaultBranch,
   };
 }
 

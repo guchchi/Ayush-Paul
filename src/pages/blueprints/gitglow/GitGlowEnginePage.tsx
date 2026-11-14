@@ -24,6 +24,8 @@ import { BADGE_AUTOMATION_BLUEPRINTS } from '../../../lib/gitglow/gitglow-commun
 import { BADGE_CURRICULUM } from '../../../data/gitglow/badge-curriculum';
 import { QuickdrawInteractiveSimulation } from './QuickdrawInteractiveSimulation';
 import { PullSharkInteractiveSimulation } from './PullSharkInteractiveSimulation';
+import { YoloInteractiveSimulation } from './YoloInteractiveSimulation';
+import { PairExtraordinaireInteractiveSimulation } from './PairExtraordinaireInteractiveSimulation';
 import { BadgeLearningModal } from '../../../components/gitglow/BadgeLearningModal';
 
 export const GitGlowEnginePage: React.FC = () => {
@@ -440,6 +442,16 @@ export const GitGlowEnginePage: React.FC = () => {
                 <QuickdrawInteractiveSimulation />
               ) : activeBadge.id === 'pull-shark' ? (
                 <PullSharkInteractiveSimulation />
+              ) : activeBadge.id === 'yolo' ? (
+                <YoloInteractiveSimulation
+                  onOpenLearnModal={() => setShowLearnModal(true)}
+                  onCompleted={() => handleSelectBadge('pair-extraordinaire')}
+                />
+              ) : activeBadge.id === 'pair-extraordinaire' ? (
+                <PairExtraordinaireInteractiveSimulation
+                  onOpenLearnModal={() => setShowLearnModal(true)}
+                  onCompleted={() => handleSelectBadge('galaxy-brain')}
+                />
               ) : (
                 <div className="p-6 rounded-3xl bg-white border border-[#E5E3DA] space-y-4 shadow-xs">
                   <div className="flex items-center gap-2">

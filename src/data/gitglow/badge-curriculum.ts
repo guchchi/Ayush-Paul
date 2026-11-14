@@ -343,5 +343,380 @@ Co-authored-by: GitGlow Peer <pair-bot@gitglow.dev>"`,
       },
     ],
   },
+  'galaxy-brain': {
+    badgeId: 'galaxy-brain',
+    badgeName: 'Galaxy Brain',
+    chapterNumber: '05',
+    badgeIcon: '/images/badges/galaxy-brain.png',
+    tagline: 'Become a respected open-source problem solver via GitHub Discussions.',
+    estimatedTime: '15 Minutes',
+    difficulty: 'Intermediate',
+    industryContext: {
+      title: 'Community Q&A and Developer Knowledge Bases',
+      description: 'GitHub Discussions serves as the StackOverflow for specific open source repositories. Answering questions and having your solution marked as the "Accepted Answer" creates long-term institutional knowledge for developer tools.',
+      realWorldExample: 'A developer on Next.js or Tailwind CSS explains how to configure dynamic routing with edge middleware. The maintainer marks it as the Accepted Answer, helping thousands of future engineers.',
+    },
+    conceptsTaught: [
+      {
+        term: 'Q&A Discussion Category',
+        definition: 'Special category type in GitHub Discussions that permits mark-as-answer resolution flags.',
+        proTip: 'Only discussions opened under a category with the "Q&A" format can receive the official green Accepted Answer badge.',
+      },
+      {
+        term: 'Accepted Answer Checkmark',
+        definition: 'A verified resolution marker placed on a comment by the discussion author or repository maintainer.',
+        proTip: 'You need 2 accepted answers across public repositories to qualify for Galaxy Brain Tier 1.',
+      },
+    ],
+    executionBlueprint: {
+      prepStep: 'Ensure you have a public repository with Discussions enabled in Settings > Features > Discussions.',
+      step1: {
+        title: 'Station 1: Open a Q&A Discussion',
+        codeSnippet: 'gh api graphql -f query=\'mutation { createDiscussion(...) }\'',
+        cliExplanation: 'Or visit the repository Discussions tab in your browser and click "New discussion" under Q&A.',
+        webAlternative: 'Go to github.com/<user>/<repo>/discussions and select Q&A format.',
+      },
+      step2: {
+        title: 'Station 2: Post the Technical Solution',
+        codeSnippet: 'gh api graphql -f query=\'mutation { addDiscussionComment(...) }\'',
+        cliExplanation: 'Submit a clear, helpful code snippet or step-by-step resolution to the posted problem.',
+        webAlternative: 'Post your answer in the comment reply box under the discussion.',
+      },
+      step3: {
+        title: 'Station 3: Mark as Accepted Answer',
+        codeSnippet: 'gh api graphql -f query=\'mutation { markDiscussionCommentAsAnswer(...) }\'',
+        cliExplanation: 'The repository maintainer or original author clicks the green checkmark "Mark as answer".',
+        webAlternative: 'Click "Mark as answer" on the top right of the comment.',
+      },
+      webhookTriggerTime: 'GitHub increments the Galaxy Brain counter immediately upon answer selection.',
+    },
+    gotchas: [
+      'The discussion category MUST be configured as "Q&A". General discussions or Announcements do not support accepted answers.',
+      'You cannot mark your own comment as answer if the repository has disabled self-resolutions.',
+    ],
+    quiz: [
+      {
+        id: 'gb-1',
+        question: 'Which discussion category format supports accepted answers for Galaxy Brain?',
+        options: ['Q&A Category', 'Announcements Category', 'General Chat', 'Ideas Category'],
+        correctIndex: 0,
+        explanation: 'Only discussions configured with the Q&A format have the green "Mark as answer" verification feature.',
+      },
+    ],
+  },
+  starstruck: {
+    badgeId: 'starstruck',
+    badgeName: 'Starstruck',
+    chapterNumber: '06',
+    badgeIcon: '/images/badges/starstruck.png',
+    tagline: 'Build developer momentum and earn 16 genuine community stars.',
+    estimatedTime: 'Ongoing Project',
+    difficulty: 'Intermediate',
+    industryContext: {
+      title: 'Social Proof, Developer Signals & Open Source Discovery',
+      description: 'GitHub stars represent bookmarks and community endorsements. High-star repositories achieve organic discovery on GitHub Trending, Google Search, and "Awesome" lists, establishing credibility for creators and projects.',
+      realWorldExample: 'A software engineer open-sources an elegant CLI tool or UI component library. Community developers star the repo to save it for their tech stack, signaling adoption to potential employers.',
+    },
+    conceptsTaught: [
+      {
+        term: 'Open-Source Social Proof',
+        definition: 'Public recognition by fellow engineers who find value, utility, or architectural inspiration in your codebase.',
+        proTip: '16 stars on your public repositories unlocks Tier 1 of the official Starstruck achievement.',
+      },
+      {
+        term: 'High-Conversion README Architecture',
+        definition: 'Structuring project documentation with immediate visual hooks, installation badges, quickstart copy-paste commands, and animated demos.',
+        proTip: 'Repositories with an interactive demo or GIF achieve 4x higher star retention than text-only readmes.',
+      },
+    ],
+    executionBlueprint: {
+      prepStep: 'Create a clean, well-architected public repository with a clear license (MIT/Apache 2.0).',
+      step1: {
+        title: 'Station 1: Polish README with Badges & Live Demo',
+        codeSnippet: '# Build something useful & craft a 10-star README\ngit commit -m "docs: add interactive architecture diagram and quickstart"',
+        cliExplanation: 'Ensure visitors understand what the project solves within 5 seconds of loading the page.',
+        webAlternative: 'Add shields.io badges, screenshots, and live demo links to your README.md.',
+      },
+      step2: {
+        title: 'Station 2: Add Repository Topics & Open Graph Image',
+        codeSnippet: 'gh repo edit --add-topic "typescript,react,developer-tools,productivity"',
+        cliExplanation: 'Topics index your repository in GitHub Explore and topic search feeds.',
+        webAlternative: 'Click the Settings gear on the repository homepage and add 5-8 relevant tags.',
+      },
+      step3: {
+        title: 'Station 3: Share with Developer Communities',
+        codeSnippet: '# Share on Hacker News (Show HN), Reddit (r/webdev, r/opensource), and X/Twitter',
+        cliExplanation: 'Genuine community engagement brings real developers who star and fork your repository.',
+        webAlternative: 'Post your project link in developer forums with an explanation of why you built it.',
+      },
+      webhookTriggerTime: 'GitHub updates Starstruck counter within 15–30 minutes of reaching 16 total stars.',
+    },
+    gotchas: [
+      'Stars must be across your public repositories (private repository stars do not count towards the public badge).',
+      'Never participate in fake star-exchange rings; GitHub regularly purges bot accounts and flags violators.',
+    ],
+    quiz: [
+      {
+        id: 'ss-1',
+        question: 'How many total repository stars are required for Starstruck Tier 1?',
+        options: ['16 Stars', '5 Stars', '100 Stars', '50 Stars'],
+        correctIndex: 0,
+        explanation: 'Tier 1 of Starstruck unlocks at 16 stars, Tier 2 (Bronze) at 128 stars, and Tier 3 (Silver) at 512 stars.',
+      },
+    ],
+  },
+  'public-sponsor': {
+    badgeId: 'public-sponsor',
+    badgeName: 'Public Sponsor',
+    chapterNumber: '07',
+    badgeIcon: '/images/badges/public-sponsor.png',
+    tagline: 'Sustain the open-source software ecosystem through GitHub Sponsors.',
+    estimatedTime: '3 Minutes',
+    difficulty: 'Beginner',
+    industryContext: {
+      title: 'Open Source Sustainability & Patronage',
+      description: 'Millions of critical web packages are maintained by volunteer developers. GitHub Sponsors enables direct financial backing, allowing maintainers to buy server time, maintain security audits, and work full-time on open source.',
+      realWorldExample: 'A company or developer relies on curl, Vite, or SQLite in production and sponsors the author $5/month to support ongoing patch releases and security fixes.',
+    },
+    conceptsTaught: [
+      {
+        term: 'GitHub Sponsors Program',
+        definition: 'GitHub’s native platform for sending one-time or recurring patronage to open source maintainers with zero platform fees.',
+        proTip: 'Sponsoring anyone with a public sponsorship profile immediately grants you the Public Sponsor badge on your GitHub profile.',
+      },
+      {
+        term: 'FUNDING.yml Manifest',
+        definition: 'A standardized configuration file in `.github/FUNDING.yml` that displays a "Sponsor" button on a repository.',
+        proTip: 'Adding `github: [username]` in `.github/FUNDING.yml` links your personal sponsorship tier.',
+      },
+    ],
+    executionBlueprint: {
+      prepStep: 'Identify a favorite open source maintainer who has GitHub Sponsors enabled (e.g. Evan You, Caleb Porzio, or libraries you use daily).',
+      step1: {
+        title: 'Station 1: Visit Maintainer Profile',
+        codeSnippet: 'open https://github.com/sponsors/<maintainer>',
+        cliExplanation: 'Navigate to the maintainer’s sponsor portal in your browser.',
+        webAlternative: 'Click the pink heart "Sponsor" button on their GitHub repository or profile.',
+      },
+      step2: {
+        title: 'Station 2: Select a Tier or One-Time Donation',
+        codeSnippet: '# Select $1 or custom sponsorship tier',
+        cliExplanation: 'Both one-time and monthly sponsorships qualify for the permanent Public Sponsor badge.',
+        webAlternative: 'Select the tier that suits you on github.com/sponsors.',
+      },
+      step3: {
+        title: 'Station 3: Ensure "Make Public" is Selected',
+        codeSnippet: '# Ensure the public checkbox is selected during checkout',
+        cliExplanation: 'If you choose private/anonymous sponsorship, GitHub hides the badge to respect your privacy!',
+        webAlternative: 'Verify that "Share my sponsorship publicly" is checked before completing payment.',
+      },
+      webhookTriggerTime: 'Immediate upon payment verification; badge displays on your GitHub profile in real-time.',
+    },
+    gotchas: [
+      'If you sponsor privately (incognito), the Public Sponsor badge will NOT be displayed on your profile.',
+      'Sponsorship must be completed via GitHub Sponsors, not an external link like Patreon or BuyMeACoffee.',
+    ],
+    quiz: [
+      {
+        id: 'ps-1',
+        question: 'What setting must be enabled during checkout to receive the Public Sponsor badge?',
+        options: ['Make sponsorship public on profile', 'Anonymous donation', 'Enterprise invoice', 'Sponsor via PayPal only'],
+        correctIndex: 0,
+        explanation: 'You must check the box to make your sponsorship public on your profile; anonymous sponsorships do not display public badges.',
+      },
+    ],
+  },
+  'heart-on-your-sleeve': {
+    badgeId: 'heart-on-your-sleeve',
+    badgeName: 'Heart on Your Sleeve',
+    chapterNumber: '08',
+    badgeIcon: '/images/badges/heart-on-your-sleeve.png',
+    tagline: 'Promote healthy and positive open-source collaboration through feedback.',
+    estimatedTime: '2 Minutes',
+    difficulty: 'Beginner',
+    industryContext: {
+      title: 'Constructive Feedback and Emoji Reactions',
+      description: 'Open source thrives on gratitude and positive reinforcement. Emoji reactions (+1, heart, rocket, eyes) provide fast, respectful feedback to maintainers and contributors without spamming thread notifications.',
+      realWorldExample: 'A user opens a bug report. When a contributor submits a fix PR, community members react with a heart or rocket to show appreciation for the fast patch.',
+    },
+    conceptsTaught: [
+      {
+        term: 'Reaction API Telemetry',
+        definition: 'GitHub’s reaction system allows 8 distinct emoji reactions: thumbs up, thumbs down, laugh, hooray, confused, heart, rocket, and eyes.',
+        proTip: 'Reacting with a heart or celebratory emoji on community items encourages maintainers and builds contributor karma.',
+      },
+    ],
+    executionBlueprint: {
+      prepStep: 'Visit any public repository, pull request, or issue thread on GitHub.',
+      step1: {
+        title: 'Station 1: Find a Community Issue or PR',
+        codeSnippet: 'open https://github.com/<owner>/<repo>/issues/1',
+        cliExplanation: 'Navigate to an active open source discussion or release announcement.',
+        webAlternative: 'Open any issue or pull request in your browser.',
+      },
+      step2: {
+        title: 'Station 2: Add an Emoji Reaction',
+        codeSnippet: 'gh api --method POST /repos/<owner>/<repo>/issues/1/reactions -f content="heart"',
+        cliExplanation: 'Submit a reaction via GitHub CLI or click the smiley face icon in the top right of the comment.',
+        webAlternative: 'Click the smiley face icon and select the heart reaction.',
+      },
+      step3: {
+        title: 'Station 3: Engage in Constructive Discussion',
+        codeSnippet: '# Leave a polite note of appreciation or code feedback',
+        cliExplanation: 'Positive developer etiquette fosters long-term open-source retention.',
+        webAlternative: 'Add a helpful comment with your feedback or experience.',
+      },
+      webhookTriggerTime: 'Telemetry indexes within minutes of reaction submission.',
+    },
+    gotchas: [
+      'Avoid spamming reactions on thousands of threads in seconds; automated scripts can trigger GitHub abuse filters.',
+    ],
+    quiz: [
+      {
+        id: 'hs-1',
+        question: 'Why do open source maintainers prefer emoji reactions over "+1" comments?',
+        options: [
+          'Emoji reactions prevent spam notifications to all subscribed developers',
+          'Comments are not allowed on GitHub',
+          'Emojis load faster than text',
+          'Reactions are paid features'
+        ],
+        correctIndex: 0,
+        explanation: 'Reactions communicate agreement or gratitude without sending email notifications to dozens of watchers on the issue.',
+      },
+    ],
+  },
+  'open-sourcerer': {
+    badgeId: 'open-sourcerer',
+    badgeName: 'Open Sourcerer',
+    chapterNumber: '09',
+    badgeIcon: '/images/badges/open-sourcerer.png',
+    tagline: 'Contribute high-impact pull requests to top open-source projects.',
+    estimatedTime: '20 Minutes',
+    difficulty: 'Advanced',
+    industryContext: {
+      title: 'Upstream Contribution & Fork-and-Pull Architecture',
+      description: 'Major open source projects (like Kubernetes, VS Code, React, and Linux) rely on contributions from worldwide developers. Mastering the fork-and-pull workflow, rebasing, and CLA signing is the hallmark of a senior open-source engineer.',
+      realWorldExample: 'A developer identifies a performance bug in an open-source library, forks the repository, creates a reproducible test case, and submits a PR upstream.',
+    },
+    conceptsTaught: [
+      {
+        term: 'Upstream Remote Tracking',
+        definition: 'Configuring `git remote add upstream <url>` to pull updates from the original repository while developing on your fork.',
+        proTip: 'Always sync your fork with `git fetch upstream && git merge upstream/main` before opening a pull request.',
+      },
+      {
+        term: 'Contributor License Agreements (CLA)',
+        definition: 'A legal agreement signed by contributors to grant the project rights to distribute the code under its open source license.',
+        proTip: 'Most major foundations (Apache, Linux Foundation, CNCF) require automated CLA bot sign-offs on pull requests.',
+      },
+    ],
+    executionBlueprint: {
+      prepStep: 'Fork an active open source project to your personal account on github.com.',
+      step1: {
+        title: 'Station 1: Clone Fork & Add Upstream Remote',
+        codeSnippet: 'git clone https://github.com/<your-username>/<repo>.git\ncd <repo>\ngit remote add upstream https://github.com/<upstream-owner>/<repo>.git',
+        cliExplanation: 'Sets up dual remote tracking so you can pull the latest upstream commits at any time.',
+        webAlternative: 'Click "Fork" on the top right of the target repository on github.com.',
+      },
+      step2: {
+        title: 'Station 2: Implement Fix on Feature Branch',
+        codeSnippet: 'git switch -c fix/docs-typo-resolution\n# Edit files, run test suite\ngit commit -m "fix(docs): clarify getting-started configuration flags"\ngit push -u origin fix/docs-typo-resolution',
+        cliExplanation: 'Never commit directly to your fork’s main branch; always create an isolated feature branch.',
+        webAlternative: 'Use the web editor on your fork to make your changes on a new branch.',
+      },
+      step3: {
+        title: 'Station 3: Submit Upstream PR with Detailed Context',
+        codeSnippet: 'gh pr create --repo <upstream-owner>/<repo> --base main --head <your-username>:fix/docs-typo-resolution',
+        cliExplanation: 'Follow the repository’s CONTRIBUTING.md checklist and fill out the pull request template completely.',
+        webAlternative: 'Click "Contribute" -> "Open pull request" on your fork’s GitHub page.',
+      },
+      webhookTriggerTime: 'GitHub records the contribution upon upstream merge.',
+    },
+    gotchas: [
+      'Always check the repository CONTRIBUTING.md before submitting; many projects require opening an issue first.',
+      'Ensure all CI checks (linters, unit tests, code style) pass before requesting maintainer review.',
+    ],
+    quiz: [
+      {
+        id: 'os-1',
+        question: 'Why should you create a feature branch rather than committing directly to your fork’s main branch?',
+        options: [
+          'It isolates your work and allows you to submit multiple clean pull requests simultaneously',
+          'Git does not allow commits to main',
+          'Forked main branches cannot be merged',
+          'Main branches cannot run GitHub Actions'
+        ],
+        correctIndex: 0,
+        explanation: 'Feature branches keep changes decoupled, allowing maintainers to review one isolated feature at a time while your main stays in sync with upstream.',
+      },
+    ],
+  },
+  'arctic-code-vault': {
+    badgeId: 'arctic-code-vault',
+    badgeName: 'Arctic Code Vault Contributor',
+    chapterNumber: '10',
+    badgeIcon: '/images/badges/arctic-code-vault.png',
+    tagline: 'Preserve humanity’s open-source heritage in the Svalbard permafrost for 1,000 years.',
+    estimatedTime: 'Historical Milestone',
+    difficulty: 'Advanced',
+    industryContext: {
+      title: 'Digital Preservation & Long-Term Archival Systems',
+      description: 'In 2020, GitHub launched the Arctic Code Vault project. A snapshot of all active public repositories was captured on 02/02/2020 and etched onto 186 reels of hardened photographic film stored 250 meters deep in a decommissioned coal mine in Svalbard, Norway.',
+      realWorldExample: 'Humanity preserves essential software libraries, algorithms, operating systems, and documentation designed to survive catastrophic electromagnetic or digital failures for 1,000 years.',
+    },
+    conceptsTaught: [
+      {
+        term: 'Silver Halide Film Preservation',
+        definition: 'Micro-etched frames capable of enduring 1,000+ years without bit-rot, readable with a simple magnifying lens and light source.',
+        proTip: 'The vault contains a "Tech Tree" manual explaining computers, optics, and programming languages so future generations can read the data.',
+      },
+      {
+        term: 'Archival Heritage Badges',
+        definition: 'Special historical badges awarded to developers whose commits were included in the 02/02/2020 snapshot.',
+        proTip: 'This badge is a permanent historical milestone celebrating early pioneers of the open-source movement.',
+      },
+    ],
+    executionBlueprint: {
+      prepStep: 'Review the official GitHub Arctic Code Vault documentary and preservation manifest.',
+      step1: {
+        title: 'Station 1: Inspect Historical Commit Heritage',
+        codeSnippet: 'git log --before="2020-02-02" --oneline',
+        cliExplanation: 'Checks if your account made public commits prior to the snapshot date of February 2, 2020.',
+        webAlternative: 'Check your GitHub profile contribution graph for 2020 or earlier.',
+      },
+      step2: {
+        title: 'Station 2: Study Svalbard Vault Architecture',
+        codeSnippet: '# Read about Piql film, Svalbard permafrost, and the GitHub Archive Program',
+        cliExplanation: 'Learn how archival scientists engineered radiation-resistant storage in the Arctic circle.',
+        webAlternative: 'Visit archiveprogram.github.com to tour the 3D vault.',
+      },
+      step3: {
+        title: 'Station 3: Build Enduring Software for the Future',
+        codeSnippet: '# Write clean, documented, sustainable open-source software that outlasts trends',
+        cliExplanation: 'Future archival snapshots will continue preserving modern infrastructure.',
+        webAlternative: 'Ensure your current open-source repositories have open licenses and clear documentation.',
+      },
+      webhookTriggerTime: 'Historical milestone: Indexed for contributors included in the 2020 Svalbard archive snapshot.',
+    },
+    gotchas: [
+      'This is a historical milestone: only accounts with public repository commits prior to 02/02/2020 qualify for the retroactive badge.',
+    ],
+    quiz: [
+      {
+        id: 'acv-1',
+        question: 'Where is the GitHub Arctic Code Vault physically located?',
+        options: [
+          'Svalbard, Norway (inside an Arctic permafrost coal mine)',
+          'Underneath GitHub HQ in San Francisco',
+          'On the International Space Station',
+          'In a desert bunker in Nevada'
+        ],
+        correctIndex: 0,
+        explanation: 'The vault is located 250 meters deep in a decommissioned coal mine in Svalbard, Norway, protected by permafrost.',
+      },
+    ],
+  },
 };
+
 
