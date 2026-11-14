@@ -38,7 +38,8 @@ export interface GitGlowStoreState {
   toggleMission: (missionId: string) => void;
 
   // Owned Badges on GitHub Profile (auto-detected via scan or manually toggled)
-  userOwnedBadgeIds: string[];
+  manualOwnershipOverrides: Record<string, boolean>;
+  userOwnedBadgeIds?: string[];
   toggleBadgeOwnership: (badgeId: string) => void;
   isBadgeOwned: (badgeId: string) => boolean;
 
@@ -91,22 +92,11 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         set({ isScanning: true, scanError: null, targetUsername: clean });
         try {
           const analysis = await analyzeGitHubProfile(clean);
-          const detectedOwned: string[] = [];
-          if (analysis.quickdrawQualified) detectedOwned.push('quickdraw');
-          if (analysis.pullSharkTier !== 'None' || analysis.totalMergedPrs >= 2) detectedOwned.push('pull-shark');
-          if (analysis.badgeEvaluations) {
-            Object.entries(analysis.badgeEvaluations).forEach(([bId, ev]) => {
-              if (ev.isUnlocked && !detectedOwned.includes(bId)) {
-                detectedOwned.push(bId);
-              }
-            });
-          }
-          const mergedOwned = Array.from(new Set([...get().userOwnedBadgeIds, ...detectedOwned]));
           set({
             isScanning: false,
             scanAnalysis: analysis,
             scanError: null,
-            userOwnedBadgeIds: mergedOwned,
+            manualOwnershipOverrides: {},
           });
           return analysis;
         } catch (err: any) {
@@ -118,7 +108,7 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         }
       },
 
-      completedMissionIds: ['m1-quickdraw'],
+      completedMissionIds: [],
       markMissionCompleted: (missionId: string) => {
         const current = get().completedMissionIds;
         if (!current.includes(missionId)) {
@@ -134,22 +124,23 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         }
       },
 
-      userOwnedBadgeIds: ['quickdraw'],
+      manualOwnershipOverrides: {},
       toggleBadgeOwnership: (badgeId: string) => {
-        const current = get().userOwnedBadgeIds;
-        const isCurrentlyOwned = get().isBadgeOwned(badgeId);
-        if (isCurrentlyOwned) {
-          set({ userOwnedBadgeIds: current.filter((id) => id !== badgeId) });
-        } else {
-          set({ userOwnedBadgeIds: [...new Set([...current, badgeId])] });
-        }
+        const current = { ...get().manualOwnershipOverrides };
+        const currentlyOwned = get().isBadgeOwned(badgeId);
+        current[badgeId] = !currentlyOwned;
+        set({ manualOwnershipOverrides: current });
       },
       isBadgeOwned: (badgeId: string) => {
         const state = get();
-        if (state.userOwnedBadgeIds.includes(badgeId)) return true;
-        if (state.scanAnalysis?.badgeEvaluations[badgeId]?.isUnlocked) return true;
-        if (badgeId === 'quickdraw' && state.scanAnalysis?.quickdrawQualified) return true;
-        if (badgeId === 'pull-shark' && state.scanAnalysis && state.scanAnalysis.pullSharkTier !== 'None') return true;
+        // 1. Check manual user override
+        if (state.manualOwnershipOverrides[badgeId] !== undefined) {
+          return state.manualOwnershipOverrides[badgeId];
+        }
+        // 2. Check precise GitHub API evaluation
+        if (state.scanAnalysis?.badgeEvaluations[badgeId]) {
+          return state.scanAnalysis.badgeEvaluations[badgeId].isUnlocked;
+        }
         return false;
       },
 
@@ -223,7 +214,7 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
           scanError: null,
           scanAnalysis: null,
           completedMissionIds: [],
-          userOwnedBadgeIds: [],
+          manualOwnershipOverrides: {},
           badgeStepStatus: {},
           executionLogs: {},
           quizAnswers: {},
@@ -236,7 +227,7 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         targetUsername: state.targetUsername,
         testRepoName: state.testRepoName,
         completedMissionIds: state.completedMissionIds,
-        userOwnedBadgeIds: state.userOwnedBadgeIds,
+        manualOwnershipOverrides: state.manualOwnershipOverrides,
         badgeStepStatus: state.badgeStepStatus,
         scanAnalysis: state.scanAnalysis,
         quizAnswers: state.quizAnswers,

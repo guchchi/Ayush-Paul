@@ -42,6 +42,7 @@ export interface UserScanAnalysis {
     repository: string;
     merged_at: string;
   }>;
+  liveEarnedAchievements: string[];
   scannedAt: string;
 }
 
@@ -137,83 +138,112 @@ export async function analyzeGitHubProfile(username: string): Promise<UserScanAn
   else if (totalMergedPrs >= 16) pullSharkTier = 'Bronze (x2)';
   else if (totalMergedPrs >= 2) pullSharkTier = 'Default (Unlocked)';
 
+  // 3.5 Check Live Public GitHub Achievements Page (Ground Truth)
+  let liveEarnedAchievements: string[] = [];
+  try {
+    const liveRes = await fetch(`/api/gitglow/achievements/${encodeURIComponent(cleanHandle)}`);
+    if (liveRes.ok) {
+      const data = await liveRes.json();
+      if (Array.isArray(data.achievements)) {
+        liveEarnedAchievements = data.achievements;
+      }
+    }
+  } catch (err) {
+    console.warn('Live achievements check skipped:', err);
+  }
+
+  const hasQuickdraw = liveEarnedAchievements.includes('quickdraw') || quickdrawQualified;
+  const hasPullShark = liveEarnedAchievements.includes('pull-shark') || totalMergedPrs >= 2;
+  const hasYolo = liveEarnedAchievements.includes('yolo');
+  const hasPair = liveEarnedAchievements.includes('pair-extraordinaire');
+  const hasGalaxyBrain = liveEarnedAchievements.includes('galaxy-brain');
+  const hasStarstruck = liveEarnedAchievements.includes('starstruck');
+
   // 4. Construct Precise Evaluation Map
   const badgeEvaluations: Record<string, BadgeStatusEvaluation> = {
     quickdraw: {
       badgeId: 'quickdraw',
       name: 'Quickdraw',
-      isUnlocked: quickdrawQualified,
-      statusLabel: quickdrawQualified ? 'Already Earned' : 'Not Yet Earned',
-      progressPercent: quickdrawQualified ? 100 : 0,
-      currentValue: quickdrawQualified ? 1 : 0,
+      isUnlocked: hasQuickdraw,
+      statusLabel: hasQuickdraw ? 'Already Earned' : 'Not Yet Earned',
+      progressPercent: hasQuickdraw ? 100 : 0,
+      currentValue: hasQuickdraw ? 1 : 0,
       targetValue: 1,
-      detail: quickdrawQualified
-        ? `Verified! Found a closed issue resolved in ${quickdrawDurationSeconds}s (<300s window).`
+      detail: hasQuickdraw
+        ? `Verified! Found on your GitHub profile achievement tab${quickdrawDurationSeconds ? ` (resolved in ${quickdrawDurationSeconds}s)` : ''}.`
         : totalIssuesClosed > 0
         ? `Found ${totalIssuesClosed} closed issue(s), but none closed within the strict 5-minute (300s) window.`
         : 'No closed issues detected under your account.',
-      actionRecommendation: quickdrawQualified
+      actionRecommendation: hasQuickdraw
         ? 'Badge already awarded on your profile! You can still practice the fast triage workflow.'
         : 'Follow the 120-second Quickdraw blueprint: open an issue and close it in under 5 minutes.',
     },
     'pull-shark': {
       badgeId: 'pull-shark',
       name: 'Pull Shark',
-      isUnlocked: totalMergedPrs >= 2,
-      badgeLevel: pullSharkTier !== 'None' ? pullSharkTier : undefined,
-      statusLabel: totalMergedPrs >= 2 ? `Earned (${pullSharkTier})` : `${totalMergedPrs}/2 Merged PRs`,
-      progressPercent: Math.min(100, Math.round((totalMergedPrs / 2) * 100)),
+      isUnlocked: hasPullShark,
+      badgeLevel: pullSharkTier !== 'None' ? pullSharkTier : (hasPullShark ? 'Default (Unlocked)' : undefined),
+      statusLabel: hasPullShark ? `Earned (${pullSharkTier !== 'None' ? pullSharkTier : 'Default'})` : `${totalMergedPrs}/2 Merged PRs`,
+      progressPercent: hasPullShark ? 100 : Math.min(100, Math.round((totalMergedPrs / 2) * 100)),
       currentValue: totalMergedPrs,
       targetValue: 2,
-      detail: totalMergedPrs >= 2
-        ? `Qualified! You have ${totalMergedPrs} merged pull requests on GitHub (${pullSharkTier}).`
-        : `Needs ${2 - totalMergedPrs} more merged PR into default branch to unlock.`,
-      actionRecommendation: totalMergedPrs >= 2
+      detail: hasPullShark
+        ? `Qualified! Active on your GitHub profile with ${totalMergedPrs} merged PRs.`
+        : `Needs ${Math.max(0, 2 - totalMergedPrs)} more merged PR into default branch to unlock.`,
+      actionRecommendation: hasPullShark
         ? 'Aim for 16 merged PRs to unlock the Bronze (x2) tier badge border!'
         : 'Open and merge 2 PRs using our verified sandbox workflow or personal repo.',
     },
     yolo: {
       badgeId: 'yolo',
       name: 'YOLO',
-      isUnlocked: totalMergedPrs > 0, // Heuristic if user has direct merges
-      statusLabel: totalMergedPrs > 0 ? 'Achievable' : 'Needs 1st PR',
-      progressPercent: totalMergedPrs > 0 ? 100 : 25,
-      currentValue: totalMergedPrs > 0 ? 1 : 0,
+      isUnlocked: hasYolo,
+      statusLabel: hasYolo ? 'Already Earned' : 'Not Yet Earned',
+      progressPercent: hasYolo ? 100 : 0,
+      currentValue: hasYolo ? 1 : 0,
       targetValue: 1,
-      detail: 'Merge a pull request without code review on a collaborative repo.',
-      actionRecommendation: 'Merge a PR directly on your repo without assigning reviewers.',
+      detail: hasYolo
+        ? 'Verified! YOLO achievement is active on your GitHub profile.'
+        : 'Requires merging a pull request without code review on a collaborative repo.',
+      actionRecommendation: 'Merge a PR directly without assigning reviewers to qualify.',
     },
     'pair-extraordinaire': {
       badgeId: 'pair-extraordinaire',
       name: 'Pair Extraordinaire',
-      isUnlocked: false,
-      statusLabel: 'Co-Authoring Required',
-      progressPercent: 15,
-      currentValue: 0,
+      isUnlocked: hasPair,
+      statusLabel: hasPair ? 'Already Earned' : 'Co-Authoring Required',
+      progressPercent: hasPair ? 100 : 0,
+      currentValue: hasPair ? 1 : 0,
       targetValue: 1,
-      detail: 'Requires an RFC Git trailer: "Co-authored-by: Name <email>" in a merged commit.',
+      detail: hasPair
+        ? 'Verified! Pair Extraordinaire is active on your GitHub profile.'
+        : 'Requires an RFC Git trailer: "Co-authored-by: Name <email>" in a merged commit.',
       actionRecommendation: 'Follow the Pair Extraordinaire blueprint to craft an authentic co-authored commit.',
     },
     'galaxy-brain': {
       badgeId: 'galaxy-brain',
       name: 'Galaxy Brain',
-      isUnlocked: false,
-      statusLabel: 'Discussions Needed',
-      progressPercent: 10,
-      currentValue: 0,
+      isUnlocked: hasGalaxyBrain,
+      statusLabel: hasGalaxyBrain ? 'Already Earned' : 'Discussions Needed',
+      progressPercent: hasGalaxyBrain ? 100 : 0,
+      currentValue: hasGalaxyBrain ? 1 : 0,
       targetValue: 2,
-      detail: 'Requires 2+ accepted answers in GitHub Discussions on public repositories.',
+      detail: hasGalaxyBrain
+        ? 'Verified! Galaxy Brain is active on your GitHub profile.'
+        : 'Requires 2+ accepted answers in GitHub Discussions on public repositories.',
       actionRecommendation: 'Answer community questions in repositories with GitHub Discussions enabled.',
     },
     starstruck: {
       badgeId: 'starstruck',
       name: 'Starstruck',
-      isUnlocked: user.public_repos >= 1,
-      statusLabel: user.public_repos >= 1 ? 'Repository Ready' : 'Needs Public Repo',
-      progressPercent: Math.min(100, Math.round((user.public_repos / 1) * 50)),
-      currentValue: user.public_repos,
+      isUnlocked: hasStarstruck,
+      statusLabel: hasStarstruck ? 'Already Earned' : '16 Stars Required',
+      progressPercent: hasStarstruck ? 100 : 0,
+      currentValue: hasStarstruck ? 16 : 0,
       targetValue: 16,
-      detail: 'Requires 16 stars on your public repositories.',
+      detail: hasStarstruck
+        ? 'Verified! Starstruck is active on your GitHub profile.'
+        : 'Requires 16 stars across your public repositories.',
       actionRecommendation: 'Publish useful projects and showcase them to earn genuine community stars.',
     },
   };
@@ -222,11 +252,12 @@ export async function analyzeGitHubProfile(username: string): Promise<UserScanAn
     user,
     totalMergedPrs,
     totalIssuesClosed,
-    quickdrawQualified,
+    quickdrawQualified: hasQuickdraw,
     quickdrawDurationSeconds,
     pullSharkTier,
     badgeEvaluations,
     recentMergedPrs,
+    liveEarnedAchievements,
     scannedAt: new Date().toISOString(),
   };
 }

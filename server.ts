@@ -483,6 +483,29 @@ async function startServer() {
     }
   });
 
+  // GitGlow Live GitHub Achievements Scanner (Ground Truth)
+  app.get("/api/gitglow/achievements/:username", async (req, res) => {
+    try {
+      const { username } = req.params;
+      const clean = username.trim().replace(/^@/, "");
+      const ghRes = await fetch(`https://github.com/${encodeURIComponent(clean)}?tab=achievements`, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "Accept": "text/html,application/xhtml+xml",
+        },
+      });
+      if (!ghRes.ok) {
+        return res.status(ghRes.status).json({ achievements: [] });
+      }
+      const html = await ghRes.text();
+      const matches = Array.from(html.matchAll(/data-achievement-slug="([^"]+)"/g)).map((m) => m[1]);
+      const unique = Array.from(new Set(matches));
+      res.json({ username: clean, achievements: unique });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message, achievements: [] });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
