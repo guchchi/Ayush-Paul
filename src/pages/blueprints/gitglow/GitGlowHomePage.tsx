@@ -1138,6 +1138,20 @@ export const GitGlowHomePage: React.FC = () => {
     executeRealProfileScan(usernameInput);
   };
 
+  // Re-sync achievements ground truth if scan is stale/legacy
+  useEffect(() => {
+    const isStale =
+      !scanAnalysis ||
+      !Array.isArray(scanAnalysis.liveEarnedAchievements) ||
+      !scanAnalysis.scannedAt ||
+      Date.now() - new Date(scanAnalysis.scannedAt).getTime() > 10 * 60 * 1000;
+
+    const user = targetUsername || 'guchchi';
+    if (isStale && user) {
+      executeRealProfileScan(user);
+    }
+  }, [targetUsername]);
+
   const handleCopy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     setCopiedSnippet(label);

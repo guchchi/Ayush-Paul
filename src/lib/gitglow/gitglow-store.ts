@@ -63,6 +63,53 @@ export interface GitGlowStoreState {
 
 const DEFAULT_REPO_NAME = 'gitglow-practice-sandbox';
 
+/**
+ * Strips legacy false-positive evaluations from cached or stale scans.
+ * Ensures badges like YOLO and Starstruck are only marked unlocked if they
+ * are verified on the live achievements tab of GitHub.
+ */
+export function sanitizeScanAnalysis(analysis: UserScanAnalysis | null): UserScanAnalysis | null {
+  if (!analysis) return null;
+  const live = Array.isArray(analysis.liveEarnedAchievements) ? analysis.liveEarnedAchievements : [];
+  const sanitizedEvals = { ...analysis.badgeEvaluations };
+
+  const strictLiveBadges = [
+    'yolo',
+    'starstruck',
+    'galaxy-brain',
+    'pair-extraordinaire',
+    'public-sponsor',
+    'heart-on-your-sleeve',
+    'open-sourcerer',
+    'arctic-code-vault',
+  ];
+
+  strictLiveBadges.forEach((id) => {
+    if (sanitizedEvals[id] && !live.includes(id)) {
+      sanitizedEvals[id] = {
+        ...sanitizedEvals[id],
+        isUnlocked: false,
+        statusLabel:
+          id === 'starstruck'
+            ? '16 Stars Required'
+            : id === 'yolo'
+            ? 'Not Yet Earned'
+            : id === 'galaxy-brain'
+            ? 'Discussions Needed'
+            : id === 'pair-extraordinaire'
+            ? 'Co-Authoring Required'
+            : 'Not Yet Earned',
+        progressPercent: 0,
+      };
+    }
+  });
+
+  return {
+    ...analysis,
+    badgeEvaluations: sanitizedEvals,
+  };
+}
+
 export const useGitGlowStore = create<GitGlowStoreState>()(
   persist(
     (set, get) => ({
@@ -91,7 +138,8 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         const clean = username.trim().replace(/^@/, '') || get().targetUsername || 'developer';
         set({ isScanning: true, scanError: null, targetUsername: clean });
         try {
-          const analysis = await analyzeGitHubProfile(clean);
+          const rawAnalysis = await analyzeGitHubProfile(clean);
+          const analysis = sanitizeScanAnalysis(rawAnalysis);
           set({
             isScanning: false,
             scanAnalysis: analysis,
@@ -137,10 +185,49 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         if (state.manualOwnershipOverrides[badgeId] !== undefined) {
           return state.manualOwnershipOverrides[badgeId];
         }
-        // 2. Check precise GitHub API evaluation
-        if (state.scanAnalysis?.badgeEvaluations[badgeId]) {
-          return state.scanAnalysis.badgeEvaluations[badgeId].isUnlocked;
+
+        // 2. Check precise live GitHub achievements & verified metrics
+        const analysis = state.scanAnalysis;
+        if (analysis) {
+          const live = Array.isArray(analysis.liveEarnedAchievements)
+            ? analysis.liveEarnedAchievements
+            : [];
+
+          // Direct match against live GitHub achievements tab
+          if (live.includes(badgeId)) {
+            return true;
+          }
+          if (badgeId === 'arctic-code-vault' && live.includes('arctic-code-vault-contributor')) {
+            return true;
+          }
+
+          // Strict ground-truth badges: if not on GitHub achievements tab, they are NOT owned
+          const strictBadges = [
+            'yolo',
+            'starstruck',
+            'galaxy-brain',
+            'pair-extraordinaire',
+            'public-sponsor',
+            'heart-on-your-sleeve',
+            'open-sourcerer',
+            'arctic-code-vault',
+          ];
+          if (strictBadges.includes(badgeId)) {
+            return false;
+          }
+
+          // For Quickdraw and Pull Shark: allow verified metrics fallback if present
+          if (badgeId === 'pull-shark') {
+            return analysis.totalMergedPrs >= 2 || live.includes('pull-shark');
+          }
+          if (badgeId === 'quickdraw') {
+            return Boolean(analysis.quickdrawQualified) || live.includes('quickdraw');
+          }
+
+          // Otherwise consult sanitized evaluation
+          return Boolean(analysis.badgeEvaluations?.[badgeId]?.isUnlocked);
         }
+
         return false;
       },
 
@@ -223,13 +310,25 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
     }),
     {
       name: 'gitglow-user-progress',
+      version: 4,
+      migrate: (persistedState: any, version: number) => {
+        // Invalidate stale/legacy scanAnalysis and manual overrides
+        if (!version || version < 4) {
+          return {
+            ...persistedState,
+            scanAnalysis: null,
+            manualOwnershipOverrides: {},
+          };
+        }
+        return persistedState;
+      },
       partialize: (state) => ({
         targetUsername: state.targetUsername,
         testRepoName: state.testRepoName,
         completedMissionIds: state.completedMissionIds,
         manualOwnershipOverrides: state.manualOwnershipOverrides,
         badgeStepStatus: state.badgeStepStatus,
-        scanAnalysis: state.scanAnalysis,
+        scanAnalysis: sanitizeScanAnalysis(state.scanAnalysis),
         quizAnswers: state.quizAnswers,
         connectedUser: state.connectedUser,
       }),

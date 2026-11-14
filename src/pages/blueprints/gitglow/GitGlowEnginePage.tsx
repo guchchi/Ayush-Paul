@@ -72,12 +72,19 @@ export const GitGlowEnginePage: React.FC = () => {
     setSearchParams({ badge: badgeId });
   };
 
-  // Run initial scan on mount if not scanned yet
+  // Run initial scan on mount if not scanned yet or if scan is legacy/stale
   useEffect(() => {
-    if (!scanAnalysis && targetUsername) {
-      runScan(targetUsername);
+    const isLegacyOrStale =
+      !scanAnalysis ||
+      !Array.isArray(scanAnalysis.liveEarnedAchievements) ||
+      !scanAnalysis.scannedAt ||
+      Date.now() - new Date(scanAnalysis.scannedAt).getTime() > 10 * 60 * 1000;
+
+    const userToScan = connectedUser?.githubUsername || targetUsername || 'guchchi';
+    if (isLegacyOrStale && userToScan) {
+      runScan(userToScan);
     }
-  }, []);
+  }, [connectedUser?.githubUsername, targetUsername]);
 
   // Simulate local execution pipeline for non-interactive badges
   const runSimulatedAutomation = async () => {
@@ -163,7 +170,7 @@ export const GitGlowEnginePage: React.FC = () => {
               Badge Catalog
             </span>
             <span className="text-xs font-bold text-[#84CC16]">
-              {completedMissionIds.length} Unlocked
+              {GITHUB_BADGES.filter((b) => isBadgeOwned(b.id)).length} / {GITHUB_BADGES.length} Owned
             </span>
           </div>
 
@@ -221,8 +228,6 @@ export const GitGlowEnginePage: React.FC = () => {
                       <Check size={11} strokeWidth={3} />
                       <span className="hidden sm:inline">YOU HAVE</span>
                     </span>
-                  ) : evalData?.isUnlocked ? (
-                    <CheckCircle2 size={16} className="text-[#84CC16] shrink-0" />
                   ) : (
                     <span className="text-[10px] font-mono font-bold text-[#65666A]">
                       {evalData?.progressPercent ? `${evalData.progressPercent}%` : 'Ready'}
