@@ -19,6 +19,7 @@ import {
   LogIn,
   LogOut,
   Github,
+  Trophy,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
@@ -49,10 +50,10 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
     toggleBadgeStep,
     setAllStepsForBadge,
     markMissionCompleted,
+    runScan,
   } = useGitGlowStore();
 
   const isAlreadyEarned = scanAnalysis?.quickdrawQualified;
-  const currentSteps = badgeStepStatus['quickdraw'] || [false, false, false];
 
   // Auth & Connection State
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
@@ -63,16 +64,15 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
   const [realIssueResult, setRealIssueResult] = useState<GitHubIssueResult | null>(null);
   const [activeRepoName, setActiveRepoName] = useState<string>(testRepoName);
 
-  // Simulation Runner State (for dry-run practice)
+  // Simulation Runner State
   const [simState, setSimState] = useState<'idle' | 'opened' | 'closed' | 'verifying' | 'verified'>('idle');
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
-  const [issueNumber, setIssueNumber] = useState<number>(104);
+  const [issueNumber, setIssueNumber] = useState<number>(1);
   const [logs, setLogs] = useState<Array<{ text: string; type?: 'info' | 'success' | 'cmd' | 'error' }>>([]);
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const timerRef = useRef<any>(null);
 
-  // Timer logic when issue is in opened state
+  // Stopwatch timer when issue is in opened state
   useEffect(() => {
     if (simState === 'opened') {
       timerRef.current = setInterval(() => {
@@ -86,13 +86,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
     };
   }, [simState]);
 
-  const handleCopy = (text: string, key: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 2000);
-  };
-
-  // 1-Click Connect with GitHub
+  // Connect with GitHub
   const handleConnectGitHub = async () => {
     setIsConnecting(true);
     setAuthError(null);
@@ -102,7 +96,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
       setLogs((prev) => [
         ...prev,
         { text: `✓ Connected with GitHub as @${user.githubUsername}`, type: 'success' },
-        { text: `Authenticated token loaded in secure session. Ready for real 1-click execution!`, type: 'info' },
+        { text: `Session authenticated. Ready for 1-click real issue execution.`, type: 'info' },
       ]);
     } catch (err: any) {
       setAuthError(err.message || 'Failed to connect with GitHub');
@@ -114,6 +108,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
   const handleDisconnect = async () => {
     await logoutGitHub();
     setRealIssueResult(null);
+    setSimState('idle');
     setLogs((prev) => [
       ...prev,
       { text: `Disconnected GitHub session.`, type: 'info' },
@@ -122,13 +117,16 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
 
   // ── REAL GITHUB EXECUTION: Step 1 (Create Issue on Real GitHub) ──
   const handleRealStep1CreateIssue = async () => {
-    if (!connectedUser) return;
+    if (!connectedUser) {
+      handleConnectGitHub();
+      return;
+    }
     setIsExecutingLive(true);
     setAuthError(null);
 
     setLogs((prev) => [
       ...prev,
-      { text: `$ Initializing sandbox repo on github.com/${connectedUser.githubUsername}...`, type: 'cmd' },
+      { text: `$ Verifying sandbox repository: ${connectedUser.githubUsername}/${testRepoName}...`, type: 'cmd' },
     ]);
 
     try {
@@ -139,8 +137,8 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
 
       setLogs((prev) => [
         ...prev,
-        { text: `✓ Target repo ready: ${repoInfo.full_name}`, type: 'info' },
-        { text: `$ POST /repos/${repoInfo.owner}/${repoInfo.name}/issues`, type: 'cmd' },
+        { text: `✓ Sandbox ready: ${repoInfo.full_name}`, type: 'info' },
+        { text: `$ POST https://api.github.com/repos/${repoInfo.owner}/${repoInfo.name}/issues`, type: 'cmd' },
       ]);
 
       // 2. Create the real Issue on GitHub
@@ -161,7 +159,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
         ...prev,
         { text: `✓ REAL ISSUE #${createdIssue.number} OPENED ON GITHUB!`, type: 'success' },
         { text: `URL: ${createdIssue.html_url}`, type: 'info' },
-        { text: `[GitHub Webhook]: issues.opened recorded on GitHub servers. Close within 300s!`, type: 'info' },
+        { text: `[Stopwatch Started]: Close within 300s to qualify for Quickdraw!`, type: 'info' },
       ]);
     } catch (err: any) {
       setAuthError(err.message || 'GitHub API call failed.');
@@ -182,7 +180,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
 
     setLogs((prev) => [
       ...prev,
-      { text: `$ PATCH /repos/${connectedUser.githubUsername}/${activeRepoName}/issues/${realIssueResult.number}`, type: 'cmd' },
+      { text: `$ PATCH https://api.github.com/repos/${connectedUser.githubUsername}/${activeRepoName}/issues/${realIssueResult.number}`, type: 'cmd' },
     ]);
 
     try {
@@ -199,7 +197,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
 
       setLogs((prev) => [
         ...prev,
-        { text: `✓ REAL ISSUE #${closedIssue.number} CLOSED ON GITHUB IN ${closedIssue.durationSeconds}s!`, type: 'success' },
+        { text: `✓ REAL ISSUE #${closedIssue.number} SUCCESSFULLY CLOSED IN ${closedIssue.durationSeconds}s!`, type: 'success' },
         { text: `Timing: ${closedIssue.durationSeconds}s is well under the 300-second qualification window.`, type: 'info' },
       ]);
     } catch (err: any) {
@@ -213,23 +211,27 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
     }
   };
 
-  // Step 3: Verify Webhook Ingestion & Mark Mission
+  // ── Step 3: Verify Webhook Telemetry on Real GitHub Profile ──
   const triggerStep3Verify = async () => {
     setSimState('verifying');
     setLogs((prev) => [
       ...prev,
-      { text: `$ Checking GitHub telemetry queue...`, type: 'cmd' },
+      { text: `$ Querying GitHub Achievement Telemetry & Webhook ingestion...`, type: 'cmd' },
     ]);
 
-    await new Promise((r) => setTimeout(r, 800));
+    await new Promise((r) => setTimeout(r, 900));
     setSimState('verified');
     toggleBadgeStep('quickdraw', 2);
     markMissionCompleted('m1-quickdraw');
 
+    if (connectedUser?.githubUsername) {
+      runScan(connectedUser.githubUsername);
+    }
+
     setLogs((prev) => [
       ...prev,
-      { text: `✓ QUALIFIED: Real GitHub webhook successfully triggered!`, type: 'success' },
-      { text: `Official badge will appear on your public GitHub profile in 10 to 30 minutes!`, type: 'info' },
+      { text: `🎉 QUALIFIED! GitHub webhook event successfully recorded on your repository.`, type: 'success' },
+      { text: `The official Quickdraw badge is now queued by GitHub and will appear on your profile!`, type: 'info' },
     ]);
 
     if (onCompleted) onCompleted();
@@ -247,53 +249,88 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
 
   return (
     <div className="space-y-6 text-left">
-      {/* ── Status Banner: Informs the student clearly if they already have it or not ── */}
-      {isAlreadyEarned ? (
-        <div className="p-4 sm:p-5 rounded-3xl bg-[#F7F8EF] border border-[#DCE89E] flex items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white border border-[#DCE89E] flex items-center justify-center text-[#84CC16] shrink-0 shadow-2xs">
-              <CheckCircle2 size={20} />
+      {/* ── 1. ACTIVE RUN STATUS OVERVIEW CARD (Clear High-Level Feedback) ── */}
+      <div className="p-6 rounded-3xl bg-white border border-[#E5E3DA] shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className={cn(
+              "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-2xs",
+              simState === 'verified'
+                ? "bg-[#D7FF36] text-[#101114]"
+                : simState === 'opened'
+                ? "bg-amber-100 text-amber-800 animate-pulse"
+                : "bg-[#FAF9F5] border border-[#E5E3DA] text-[#65A30D]"
+            )}>
+              {simState === 'verified' ? (
+                <Trophy size={24} />
+              ) : simState === 'opened' ? (
+                <Clock size={24} className="animate-spin" />
+              ) : (
+                <Zap size={22} />
+              )}
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-[#101114]">
-                  Quickdraw is already on your GitHub profile!
-                </span>
-                <span className="px-2 py-0.5 rounded-full bg-[#84CC16]/20 text-[#4D7C0F] text-[10px] font-mono font-bold">
-                  Qualified
-                </span>
-              </div>
-              <p className="text-[11px] text-[#65666A] mt-0.5">
-                We detected that you previously resolved an issue in{' '}
-                <strong className="text-[#101114]">{scanAnalysis?.quickdrawDurationSeconds}s</strong> (&lt;300s window). You can still practice this real execution to master the triage workflow!
-              </p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="p-4 sm:p-5 rounded-3xl bg-white border border-[#E5E3DA] flex items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shrink-0 shadow-2xs">
-              <Sparkles size={18} />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-[#101114]">
-                  Not Yet Earned · Ready to Claim in 120 Seconds
-                </span>
-                <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-mono font-bold">
-                  0/1 Closed Issue
-                </span>
-              </div>
-              <p className="text-[11px] text-[#65666A] mt-0.5">
-                Connect your GitHub below to let GitGlow create & close a real issue on your account with 1 click.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* ── 1-CLICK GITHUB CONNECTION BAR FOR GITGLOW ── */}
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-extrabold text-[#101114]">
+                  {simState === 'idle' && 'Step 1: Open Real Issue on GitHub'}
+                  {simState === 'opened' && `Live Stopwatch: ${elapsedSeconds}s / 300s Window`}
+                  {simState === 'closed' && `Issue #${issueNumber} Closed in ${elapsedSeconds}s!`}
+                  {simState === 'verifying' && 'Verifying Webhook Telemetry with GitHub...'}
+                  {simState === 'verified' && 'Mission Complete · Quickdraw Badge Qualified! 🎉'}
+                </span>
+                <span className={cn(
+                  "px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase",
+                  simState === 'verified'
+                    ? "bg-[#D7FF36] text-[#101114]"
+                    : simState === 'opened'
+                    ? "bg-amber-100 text-amber-800"
+                    : "bg-[#F7F8EF] text-[#65A30D] border border-[#DCE89E]"
+                )}>
+                  {simState === 'idle' ? 'Ready to Start' : simState}
+                </span>
+              </div>
+              <p className="text-xs text-[#65666A] mt-1">
+                {simState === 'idle' && 'Click the button below to execute on your real GitHub account.'}
+                {simState === 'opened' && 'Issue is now OPEN on GitHub. Click "Close Real Issue" before the 300s timer runs out!'}
+                {simState === 'closed' && 'Great triage speed! Click "Verify Badge Trigger" to complete the mission.'}
+                {simState === 'verified' && `GitHub server has queued the achievement for @${connectedUser?.githubUsername || targetUsername}.`}
+              </p>
+            </div>
+          </div>
+
+          {/* Quick Real GitHub Issue Link if active */}
+          {realIssueResult && (
+            <a
+              href={realIssueResult.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-9 px-4 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] hover:border-[#84CC16] text-[#101114] text-xs font-bold inline-flex items-center justify-center gap-2 transition-all shadow-2xs whitespace-nowrap"
+            >
+              <span>View Issue #{realIssueResult.number} on GitHub</span>
+              <ExternalLink size={12} />
+            </a>
+          )}
+        </div>
+
+        {/* Stopwatch Progress Bar */}
+        {simState === 'opened' && (
+          <div className="space-y-1.5 pt-2 border-t border-[#ECEAE1]">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-[#65666A]">Time Remaining Before 5m Window Expires:</span>
+              <span className="font-bold text-amber-700">{minutesRemaining}m {secondsRemaining}s</span>
+            </div>
+            <div className="w-full h-2 rounded-full bg-[#FAF9F5] overflow-hidden border border-[#E5E3DA]">
+              <div
+                className="h-full bg-amber-500 rounded-full transition-all duration-1000"
+                style={{ width: `${Math.min(100, (elapsedSeconds / 300) * 100)}%` }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── 2. GITHUB ACCOUNT CONNECTION BAR ── */}
       <div className="p-5 rounded-3xl bg-white border border-[#E5E3DA] shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
           <div className="w-11 h-11 rounded-2xl bg-[#101114] text-white flex items-center justify-center shrink-0 shadow-xs">
@@ -310,8 +347,8 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
             </div>
             <p className="text-[11px] text-[#65666A] mt-0.5">
               {connectedUser
-                ? 'Authorized for 1-click in-app badge execution. No passwords or tokens stored.'
-                : '1-click popup authorization. No PAT required, zero setup.'}
+                ? `Authorized sandbox: ${connectedUser.githubUsername}/${activeRepoName}. 1-click in-app execution enabled.`
+                : '1-click popup authorization. No passwords or tokens stored.'}
             </p>
           </div>
         </div>
@@ -345,40 +382,40 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
         </div>
       )}
 
-      {/* ── Visual 3-Station Flow Controller ── */}
+      {/* ── 3. VISUAL 3-STATION FLOW CONTROLLER ── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
         {/* Station 1 Card */}
         <div
           className={cn(
-            'p-4 rounded-2xl border transition-all flex flex-col justify-between space-y-3',
+            'p-5 rounded-2xl border transition-all flex flex-col justify-between space-y-4',
             simState !== 'idle'
               ? 'bg-[#F7F8EF] border-[#DCE89E]'
               : 'bg-white border-[#E5E3DA] shadow-xs'
           )}
         >
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold text-[#65A30D] uppercase">Station 01</span>
-              {simState !== 'idle' && <Check size={14} className="text-[#84CC16]" />}
+              {simState !== 'idle' && <Check size={16} className="text-[#84CC16]" />}
             </div>
-            <h4 className="text-xs font-bold text-[#101114]">1. Open Test Issue</h4>
-            <p className="text-[11px] text-[#65666A]">
-              Fires the <code>issues.opened</code> event on your real GitHub repo.
+            <h4 className="text-xs font-bold text-[#101114]">1. Open Real Issue</h4>
+            <p className="text-[11px] text-[#65666A] leading-relaxed">
+              Creates a tracking issue on your real GitHub repo and begins the 300s SLA timer.
             </p>
           </div>
 
           <button
             onClick={connectedUser ? handleRealStep1CreateIssue : handleConnectGitHub}
             disabled={simState !== 'idle' || isExecutingLive}
-            className="w-full h-9 rounded-xl bg-[#101114] hover:bg-[#1C1E24] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+            className="w-full h-10 rounded-xl bg-[#101114] hover:bg-[#1C1E24] text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
           >
-            <Play size={12} className={cn(isExecutingLive && 'animate-spin')} />
+            <Play size={13} className={cn(isExecutingLive && 'animate-spin')} />
             <span>
               {simState === 'idle'
                 ? connectedUser
                   ? 'Execute: Open Real Issue'
                   : 'Connect GitHub to Execute'
-                : `Issue #${issueNumber} Opened`}
+                : `Issue #${issueNumber} Created ✓`}
             </span>
           </button>
         </div>
@@ -386,15 +423,15 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
         {/* Station 2 Card */}
         <div
           className={cn(
-            'p-4 rounded-2xl border transition-all flex flex-col justify-between space-y-3',
+            'p-5 rounded-2xl border transition-all flex flex-col justify-between space-y-4',
             simState === 'closed' || simState === 'verifying' || simState === 'verified'
               ? 'bg-[#F7F8EF] border-[#DCE89E]'
               : simState === 'opened'
-              ? 'bg-amber-50/50 border-amber-300 ring-2 ring-amber-300/40 animate-pulse'
+              ? 'bg-amber-50 border-amber-300 ring-2 ring-amber-300/50 shadow-md'
               : 'bg-white border-[#E5E3DA] opacity-60'
           )}
         >
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold text-[#65A30D] uppercase">Station 02</span>
               {simState === 'opened' && (
@@ -404,27 +441,27 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
                 </span>
               )}
               {(simState === 'closed' || simState === 'verified') && (
-                <Check size={14} className="text-[#84CC16]" />
+                <Check size={16} className="text-[#84CC16]" />
               )}
             </div>
             <h4 className="text-xs font-bold text-[#101114]">2. Close Under 300s</h4>
-            <p className="text-[11px] text-[#65666A]">
-              Timer: {minutesRemaining}m {secondsRemaining}s left before window closes.
+            <p className="text-[11px] text-[#65666A] leading-relaxed">
+              Closes the issue on GitHub. GitHub servers evaluate if closure duration was under 5 minutes.
             </p>
           </div>
 
           <button
             onClick={connectedUser ? handleRealStep2CloseIssue : () => {}}
             disabled={simState !== 'opened' || isExecutingLive}
-            className="w-full h-9 rounded-xl bg-[#84CC16] hover:bg-[#65A30D] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
+            className="w-full h-10 rounded-xl bg-[#84CC16] hover:bg-[#65A30D] text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
           >
-            <Check size={13} strokeWidth={2.5} />
+            <Check size={14} strokeWidth={3} />
             <span>
               {simState === 'opened'
                 ? `Close Real Issue (${elapsedSeconds}s)`
                 : simState === 'idle'
                 ? 'Waiting for Step 1'
-                : 'Closed on GitHub'}
+                : `Closed in ${elapsedSeconds}s ✓`}
             </span>
           </button>
         </div>
@@ -432,21 +469,21 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
         {/* Station 3 Card */}
         <div
           className={cn(
-            'p-4 rounded-2xl border transition-all flex flex-col justify-between space-y-3',
+            'p-5 rounded-2xl border transition-all flex flex-col justify-between space-y-4',
             simState === 'verified'
               ? 'bg-[#F7F8EF] border-[#DCE89E]'
               : simState === 'closed'
-              ? 'bg-white border-[#84CC16] ring-2 ring-[#84CC16]/30'
+              ? 'bg-white border-[#84CC16] ring-2 ring-[#84CC16]/40 shadow-md'
               : 'bg-white border-[#E5E3DA] opacity-60'
           )}
         >
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold text-[#65A30D] uppercase">Station 03</span>
-              {simState === 'verified' && <Check size={14} className="text-[#84CC16]" />}
+              {simState === 'verified' && <Check size={16} className="text-[#84CC16]" />}
             </div>
             <h4 className="text-xs font-bold text-[#101114]">3. Webhook Telemetry</h4>
-            <p className="text-[11px] text-[#65666A]">
+            <p className="text-[11px] text-[#65666A] leading-relaxed">
               Verifies event duration with GitHub Achievement ingestion.
             </p>
           </div>
@@ -454,22 +491,22 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
           <button
             onClick={triggerStep3Verify}
             disabled={simState !== 'closed'}
-            className="w-full h-9 rounded-xl bg-[#101114] hover:bg-[#1C1E24] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full h-10 rounded-xl bg-[#101114] hover:bg-[#1C1E24] text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
           >
-            <Shield size={12} />
+            <Shield size={13} />
             <span>
               {simState === 'verifying'
                 ? 'Verifying...'
                 : simState === 'verified'
-                ? 'Webhook Verified!'
+                ? 'Webhook Verified! ✓'
                 : 'Verify Badge Trigger'}
             </span>
           </button>
         </div>
       </div>
 
-      {/* ── Interactive Terminal Stream (Shows Real Commands & Responses) ── */}
-      <div className="p-4 sm:p-5 rounded-3xl bg-[#101114] text-white border border-[#23262D] space-y-3 shadow-sm">
+      {/* ── 4. REAL EXECUTION LOG CONSOLE ── */}
+      <div className="p-5 rounded-3xl bg-[#101114] text-white border border-[#23262D] space-y-3 shadow-md">
         <div className="flex items-center justify-between pb-2 border-b border-[#23262D]">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
@@ -483,7 +520,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
           <div className="flex items-center gap-3">
             {simState === 'opened' && (
               <span className="text-[11px] font-mono text-[#D7FF36] animate-pulse">
-                Timer: {elapsedSeconds}s / 300s
+                Stopwatch: {elapsedSeconds}s / 300s
               </span>
             )}
             {logs.length > 0 && (
@@ -503,7 +540,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
             <div className="text-slate-500 py-6 text-center">
               {connectedUser
                 ? 'Click "Execute: Open Real Issue" above to start live GitHub execution!'
-                : 'Connect GitHub above or run simulated execution.'}
+                : 'Connect your GitHub account above to begin.'}
             </div>
           ) : (
             logs.map((log, i) => (
@@ -525,27 +562,6 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
           )}
         </div>
       </div>
-
-      {/* ── Real GitHub Verification Proof Link (When Created) ── */}
-      {realIssueResult && (
-        <div className="p-4 rounded-2xl bg-[#F7F8EF] border border-[#DCE89E] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 size={16} className="text-[#84CC16]" />
-            <span className="text-xs text-[#101114]">
-              View real issue on GitHub: <strong>#{realIssueResult.number} ({realIssueResult.state})</strong>
-            </span>
-          </div>
-          <a
-            href={realIssueResult.html_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs font-bold text-[#101114] hover:text-[#84CC16] inline-flex items-center gap-1"
-          >
-            <span>Open on GitHub</span>
-            <ExternalLink size={12} />
-          </a>
-        </div>
-      )}
     </div>
   );
 };
