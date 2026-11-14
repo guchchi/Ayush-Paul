@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { UserScanAnalysis, analyzeGitHubProfile } from './gitglow-api';
+import { GitGlowConnectedUser, getSavedGitGlowSession, disconnectGitGlowSession } from './gitglow-auth';
 
 export interface CommandStationStep {
   id: string;
@@ -14,6 +15,11 @@ export interface CommandStationStep {
 }
 
 export interface GitGlowStoreState {
+  // Connected GitHub User (for real in-app execution)
+  connectedUser: GitGlowConnectedUser | null;
+  setConnectedUser: (user: GitGlowConnectedUser | null) => void;
+  logoutGitHub: () => Promise<void>;
+
   // Current user handle being targeted
   targetUsername: string;
   testRepoName: string;
@@ -54,6 +60,18 @@ const DEFAULT_REPO_NAME = 'gitglow-practice-sandbox';
 export const useGitGlowStore = create<GitGlowStoreState>()(
   persist(
     (set, get) => ({
+      connectedUser: getSavedGitGlowSession(),
+      setConnectedUser: (user: GitGlowConnectedUser | null) => {
+        set({
+          connectedUser: user,
+          targetUsername: user?.githubUsername || get().targetUsername,
+        });
+      },
+      logoutGitHub: async () => {
+        await disconnectGitGlowSession();
+        set({ connectedUser: null });
+      },
+
       targetUsername: 'guchchi',
       testRepoName: DEFAULT_REPO_NAME,
       setTargetUsername: (username: string) => set({ targetUsername: username.trim().replace(/^@/, '') }),
@@ -184,6 +202,7 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         badgeStepStatus: state.badgeStepStatus,
         scanAnalysis: state.scanAnalysis,
         quizAnswers: state.quizAnswers,
+        connectedUser: state.connectedUser,
       }),
     }
   )
