@@ -1,6 +1,6 @@
 /**
- * GitGlow GitHub API Service & Badge Qualification Logic
- * Completely client-side & zero-OAuth / personal token enabled (if provided)
+ * GitGlow GitHub API Service & Precise Badge Evaluator
+ * Zero OAuth required - reads public REST endpoints.
  */
 
 export interface GitHubUserProfile {
@@ -20,6 +20,7 @@ export interface BadgeStatusEvaluation {
   name: string;
   isUnlocked: boolean;
   statusLabel: string;
+  badgeLevel?: string; // e.g. "x2 (Bronze)", "Default"
   progressPercent: number;
   currentValue: number;
   targetValue: number;
@@ -31,9 +32,9 @@ export interface UserScanAnalysis {
   user: GitHubUserProfile;
   totalMergedPrs: number;
   totalIssuesClosed: number;
-  starredCount: number;
-  hasDiscussionsAnswers: boolean;
-  hasCoAuthoredCommits: boolean;
+  quickdrawQualified: boolean;
+  quickdrawDurationSeconds?: number;
+  pullSharkTier: 'None' | 'Default (Unlocked)' | 'Bronze (x2)' | 'Silver (x3)' | 'Gold (x4)';
   badgeEvaluations: Record<string, BadgeStatusEvaluation>;
   recentMergedPrs: Array<{
     title: string;
@@ -45,7 +46,7 @@ export interface UserScanAnalysis {
 }
 
 /**
- * Public GitHub REST API Fetcher with graceful rate-limit handling
+ * Fetch GitHub user public profile
  */
 export async function fetchGitHubProfile(username: string): Promise<GitHubUserProfile> {
   const cleanHandle = username.trim().replace(/^@/, '');
@@ -57,24 +58,24 @@ export async function fetchGitHubProfile(username: string): Promise<GitHubUserPr
 
   if (!res.ok) {
     if (res.status === 404) {
-      throw new Error(`GitHub user "${cleanHandle}" not found.`);
+      throw new Error(`GitHub user "@${cleanHandle}" not found. Please check spelling.`);
     } else if (res.status === 403) {
-      throw new Error('GitHub API rate limit exceeded. Please try again in a few minutes.');
+      throw new Error('GitHub API rate limit reached. Please wait a minute or test with another handle.');
     }
-    throw new Error(`Failed to fetch user from GitHub (Status: ${res.status})`);
+    throw new Error(`Failed to fetch GitHub profile (Status: ${res.status})`);
   }
 
   return res.json();
 }
 
 /**
- * Analyzes real GitHub activity for a given user handle
+ * Perform full analysis of public GitHub telemetry for badge qualification
  */
 export async function analyzeGitHubProfile(username: string): Promise<UserScanAnalysis> {
   const cleanHandle = username.trim().replace(/^@/, '');
   const user = await fetchGitHubProfile(cleanHandle);
 
-  // 1. Fetch Merged PRs count & latest PRs
+  // 1. Fetch Merged PRs
   let totalMergedPrs = 0;
   let recentMergedPrs: Array<{ title: string; url: string; repository: string; merged_at: string }> = [];
 
@@ -97,72 +98,101 @@ export async function analyzeGitHubProfile(username: string): Promise<UserScanAn
     console.warn('PR search error:', err);
   }
 
-  // 2. Fetch Closed Issues count (helps evaluate Quickdraw potential)
+  // 2. Fetch Closed Issues & Calculate Quickdraw Durations
   let totalIssuesClosed = 0;
+  let quickdrawQualified = false;
+  let quickdrawDurationSeconds: number | undefined = undefined;
+
   try {
     const issueRes = await fetch(
-      `https://api.github.com/search/issues?q=author:${encodeURIComponent(cleanHandle)}+type:issue+is:closed&per_page=1`,
+      `https://api.github.com/search/issues?q=author:${encodeURIComponent(cleanHandle)}+type:issue+is:closed&sort=updated&per_page=10`,
       { headers: { Accept: 'application/vnd.github.v3+json' } }
     );
     if (issueRes.ok) {
       const issueData = await issueRes.json();
       totalIssuesClosed = issueData.total_count || 0;
+      const items = issueData.items || [];
+
+      for (const item of items) {
+        if (item.created_at && item.closed_at) {
+          const created = new Date(item.created_at).getTime();
+          const closed = new Date(item.closed_at).getTime();
+          const diffSec = Math.round((closed - created) / 1000);
+          if (diffSec >= 0 && diffSec <= 300) {
+            quickdrawQualified = true;
+            quickdrawDurationSeconds = diffSec;
+            break;
+          }
+        }
+      }
     }
   } catch (err) {
     console.warn('Issue search error:', err);
   }
 
-  // 3. Evaluate Badges based on real API metrics + heuristics
+  // 3. Determine Pull Shark Tier
+  let pullSharkTier: 'None' | 'Default (Unlocked)' | 'Bronze (x2)' | 'Silver (x3)' | 'Gold (x4)' = 'None';
+  if (totalMergedPrs >= 1024) pullSharkTier = 'Gold (x4)';
+  else if (totalMergedPrs >= 128) pullSharkTier = 'Silver (x3)';
+  else if (totalMergedPrs >= 16) pullSharkTier = 'Bronze (x2)';
+  else if (totalMergedPrs >= 2) pullSharkTier = 'Default (Unlocked)';
+
+  // 4. Construct Precise Evaluation Map
   const badgeEvaluations: Record<string, BadgeStatusEvaluation> = {
+    quickdraw: {
+      badgeId: 'quickdraw',
+      name: 'Quickdraw',
+      isUnlocked: quickdrawQualified,
+      statusLabel: quickdrawQualified ? 'Already Earned' : 'Not Yet Earned',
+      progressPercent: quickdrawQualified ? 100 : 0,
+      currentValue: quickdrawQualified ? 1 : 0,
+      targetValue: 1,
+      detail: quickdrawQualified
+        ? `Verified! Found a closed issue resolved in ${quickdrawDurationSeconds}s (<300s window).`
+        : totalIssuesClosed > 0
+        ? `Found ${totalIssuesClosed} closed issue(s), but none closed within the strict 5-minute (300s) window.`
+        : 'No closed issues detected under your account.',
+      actionRecommendation: quickdrawQualified
+        ? 'Badge already awarded on your profile! You can still practice the fast triage workflow.'
+        : 'Follow the 120-second Quickdraw blueprint: open an issue and close it in under 5 minutes.',
+    },
     'pull-shark': {
       badgeId: 'pull-shark',
       name: 'Pull Shark',
       isUnlocked: totalMergedPrs >= 2,
-      statusLabel: totalMergedPrs >= 2 ? 'Unlocked' : `${totalMergedPrs}/2 Merged PRs`,
+      badgeLevel: pullSharkTier !== 'None' ? pullSharkTier : undefined,
+      statusLabel: totalMergedPrs >= 2 ? `Earned (${pullSharkTier})` : `${totalMergedPrs}/2 Merged PRs`,
       progressPercent: Math.min(100, Math.round((totalMergedPrs / 2) * 100)),
       currentValue: totalMergedPrs,
       targetValue: 2,
-      detail: totalMergedPrs >= 2 
-        ? `Qualified! You have ${totalMergedPrs} merged PRs on GitHub.`
-        : `Needs ${2 - totalMergedPrs} more merged PR to unlock.`,
+      detail: totalMergedPrs >= 2
+        ? `Qualified! You have ${totalMergedPrs} merged pull requests on GitHub (${pullSharkTier}).`
+        : `Needs ${2 - totalMergedPrs} more merged PR into default branch to unlock.`,
       actionRecommendation: totalMergedPrs >= 2
-        ? 'Push towards 16 PRs to reach Tier 2 Bronze Pull Shark!'
-        : 'Run the Pull Shark 1-click recipe on your test repo or GitGlow Community Sandbox.',
-    },
-    quickdraw: {
-      badgeId: 'quickdraw',
-      name: 'Quickdraw',
-      isUnlocked: totalIssuesClosed > 0, // Heuristic: user has closed issues
-      statusLabel: totalIssuesClosed > 0 ? 'Ready / Likely Unlocked' : 'Pending Test',
-      progressPercent: totalIssuesClosed > 0 ? 100 : 0,
-      currentValue: totalIssuesClosed,
-      targetValue: 1,
-      detail: totalIssuesClosed > 0
-        ? `Found ${totalIssuesClosed} closed issue(s) under your account.`
-        : 'No closed issues detected. Execute the 120s Quickdraw loop to claim.',
-      actionRecommendation: 'Open a quick tracking issue and close it within 5 minutes to trigger the GitHub webhook.',
+        ? 'Aim for 16 merged PRs to unlock the Bronze (x2) tier badge border!'
+        : 'Open and merge 2 PRs using our verified sandbox workflow or personal repo.',
     },
     yolo: {
       badgeId: 'yolo',
       name: 'YOLO',
-      isUnlocked: totalMergedPrs > 0 && user.public_repos > 0,
-      statusLabel: totalMergedPrs > 0 ? 'Achievable / In Progress' : 'Pending 1st PR',
-      progressPercent: totalMergedPrs > 0 ? 100 : 30,
+      isUnlocked: totalMergedPrs > 0, // Heuristic if user has direct merges
+      statusLabel: totalMergedPrs > 0 ? 'Achievable' : 'Needs 1st PR',
+      progressPercent: totalMergedPrs > 0 ? 100 : 25,
       currentValue: totalMergedPrs > 0 ? 1 : 0,
       targetValue: 1,
-      detail: 'Merge a pull request directly without code review on any public repo.',
-      actionRecommendation: 'Use gh pr merge --admin or direct merge on your own repository.',
+      detail: 'Merge a pull request without code review on a collaborative repo.',
+      actionRecommendation: 'Merge a PR directly on your repo without assigning reviewers.',
     },
     'pair-extraordinaire': {
       badgeId: 'pair-extraordinaire',
       name: 'Pair Extraordinaire',
       isUnlocked: false,
       statusLabel: 'Co-Authoring Required',
-      progressPercent: 20,
+      progressPercent: 15,
       currentValue: 0,
       targetValue: 1,
-      detail: 'Requires an official Git trailer commit: "Co-authored-by: Name <email>" in a merged PR.',
-      actionRecommendation: 'Run the Pair Extraordinaire recipe with a collaborator or the GitGlow co-author bot handle.',
+      detail: 'Requires an RFC Git trailer: "Co-authored-by: Name <email>" in a merged commit.',
+      actionRecommendation: 'Follow the Pair Extraordinaire blueprint to craft an authentic co-authored commit.',
     },
     'galaxy-brain': {
       badgeId: 'galaxy-brain',
@@ -173,18 +203,18 @@ export async function analyzeGitHubProfile(username: string): Promise<UserScanAn
       currentValue: 0,
       targetValue: 2,
       detail: 'Requires 2+ accepted answers in GitHub Discussions on public repositories.',
-      actionRecommendation: 'Answer technical questions in community discussions or open discussion repositories.',
+      actionRecommendation: 'Answer community questions in repositories with GitHub Discussions enabled.',
     },
     starstruck: {
       badgeId: 'starstruck',
       name: 'Starstruck',
       isUnlocked: user.public_repos >= 1,
-      statusLabel: user.public_repos >= 1 ? 'Repo Ready' : 'Needs Public Repo',
+      statusLabel: user.public_repos >= 1 ? 'Repository Ready' : 'Needs Public Repo',
       progressPercent: Math.min(100, Math.round((user.public_repos / 1) * 50)),
       currentValue: user.public_repos,
       targetValue: 16,
-      detail: 'Requires 16 community stars on your repositories.',
-      actionRecommendation: 'Publish your tool or showcase repository with proper tags and README badges.',
+      detail: 'Requires 16 stars on your public repositories.',
+      actionRecommendation: 'Publish useful projects and showcase them to earn genuine community stars.',
     },
   };
 
@@ -192,12 +222,11 @@ export async function analyzeGitHubProfile(username: string): Promise<UserScanAn
     user,
     totalMergedPrs,
     totalIssuesClosed,
-    starredCount: 0,
-    hasDiscussionsAnswers: false,
-    hasCoAuthoredCommits: false,
+    quickdrawQualified,
+    quickdrawDurationSeconds,
+    pullSharkTier,
     badgeEvaluations,
     recentMergedPrs,
     scannedAt: new Date().toISOString(),
   };
 }
-

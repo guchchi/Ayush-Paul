@@ -25,6 +25,7 @@ import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
 import { BADGE_AUTOMATION_BLUEPRINTS } from '../../../lib/gitglow/gitglow-community-pr';
 import { BADGE_CURRICULUM } from '../../../data/gitglow/badge-curriculum';
 import { BadgeCurriculumView } from './BadgeCurriculumView';
+import { QuickdrawInteractiveSimulation } from './QuickdrawInteractiveSimulation';
 
 export const GitGlowEnginePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -303,10 +304,10 @@ export const GitGlowEnginePage: React.FC = () => {
             <div className="flex items-center gap-2 border-b border-[#ECEAE1] pt-2 overflow-x-auto">
               {[
                 { id: 'learn', label: '📖 Deep Learning & Concepts' },
-                { id: 'blueprint', label: '1-Click Recipe' },
-                { id: 'terminal', label: 'Terminal Commands' },
-                { id: 'actions', label: 'GitHub Action' },
-                { id: 'security', label: 'Security & Rules' },
+                { id: 'blueprint', label: '⚡ Interactive Simulation & Recipe' },
+                { id: 'terminal', label: '💻 Terminal Script' },
+                { id: 'actions', label: '🤖 GitHub Action' },
+                { id: 'security', label: '🛡️ Security Rules' },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -339,81 +340,91 @@ export const GitGlowEnginePage: React.FC = () => {
               </div>
             )}
 
-            {/* Tab 1: Interactive 1-Click Recipe Steps */}
+            {/* Tab 1: Interactive Simulation & 1-Click Recipe */}
             {activeTab === 'blueprint' && (
-              <div className="space-y-4 pt-2">
-                <div className="text-xs text-[#65666A]">
-                  Check off each station as you execute, or click "Run Simulation" to test the qualification loop locally.
-                </div>
+              <div className="pt-2">
+                {activeBadge.id === 'quickdraw' ? (
+                  <QuickdrawInteractiveSimulation
+                    onCompleted={() => {
+                      // Handled inside
+                    }}
+                  />
+                ) : (
+                  <div className="space-y-4">
+                    <div className="text-xs text-[#65666A]">
+                      Check off each station as you execute, or click "Run Local Simulation" to test the qualification loop locally.
+                    </div>
 
-                <div className="space-y-3">
-                  {[
-                    {
-                      idx: 0,
-                      title: 'Station 1: Feature Branch & Contributor Staging',
-                      desc: `Switch to branch feat/gitglow-${activeBadge.id} and stage the required file.`,
-                    },
-                    {
-                      idx: 1,
-                      title: 'Station 2: Verified Commit & PR Creation',
-                      desc: 'Generate signed/attributed git commit and open the Pull Request.',
-                    },
-                    {
-                      idx: 2,
-                      title: 'Station 3: Default Branch Merge & Ingestion',
-                      desc: 'Merge into default branch (main). GitHub triggers profile webhook in 10-30 mins.',
-                    },
-                  ].map((step) => {
-                    const isDone = badgeSteps[step.idx];
-                    return (
-                      <div
-                        key={step.idx}
-                        onClick={() => toggleBadgeStep(activeBadge.id, step.idx)}
-                        className={cn(
-                          'p-4 rounded-2xl border transition-all flex items-start gap-3.5 cursor-pointer',
-                          isDone
-                            ? 'bg-[#F7F8EF] border-[#DCE89E]'
-                            : 'bg-[#FAF9F5] border-[#E5E3DA] hover:border-[#84CC16]'
-                        )}
+                    <div className="space-y-3">
+                      {[
+                        {
+                          idx: 0,
+                          title: 'Station 1: Feature Branch & Contributor Staging',
+                          desc: `Switch to branch feat/gitglow-${activeBadge.id} and stage the required file.`,
+                        },
+                        {
+                          idx: 1,
+                          title: 'Station 2: Verified Commit & PR Creation',
+                          desc: 'Generate signed/attributed git commit and open the Pull Request.',
+                        },
+                        {
+                          idx: 2,
+                          title: 'Station 3: Default Branch Merge & Ingestion',
+                          desc: 'Merge into default branch (main). GitHub triggers profile webhook in 10-30 mins.',
+                        },
+                      ].map((step) => {
+                        const isDone = badgeSteps[step.idx];
+                        return (
+                          <div
+                            key={step.idx}
+                            onClick={() => toggleBadgeStep(activeBadge.id, step.idx)}
+                            className={cn(
+                              'p-4 rounded-2xl border transition-all flex items-start gap-3.5 cursor-pointer',
+                              isDone
+                                ? 'bg-[#F7F8EF] border-[#DCE89E]'
+                                : 'bg-[#FAF9F5] border-[#E5E3DA] hover:border-[#84CC16]'
+                            )}
+                          >
+                            <div
+                              className={cn(
+                                'w-6 h-6 rounded-full flex items-center justify-center shrink-0 border transition-all mt-0.5',
+                                isDone
+                                  ? 'bg-[#84CC16] border-[#84CC16] text-white'
+                                  : 'bg-white border-[#E5E3DA] text-[#65666A]'
+                              )}
+                            >
+                              {isDone ? <Check size={14} strokeWidth={3} /> : step.idx + 1}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs font-bold text-[#101114]">{step.title}</div>
+                              <p className="text-[11px] text-[#65666A] mt-0.5">{step.desc}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Primary Action Button */}
+                    <div className="flex items-center gap-3 pt-3">
+                      <button
+                        onClick={runSimulatedAutomation}
+                        disabled={isRunningSim}
+                        className="h-10 px-5 rounded-xl bg-[#101114] hover:bg-[#1C1E24] text-white text-xs font-bold inline-flex items-center gap-2 transition-all cursor-pointer shadow-md disabled:opacity-50"
                       >
-                        <div
-                          className={cn(
-                            'w-6 h-6 rounded-full flex items-center justify-center shrink-0 border transition-all mt-0.5',
-                            isDone
-                              ? 'bg-[#84CC16] border-[#84CC16] text-white'
-                              : 'bg-white border-[#E5E3DA] text-[#65666A]'
-                          )}
-                        >
-                          {isDone ? <Check size={14} strokeWidth={3} /> : step.idx + 1}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs font-bold text-[#101114]">{step.title}</div>
-                          <p className="text-[11px] text-[#65666A] mt-0.5">{step.desc}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                        <Play size={13} className={cn(isRunningSim && 'animate-spin')} />
+                        <span>{isRunningSim ? 'Executing Recipe...' : 'Run Local Simulation'}</span>
+                      </button>
 
-                {/* Primary Action Button */}
-                <div className="flex items-center gap-3 pt-3">
-                  <button
-                    onClick={runSimulatedAutomation}
-                    disabled={isRunningSim}
-                    className="h-10 px-5 rounded-xl bg-[#101114] hover:bg-[#1C1E24] text-white text-xs font-bold inline-flex items-center gap-2 transition-all cursor-pointer shadow-md disabled:opacity-50"
-                  >
-                    <Play size={13} className={cn(isRunningSim && 'animate-spin')} />
-                    <span>{isRunningSim ? 'Executing Recipe...' : 'Run Local Simulation'}</span>
-                  </button>
-
-                  <button
-                    onClick={() => setAllStepsForBadge(activeBadge.id, true)}
-                    className="h-10 px-4 rounded-xl bg-white border border-[#E5E3DA] hover:border-[#84CC16] text-[#101114] text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <CheckCheck size={14} />
-                    <span>Mark All Completed</span>
-                  </button>
-                </div>
+                      <button
+                        onClick={() => setAllStepsForBadge(activeBadge.id, true)}
+                        className="h-10 px-4 rounded-xl bg-white border border-[#E5E3DA] hover:border-[#84CC16] text-[#101114] text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                      >
+                        <CheckCheck size={14} />
+                        <span>Mark All Completed</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
