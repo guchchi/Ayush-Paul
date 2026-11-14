@@ -19,6 +19,8 @@ import {
   GitMerge,
   Flame,
   ShieldAlert,
+  Users,
+  UserPlus,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
@@ -27,6 +29,7 @@ import {
   getOrCreateStudentSandbox,
   executeRealYoloPullRequest,
   executeRealMergePullRequest,
+  inviteCollaboratorToRepo,
   GitHubPullRequestResult,
 } from '../../../lib/gitglow/gitglow-github-executor';
 import { BadgeRewardModal } from '../../../components/gitglow/BadgeRewardModal';
@@ -64,6 +67,8 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
   const [realPrResult, setRealPrResult] = useState<GitHubPullRequestResult | null>(null);
   const [activeRepoName, setActiveRepoName] = useState<string>(testRepoName);
   const [collaboratorReviewer, setCollaboratorReviewer] = useState<string>('');
+  const [isInvitingCollaborator, setIsInvitingCollaborator] = useState<boolean>(false);
+  const [inviteStatus, setInviteStatus] = useState<string | null>(null);
 
   // Runner State
   const [simState, setSimState] = useState<'idle' | 'branch_created' | 'pr_opened' | 'merged' | 'verified'>('idle');
@@ -99,6 +104,41 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
       ...prev,
       { text: `Disconnected GitHub session.`, type: 'info' },
     ]);
+  };
+
+  // ── Station 0: Invite Collaborator to Repository (Essential for review context) ──
+  const handleInviteCollaborator = async () => {
+    if (!connectedUser) {
+      handleConnectGitHub();
+      return;
+    }
+    const cleanCollab = collaboratorReviewer.trim().replace(/^@/, '');
+    if (!cleanCollab) {
+      setAuthError('Please enter a collaborator or secondary GitHub username.');
+      return;
+    }
+
+    setIsInvitingCollaborator(true);
+    setAuthError(null);
+    try {
+      const res = await inviteCollaboratorToRepo(
+        connectedUser.accessToken,
+        connectedUser.githubUsername,
+        activeRepoName,
+        cleanCollab
+      );
+      setInviteStatus(res.status);
+      setLogs((prev) => [
+        ...prev,
+        { text: `✓ Collaborator invitation dispatched to @${cleanCollab}!`, type: 'success' },
+        { text: `Status: ${res.status}. Collaborator review context is active.`, type: 'info' },
+        { text: `Next: Click "1-Click Create Real YOLO PR" to request review and direct-merge.`, type: 'info' },
+      ]);
+    } catch (err: any) {
+      setAuthError(err.message || 'Failed to send collaborator invitation.');
+    } finally {
+      setIsInvitingCollaborator(false);
+    }
   };
 
   // ── Station 1: Branch, Commit Hotfix Patch & Open Real PR with 0 Reviewers ──
@@ -371,44 +411,69 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
         </div>
       </div>
 
-      {/* ── 2.5 CRITICAL GITHUB INDEXING & COLLABORATOR RULE NOTICE ── */}
-      <div className="p-4 sm:p-5 rounded-3xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-3">
+      {/* ── 2.5 CRITICAL GITHUB COLLABORATOR REQUIREMENT & INVITATION ── */}
+      <div className="p-5 rounded-3xl bg-white border border-[#E5E3DA] shadow-xs space-y-4">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-xl bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center shrink-0 mt-0.5">
-            <Clock size={16} />
+          <div className="w-9 h-9 rounded-xl bg-[#84CC16]/15 text-[#4D7C0F] flex items-center justify-center shrink-0 mt-0.5">
+            <Users size={18} />
           </div>
           <div className="space-y-1">
-            <h5 className="text-xs font-bold text-[#101114] flex items-center gap-2">
-              <span>Why YOLO takes 2–24 Hours on GitHub Profile:</span>
-              <span className="px-2 py-0.2 rounded-md bg-[#F59E0B]/20 text-[#B45309] text-[9.5px] font-mono font-bold">
-                Asynchronous Indexing Queue
+            <div className="flex items-center gap-2">
+              <h5 className="text-xs font-bold text-[#101114]">
+                The Collaborator Rule for YOLO (Why Solo Repos Don't Trigger It)
+              </h5>
+              <span className="px-2 py-0.2 rounded-md bg-[#D7FF36] text-[#101114] text-[9.5px] font-mono font-black uppercase">
+                GitHub Requirement
               </span>
-            </h5>
+            </div>
             <p className="text-[11px] text-[#65666A] leading-relaxed">
-              Unlike Quickdraw which updates in 15–30 minutes, <strong>GitHub's background worker processes YOLO and Pull Shark asynchronously</strong> in scheduled batch jobs. A merged PR is registered immediately on GitHub's API, but the achievement badge can take between <strong>2 to 24 hours</strong> to appear on your public profile.
+              In a solo repository with only 1 person, GitHub treats merging your own PR as an ordinary self-commit. For GitHub's achievement daemon to award <strong>YOLO</strong>, there must be a real <strong>review context</strong> — meaning a 2nd user (a friend, classmate, or alt account) is in the repo, a review is requested, and you merge <strong>before</strong> they approve!
             </p>
           </div>
         </div>
 
-        {/* Optional Reviewer Handle to guarantee review bypass context */}
-        <div className="pt-3 border-t border-[#ECEAE1] grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-          <div className="sm:col-span-8">
-            <label className="text-[10px] font-bold text-[#65666A] uppercase tracking-wider block">
-              Optional Collaborator / Reviewer Handle (Guarantees Review Bypass Context):
+        {/* 1-Click Collaborator Invitation Input */}
+        <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#ECEAE1] space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <label className="text-[10px] font-bold text-[#101114] uppercase tracking-wider block">
+              Step A: Invite Collaborator or Alt-Account (Recommended):
             </label>
-            <p className="text-[10px] text-[#8E9099]">
-              If you have an alt account, friend, or teammate on GitHub, enter their handle. GitGlow will request review from them and merge immediately to simulate a true YOLO bypass.
-            </p>
+            {connectedUser && (
+              <a
+                href={`https://github.com/${connectedUser.githubUsername}/${activeRepoName}/settings/access`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-[10px] font-mono font-bold text-[#84CC16] hover:underline flex items-center gap-1"
+              >
+                Open GitHub Access Settings <ExternalLink size={10} />
+              </a>
+            )}
           </div>
-          <div className="sm:col-span-4">
+
+          <div className="flex flex-col sm:flex-row items-center gap-2">
             <input
               type="text"
               value={collaboratorReviewer}
               onChange={(e) => setCollaboratorReviewer(e.target.value)}
-              placeholder="@collaborator-username (optional)"
-              className="w-full h-8 px-2.5 rounded-xl bg-white border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#84CC16]"
+              placeholder="e.g. friend-username or alt-account-username"
+              className="w-full sm:flex-1 h-9 px-3 rounded-xl bg-white border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#84CC16]"
             />
+            <button
+              onClick={handleInviteCollaborator}
+              disabled={isInvitingCollaborator || !collaboratorReviewer.trim()}
+              className="w-full sm:w-auto h-9 px-4 rounded-xl bg-[#101114] hover:bg-[#202228] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
+            >
+              <UserPlus size={13} />
+              <span>{isInvitingCollaborator ? 'Inviting...' : 'Invite to Sandbox'}</span>
+            </button>
           </div>
+
+          {inviteStatus && (
+            <div className="text-[11px] font-mono text-[#4D7C0F] flex items-center gap-1.5 font-bold">
+              <CheckCircle2 size={13} className="text-[#84CC16]" />
+              <span>Status: {inviteStatus}. Review bypass context is now armed on GitHub!</span>
+            </div>
+          )}
         </div>
       </div>
 
