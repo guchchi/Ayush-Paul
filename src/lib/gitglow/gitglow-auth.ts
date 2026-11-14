@@ -19,9 +19,7 @@ const STORAGE_KEY = 'gitglow_connected_github_session';
 export const gitglowGithubProvider = new GithubAuthProvider();
 gitglowGithubProvider.addScope('repo');
 gitglowGithubProvider.addScope('read:user');
-gitglowGithubProvider.setCustomParameters({
-  allow_signup: 'false',
-});
+// Removed allow_signup parameter to ensure clean standard OAuth flow
 
 /**
  * Connect GitHub account specifically for GitGlow missions
@@ -32,23 +30,29 @@ export async function connectGitHubForGitGlow(): Promise<GitGlowConnectedUser> {
     const credential = GithubAuthProvider.credentialFromResult(result);
     const accessToken = credential?.accessToken;
 
-    if (!accessToken) {
+    console.log('[GitGlow Auth] Auth success, credential:', credential, 'user:', result.user);
+
+    // If credential token isn't directly on credential, check tokenResponse
+    const finalToken = accessToken || (result as any)._tokenResponse?.oauthAccessToken;
+
+    if (!finalToken) {
       throw new Error('Failed to retrieve GitHub access token from authentication.');
     }
 
     const additionalInfo = (result as any)._tokenResponse || {};
     const githubUsername =
       additionalInfo.screenName ||
+      (result.user as any).reloadUserInfo?.screenName ||
       result.user.displayName ||
       result.user.email?.split('@')[0] ||
-      'developer';
+      'guchchi';
 
     const connectedUser: GitGlowConnectedUser = {
       uid: result.user.uid,
       githubUsername,
       displayName: result.user.displayName,
       avatarUrl: result.user.photoURL,
-      accessToken,
+      accessToken: finalToken,
       connectedAt: new Date().toISOString(),
     };
 
