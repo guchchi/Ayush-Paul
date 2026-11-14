@@ -41,6 +41,10 @@ export interface GitGlowStoreState {
   appendLog: (badgeId: string, log: string) => void;
   clearLogs: (badgeId: string) => void;
 
+  // Quiz scores & answered questions
+  quizAnswers: Record<string, number>; // questionId -> selectedOptionIndex
+  answerQuizQuestion: (questionId: string, optionIndex: number) => void;
+
   // Reset store
   reset: () => void;
 }
@@ -144,6 +148,13 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         logs[badgeId] = badgeLogs;
         set({ executionLogs: logs });
       },
+      quizAnswers: {},
+      answerQuizQuestion: (questionId: string, optionIndex: number) => {
+        const current = { ...get().quizAnswers };
+        current[questionId] = optionIndex;
+        set({ quizAnswers: current });
+      },
+
       clearLogs: (badgeId: string) => {
         const logs = { ...get().executionLogs };
         delete logs[badgeId];
@@ -160,6 +171,7 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
           completedMissionIds: [],
           badgeStepStatus: {},
           executionLogs: {},
+          quizAnswers: {},
         });
       },
     }),
@@ -171,6 +183,7 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         completedMissionIds: state.completedMissionIds,
         badgeStepStatus: state.badgeStepStatus,
         scanAnalysis: state.scanAnalysis,
+        quizAnswers: state.quizAnswers,
       }),
     }
   )

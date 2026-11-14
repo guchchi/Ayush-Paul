@@ -23,6 +23,8 @@ import { cn } from '../../../lib/utils';
 import { GITHUB_BADGES } from '../../../data/gitglow/github-badges';
 import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
 import { BADGE_AUTOMATION_BLUEPRINTS } from '../../../lib/gitglow/gitglow-community-pr';
+import { BADGE_CURRICULUM } from '../../../data/gitglow/badge-curriculum';
+import { BadgeCurriculumView } from './BadgeCurriculumView';
 
 export const GitGlowEnginePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -46,7 +48,7 @@ export const GitGlowEnginePage: React.FC = () => {
     clearLogs,
   } = useGitGlowStore();
 
-  const [activeTab, setActiveTab] = useState<'blueprint' | 'actions' | 'terminal' | 'security'>('blueprint');
+  const [activeTab, setActiveTab] = useState<'learn' | 'blueprint' | 'actions' | 'terminal' | 'security'>('learn');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [isRunningSim, setIsRunningSim] = useState<boolean>(false);
   const [simStep, setSimStep] = useState<number>(0);
@@ -298,8 +300,9 @@ export const GitGlowEnginePage: React.FC = () => {
             )}
 
             {/* Navigation Tabs */}
-            <div className="flex items-center gap-2 border-b border-[#ECEAE1] pt-2">
+            <div className="flex items-center gap-2 border-b border-[#ECEAE1] pt-2 overflow-x-auto">
               {[
+                { id: 'learn', label: '📖 Deep Learning & Concepts' },
                 { id: 'blueprint', label: '1-Click Recipe' },
                 { id: 'terminal', label: 'Terminal Commands' },
                 { id: 'actions', label: 'GitHub Action' },
@@ -309,7 +312,7 @@ export const GitGlowEnginePage: React.FC = () => {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
                   className={cn(
-                    'pb-2 px-3 text-xs font-bold border-b-2 transition-all cursor-pointer',
+                    'pb-2 px-3 text-xs font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap',
                     activeTab === tab.id
                       ? 'border-[#84CC16] text-[#101114]'
                       : 'border-transparent text-[#65666A] hover:text-[#101114]'
@@ -319,6 +322,22 @@ export const GitGlowEnginePage: React.FC = () => {
                 </button>
               ))}
             </div>
+
+            {/* Tab 0: Deep Learning & Concept Guide */}
+            {activeTab === 'learn' && (
+              <div className="pt-2">
+                {BADGE_CURRICULUM[activeBadge.id] ? (
+                  <BadgeCurriculumView
+                    pedagogy={BADGE_CURRICULUM[activeBadge.id]}
+                    onGoToExecution={() => setActiveTab('blueprint')}
+                  />
+                ) : (
+                  <div className="p-6 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] text-center text-xs text-[#65666A]">
+                    Curriculum module for {activeBadge.name} is loading. Switch to the 1-Click Recipe tab to begin implementation.
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Tab 1: Interactive 1-Click Recipe Steps */}
             {activeTab === 'blueprint' && (
