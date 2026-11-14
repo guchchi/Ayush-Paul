@@ -8,28 +8,27 @@ import {
   Check,
   ExternalLink,
   Shield,
-  Layers,
-  ArrowRight,
   ArrowLeft,
   RefreshCw,
   GitPullRequest,
   CheckCheck,
   Sparkles,
-  HelpCircle,
-  FileCode,
+  BookOpen,
   AlertTriangle,
+  Zap,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { GITHUB_BADGES } from '../../../data/gitglow/github-badges';
 import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
 import { BADGE_AUTOMATION_BLUEPRINTS } from '../../../lib/gitglow/gitglow-community-pr';
 import { BADGE_CURRICULUM } from '../../../data/gitglow/badge-curriculum';
-import { BadgeCurriculumView } from './BadgeCurriculumView';
 import { QuickdrawInteractiveSimulation } from './QuickdrawInteractiveSimulation';
+import { PullSharkInteractiveSimulation } from './PullSharkInteractiveSimulation';
+import { BadgeLearningModal } from '../../../components/gitglow/BadgeLearningModal';
 
 export const GitGlowEnginePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const badgeQuery = searchParams.get('badge') || 'pull-shark';
+  const badgeQuery = searchParams.get('badge') || 'quickdraw';
 
   const {
     targetUsername,
@@ -43,20 +42,20 @@ export const GitGlowEnginePage: React.FC = () => {
     toggleBadgeStep,
     setAllStepsForBadge,
     completedMissionIds,
-    toggleMission,
     executionLogs,
     appendLog,
     clearLogs,
   } = useGitGlowStore();
 
-  const [activeTab, setActiveTab] = useState<'learn' | 'blueprint' | 'actions' | 'terminal' | 'security'>('learn');
+  const [activeTab, setActiveTab] = useState<'sandbox' | 'terminal' | 'actions' | 'security'>('sandbox');
+  const [showLearnModal, setShowLearnModal] = useState<boolean>(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [isRunningSim, setIsRunningSim] = useState<boolean>(false);
-  const [simStep, setSimStep] = useState<number>(0);
 
   // Selected Badge
   const activeBadge = GITHUB_BADGES.find((b) => b.id === badgeQuery) || GITHUB_BADGES[0];
   const automationBlueprint = BADGE_AUTOMATION_BLUEPRINTS[activeBadge.id];
+  const pedagogy = BADGE_CURRICULUM[activeBadge.id];
 
   const badgeSteps = badgeStepStatus[activeBadge.id] || [false, false, false];
 
@@ -77,11 +76,10 @@ export const GitGlowEnginePage: React.FC = () => {
     }
   }, []);
 
-  // Simulate local execution pipeline
+  // Simulate local execution pipeline for non-interactive badges
   const runSimulatedAutomation = async () => {
     if (isRunningSim) return;
     setIsRunningSim(true);
-    setSimStep(1);
     clearLogs(activeBadge.id);
 
     appendLog(activeBadge.id, `Starting automation engine for "${activeBadge.name}"...`);
@@ -90,12 +88,10 @@ export const GitGlowEnginePage: React.FC = () => {
     await new Promise((r) => setTimeout(r, 700));
     toggleBadgeStep(activeBadge.id, 0);
     appendLog(activeBadge.id, `[STATION 1] Branch created: feat/gitglow-${activeBadge.id}`);
-    setSimStep(2);
 
     await new Promise((r) => setTimeout(r, 900));
     toggleBadgeStep(activeBadge.id, 1);
     appendLog(activeBadge.id, `[STATION 2] Artifact staged & verified commit generated.`);
-    setSimStep(3);
 
     await new Promise((r) => setTimeout(r, 1100));
     toggleBadgeStep(activeBadge.id, 2);
@@ -103,7 +99,6 @@ export const GitGlowEnginePage: React.FC = () => {
     appendLog(activeBadge.id, `✓ SUCCESS: Webhook telemetry triggered. Profile badge is qualifying!`);
 
     setIsRunningSim(false);
-    setSimStep(0);
   };
 
   const currentEval = scanAnalysis?.badgeEvaluations[activeBadge.id];
@@ -122,13 +117,13 @@ export const GitGlowEnginePage: React.FC = () => {
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-base tracking-tight text-[#101114]">GitGlow Blueprint Engine</span>
+              <span className="font-extrabold text-base tracking-tight text-[#101114]">GitGlow Sandbox Engine</span>
               <span className="px-2 py-0.5 rounded-full bg-[#D7FF36]/40 text-[#4D7C0F] text-[10px] font-mono font-bold uppercase tracking-wider">
-                Active Sandbox
+                1-Click Execution
               </span>
             </div>
             <p className="text-[11px] text-[#65666A]">
-              1-Click Implementation Recipes, Automated PRs & Zero-OAuth Badge Qualification
+              Real GitHub Achievements · 100% Genuine Webhook Ingestion · Zero-OAuth
             </p>
           </div>
         </div>
@@ -136,7 +131,7 @@ export const GitGlowEnginePage: React.FC = () => {
         {/* User Handle & Repo Config */}
         <div className="flex items-center gap-2.5">
           <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] text-xs font-mono">
-            <span className="text-[#65666A]">User:</span>
+            <span className="text-[#65666A]">Target:</span>
             <input
               type="text"
               value={targetUsername}
@@ -151,12 +146,12 @@ export const GitGlowEnginePage: React.FC = () => {
             className="h-8 px-3 rounded-lg bg-[#101114] text-white text-xs font-bold flex items-center gap-1.5 hover:bg-[#1C1E24] transition-all cursor-pointer shadow-2xs"
           >
             <RefreshCw size={12} className={cn(isScanning && 'animate-spin')} />
-            <span>{isScanning ? 'Scanning...' : 'Sync GitHub'}</span>
+            <span>{isScanning ? 'Syncing...' : 'Sync GitHub'}</span>
           </button>
         </div>
       </header>
 
-      {/* Main Grid: Left Badge Directory | Center Blueprint Engine | Right Live Execution & Logs */}
+      {/* Main Grid: Left Badge Directory | Center 1-Click Sandbox | Right Community Sandbox */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column (3 cols): Badge Selector */}
         <div className="lg:col-span-3 space-y-4">
@@ -190,7 +185,6 @@ export const GitGlowEnginePage: React.FC = () => {
                       alt={badge.name}
                       className="w-9 h-9 object-contain shrink-0"
                       onError={(e) => {
-                        // Fallback icon if image doesn't exist
                         (e.target as HTMLElement).style.display = 'none';
                       }}
                     />
@@ -251,9 +245,9 @@ export const GitGlowEnginePage: React.FC = () => {
           )}
         </div>
 
-        {/* Center Column (6 cols): Active Blueprint Engine */}
+        {/* Center Column (6 cols): Direct 1-Click Sandbox Workspace */}
         <div className="lg:col-span-6 space-y-6">
-          {/* Active Badge Hero Card */}
+          {/* Active Badge Hero Card with Dedicated Learning Window Trigger */}
           <div className="p-6 rounded-3xl bg-white border border-[#E5E3DA] shadow-xs space-y-4">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-4">
@@ -289,7 +283,36 @@ export const GitGlowEnginePage: React.FC = () => {
               </div>
             </div>
 
-            {/* Live Recommendation */}
+            {/* SEPARATE WINDOW FOR LEARNING PART (User Request) */}
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-[#ECEAE1]">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowLearnModal(true)}
+                  className="h-9 px-4 rounded-xl bg-[#F7F8EF] border border-[#DCE89E] hover:bg-[#D7FF36]/30 text-[#4D7C0F] text-xs font-bold inline-flex items-center gap-2 transition-all cursor-pointer shadow-2xs"
+                >
+                  <BookOpen size={14} className="text-[#84CC16]" />
+                  <span>📖 Open Learning Guide</span>
+                  <span className="px-1.5 py-0.5 rounded-md bg-[#84CC16]/20 text-[9.5px] font-mono">
+                    Concepts & Quiz
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => window.open(`/blueprints/gitglow/learn?badge=${activeBadge.id}`, '_blank')}
+                  title="Open Learning Guide in a separate browser window / popout"
+                  className="h-9 px-3 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] hover:border-[#84CC16] text-[#65666A] hover:text-[#101114] text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                >
+                  <span className="hidden sm:inline">Popout Window</span>
+                  <ExternalLink size={12} />
+                </button>
+              </div>
+
+              <span className="text-[11px] font-mono text-[#65666A]">
+                {activeBadge.statusLabel}
+              </span>
+            </div>
+
+            {/* Live Recommendation Banner */}
             {currentEval && (
               <div className="p-3.5 rounded-2xl bg-[#F7F8EF] border border-[#DCE89E] flex items-start gap-2.5">
                 <Sparkles size={16} className="text-[#65A30D] shrink-0 mt-0.5" />
@@ -299,226 +322,209 @@ export const GitGlowEnginePage: React.FC = () => {
                 </div>
               </div>
             )}
+          </div>
 
-            {/* Navigation Tabs */}
-            <div className="flex items-center gap-2 border-b border-[#ECEAE1] pt-2 overflow-x-auto">
-              {[
-                { id: 'learn', label: '📖 Deep Learning & Concepts' },
-                { id: 'blueprint', label: '⚡ Interactive Simulation & Recipe' },
-                { id: 'terminal', label: '💻 Terminal Script' },
-                { id: 'actions', label: '🤖 GitHub Action' },
-                { id: 'security', label: '🛡️ Security Rules' },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={cn(
-                    'pb-2 px-3 text-xs font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap',
-                    activeTab === tab.id
-                      ? 'border-[#84CC16] text-[#101114]'
-                      : 'border-transparent text-[#65666A] hover:text-[#101114]'
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Tab 0: Deep Learning & Concept Guide */}
-            {activeTab === 'learn' && (
-              <div className="pt-2">
-                {BADGE_CURRICULUM[activeBadge.id] ? (
-                  <BadgeCurriculumView
-                    pedagogy={BADGE_CURRICULUM[activeBadge.id]}
-                    onGoToExecution={() => setActiveTab('blueprint')}
-                  />
-                ) : (
-                  <div className="p-6 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] text-center text-xs text-[#65666A]">
-                    Curriculum module for {activeBadge.name} is loading. Switch to the 1-Click Recipe tab to begin implementation.
-                  </div>
+          {/* Secondary Sub-Tabs for Power Users (CLI Scripts & CI/CD) */}
+          <div className="flex items-center gap-2 border-b border-[#ECEAE1] px-1 overflow-x-auto">
+            {[
+              { id: 'sandbox', label: '⚡ 1-Click Sandbox Execution' },
+              { id: 'terminal', label: '💻 Terminal Script' },
+              { id: 'actions', label: '🤖 GitHub Action' },
+              { id: 'security', label: '🛡️ Security & Rules' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={cn(
+                  'pb-2 px-3 text-xs font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap',
+                  activeTab === tab.id
+                    ? 'border-[#84CC16] text-[#101114]'
+                    : 'border-transparent text-[#65666A] hover:text-[#101114]'
                 )}
-              </div>
-            )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-            {/* Tab 1: Interactive Simulation & 1-Click Recipe */}
-            {activeTab === 'blueprint' && (
-              <div className="pt-2">
-                {activeBadge.id === 'quickdraw' ? (
-                  <QuickdrawInteractiveSimulation
-                    onCompleted={() => {
-                      // Handled inside
-                    }}
-                  />
-                ) : (
-                  <div className="space-y-4">
-                    <div className="text-xs text-[#65666A]">
-                      Check off each station as you execute, or click "Run Local Simulation" to test the qualification loop locally.
-                    </div>
+          {/* Primary View: 1-Click Interactive Sandbox */}
+          {activeTab === 'sandbox' && (
+            <div className="space-y-4">
+              {activeBadge.id === 'quickdraw' ? (
+                <QuickdrawInteractiveSimulation />
+              ) : activeBadge.id === 'pull-shark' ? (
+                <PullSharkInteractiveSimulation />
+              ) : (
+                <div className="p-6 rounded-3xl bg-white border border-[#E5E3DA] space-y-4 shadow-xs">
+                  <div className="flex items-center gap-2">
+                    <Zap size={16} className="text-[#84CC16]" />
+                    <h3 className="text-xs font-bold text-[#101114] uppercase tracking-wider">
+                      3-Station Qualification Recipe for {activeBadge.name}
+                    </h3>
+                  </div>
 
-                    <div className="space-y-3">
-                      {[
-                        {
-                          idx: 0,
-                          title: 'Station 1: Feature Branch & Contributor Staging',
-                          desc: `Switch to branch feat/gitglow-${activeBadge.id} and stage the required file.`,
-                        },
-                        {
-                          idx: 1,
-                          title: 'Station 2: Verified Commit & PR Creation',
-                          desc: 'Generate signed/attributed git commit and open the Pull Request.',
-                        },
-                        {
-                          idx: 2,
-                          title: 'Station 3: Default Branch Merge & Ingestion',
-                          desc: 'Merge into default branch (main). GitHub triggers profile webhook in 10-30 mins.',
-                        },
-                      ].map((step) => {
-                        const isDone = badgeSteps[step.idx];
-                        return (
+                  <div className="space-y-3">
+                    {[
+                      {
+                        idx: 0,
+                        title: 'Station 1: Feature Branch & Contributor Staging',
+                        desc: `Switch to branch feat/gitglow-${activeBadge.id} and stage the required file.`,
+                      },
+                      {
+                        idx: 1,
+                        title: 'Station 2: Verified Commit & PR Creation',
+                        desc: 'Generate signed/attributed git commit and open the Pull Request.',
+                      },
+                      {
+                        idx: 2,
+                        title: 'Station 3: Default Branch Merge & Ingestion',
+                        desc: 'Merge into default branch (main). GitHub triggers profile webhook in 10-30 mins.',
+                      },
+                    ].map((step) => {
+                      const isDone = badgeSteps[step.idx];
+                      return (
+                        <div
+                          key={step.idx}
+                          onClick={() => toggleBadgeStep(activeBadge.id, step.idx)}
+                          className={cn(
+                            'p-4 rounded-2xl border transition-all flex items-start gap-3.5 cursor-pointer',
+                            isDone
+                              ? 'bg-[#F7F8EF] border-[#DCE89E]'
+                              : 'bg-[#FAF9F5] border-[#E5E3DA] hover:border-[#84CC16]'
+                          )}
+                        >
                           <div
-                            key={step.idx}
-                            onClick={() => toggleBadgeStep(activeBadge.id, step.idx)}
                             className={cn(
-                              'p-4 rounded-2xl border transition-all flex items-start gap-3.5 cursor-pointer',
+                              'w-6 h-6 rounded-full flex items-center justify-center shrink-0 border transition-all mt-0.5',
                               isDone
-                                ? 'bg-[#F7F8EF] border-[#DCE89E]'
-                                : 'bg-[#FAF9F5] border-[#E5E3DA] hover:border-[#84CC16]'
+                                ? 'bg-[#84CC16] border-[#84CC16] text-white'
+                                : 'bg-white border-[#E5E3DA] text-[#65666A]'
                             )}
                           >
-                            <div
-                              className={cn(
-                                'w-6 h-6 rounded-full flex items-center justify-center shrink-0 border transition-all mt-0.5',
-                                isDone
-                                  ? 'bg-[#84CC16] border-[#84CC16] text-white'
-                                  : 'bg-white border-[#E5E3DA] text-[#65666A]'
-                              )}
-                            >
-                              {isDone ? <Check size={14} strokeWidth={3} /> : step.idx + 1}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="text-xs font-bold text-[#101114]">{step.title}</div>
-                              <p className="text-[11px] text-[#65666A] mt-0.5">{step.desc}</p>
-                            </div>
+                            {isDone ? <Check size={14} strokeWidth={3} /> : step.idx + 1}
                           </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Primary Action Button */}
-                    <div className="flex items-center gap-3 pt-3">
-                      <button
-                        onClick={runSimulatedAutomation}
-                        disabled={isRunningSim}
-                        className="h-10 px-5 rounded-xl bg-[#101114] hover:bg-[#1C1E24] text-white text-xs font-bold inline-flex items-center gap-2 transition-all cursor-pointer shadow-md disabled:opacity-50"
-                      >
-                        <Play size={13} className={cn(isRunningSim && 'animate-spin')} />
-                        <span>{isRunningSim ? 'Executing Recipe...' : 'Run Local Simulation'}</span>
-                      </button>
-
-                      <button
-                        onClick={() => setAllStepsForBadge(activeBadge.id, true)}
-                        className="h-10 px-4 rounded-xl bg-white border border-[#E5E3DA] hover:border-[#84CC16] text-[#101114] text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer"
-                      >
-                        <CheckCheck size={14} />
-                        <span>Mark All Completed</span>
-                      </button>
-                    </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs font-bold text-[#101114]">{step.title}</div>
+                            <p className="text-[11px] text-[#65666A] mt-0.5">{step.desc}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                )}
-              </div>
-            )}
 
-            {/* Tab 2: Terminal Script (Customized for User & Sandbox Repo) */}
-            {activeTab === 'terminal' && (
-              <div className="space-y-4 pt-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-[#65666A]">
-                    Copy and run in your terminal (requires Git and GitHub CLI):
-                  </span>
-                  <button
-                    onClick={() =>
-                      handleCopy(
-                        automationBlueprint?.terminalScript(targetUsername, testRepoName) || '',
-                        'termScript'
-                      )
-                    }
-                    className="text-xs font-bold text-[#84CC16] hover:text-[#4D7C0F] inline-flex items-center gap-1 cursor-pointer"
-                  >
-                    {copiedKey === 'termScript' ? <Check size={13} /> : <Copy size={13} />}
-                    <span>{copiedKey === 'termScript' ? 'Copied Script!' : 'Copy Script'}</span>
-                  </button>
+                  <div className="flex items-center gap-3 pt-2">
+                    <button
+                      onClick={runSimulatedAutomation}
+                      disabled={isRunningSim}
+                      className="h-10 px-5 rounded-xl bg-[#101114] hover:bg-[#1C1E24] text-white text-xs font-bold inline-flex items-center gap-2 transition-all cursor-pointer shadow-md disabled:opacity-50"
+                    >
+                      <Play size={13} className={cn(isRunningSim && 'animate-spin')} />
+                      <span>{isRunningSim ? 'Executing Recipe...' : 'Run Local Simulation'}</span>
+                    </button>
+
+                    <button
+                      onClick={() => setAllStepsForBadge(activeBadge.id, true)}
+                      className="h-10 px-4 rounded-xl bg-white border border-[#E5E3DA] hover:border-[#84CC16] text-[#101114] text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <CheckCheck size={14} />
+                      <span>Mark All Completed</span>
+                    </button>
+                  </div>
                 </div>
+              )}
+            </div>
+          )}
 
-                <pre className="p-4 rounded-2xl bg-[#101114] text-emerald-400 font-mono text-[11px] leading-relaxed overflow-x-auto select-all">
-                  {automationBlueprint?.terminalScript(targetUsername, testRepoName) ||
-                    `# Standard Git Flow\ngit switch -c feat/${activeBadge.id}\ngit commit -m "feat: complete ${activeBadge.name}"\ngh pr merge --auto --merge`}
-                </pre>
+          {/* Secondary Tab: Terminal Script */}
+          {activeTab === 'terminal' && (
+            <div className="space-y-4 pt-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-[#65666A]">
+                  Run directly in terminal (requires Git and GitHub CLI):
+                </span>
+                <button
+                  onClick={() =>
+                    handleCopy(
+                      automationBlueprint?.terminalScript(targetUsername, testRepoName) || '',
+                      'termScript'
+                    )
+                  }
+                  className="text-xs font-bold text-[#84CC16] hover:text-[#4D7C0F] inline-flex items-center gap-1 cursor-pointer"
+                >
+                  {copiedKey === 'termScript' ? <Check size={13} /> : <Copy size={13} />}
+                  <span>{copiedKey === 'termScript' ? 'Copied Script!' : 'Copy Script'}</span>
+                </button>
               </div>
-            )}
 
-            {/* Tab 3: GitHub Action YAML */}
-            {activeTab === 'actions' && (
-              <div className="space-y-4 pt-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-[#65666A]">
-                    Target workflow file: <code className="font-mono text-[#101114]">{automationBlueprint?.actionFile || '.github/workflows/auto-merge.yml'}</code>
-                  </span>
-                  <button
-                    onClick={() =>
-                      handleCopy(automationBlueprint?.actionCode || '', 'yamlScript')
-                    }
-                    className="text-xs font-bold text-[#84CC16] hover:text-[#4D7C0F] inline-flex items-center gap-1 cursor-pointer"
-                  >
-                    {copiedKey === 'yamlScript' ? <Check size={13} /> : <Copy size={13} />}
-                    <span>{copiedKey === 'yamlScript' ? 'Copied YAML!' : 'Copy YAML'}</span>
-                  </button>
-                </div>
+              <pre className="p-4 rounded-2xl bg-[#101114] text-emerald-400 font-mono text-[11px] leading-relaxed overflow-x-auto select-all">
+                {automationBlueprint?.terminalScript(targetUsername, testRepoName) ||
+                  `# Standard Git Flow\ngit switch -c feat/${activeBadge.id}\ngit commit -m "feat: complete ${activeBadge.name}"\ngh pr merge --auto --merge`}
+              </pre>
+            </div>
+          )}
 
-                <pre className="p-4 rounded-2xl bg-[#101114] text-slate-200 font-mono text-[11px] leading-relaxed overflow-x-auto select-all">
-                  {automationBlueprint?.actionCode || '# No custom Action required for this badge.'}
-                </pre>
+          {/* Secondary Tab: GitHub Action YAML */}
+          {activeTab === 'actions' && (
+            <div className="space-y-4 pt-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-[#65666A]">
+                  Workflow path: <code className="font-mono text-[#101114]">{automationBlueprint?.actionFile || '.github/workflows/auto-merge.yml'}</code>
+                </span>
+                <button
+                  onClick={() =>
+                    handleCopy(automationBlueprint?.actionCode || '', 'yamlScript')
+                  }
+                  className="text-xs font-bold text-[#84CC16] hover:text-[#4D7C0F] inline-flex items-center gap-1 cursor-pointer"
+                >
+                  {copiedKey === 'yamlScript' ? <Check size={13} /> : <Copy size={13} />}
+                  <span>{copiedKey === 'yamlScript' ? 'Copied YAML!' : 'Copy YAML'}</span>
+                </button>
               </div>
-            )}
 
-            {/* Tab 4: Security & Gotchas */}
-            {activeTab === 'security' && (
-              <div className="space-y-4 pt-2">
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold text-[#101114] uppercase tracking-wider flex items-center gap-1.5">
-                    <Shield size={14} className="text-[#84CC16]" />
-                    <span>Security & Automation Boundaries</span>
-                  </h4>
-                  <ul className="space-y-1.5">
-                    {(automationBlueprint?.securityChecks || [
-                      'Only runs locally on developer machine or sandbox repository',
-                      'No elevated OAuth tokens stored or shared',
-                      'Strict separation of personal repositories and community sandboxes',
-                    ]).map((chk, i) => (
-                      <li key={i} className="text-xs text-[#65666A] flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16] shrink-0" />
-                        <span>{chk}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              <pre className="p-4 rounded-2xl bg-[#101114] text-slate-200 font-mono text-[11px] leading-relaxed overflow-x-auto select-all">
+                {automationBlueprint?.actionCode || '# No custom Action required for this badge.'}
+              </pre>
+            </div>
+          )}
 
-                <div className="space-y-2 pt-2 border-t border-[#ECEAE1]">
-                  <h4 className="text-xs font-bold text-[#101114] uppercase tracking-wider flex items-center gap-1.5">
-                    <AlertTriangle size={14} className="text-amber-500" />
-                    <span>GitHub Ingestion Gotchas</span>
-                  </h4>
-                  <ul className="space-y-1.5">
-                    {activeBadge.gotchas.map((gotcha, i) => (
-                      <li key={i} className="text-xs text-[#65666A] flex items-start gap-2">
-                        <span className="text-amber-500 font-bold shrink-0">!</span>
-                        <span>{gotcha}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+          {/* Secondary Tab: Security & Rules */}
+          {activeTab === 'security' && (
+            <div className="p-6 rounded-3xl bg-white border border-[#E5E3DA] space-y-4 shadow-xs">
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold text-[#101114] uppercase tracking-wider flex items-center gap-1.5">
+                  <Shield size={14} className="text-[#84CC16]" />
+                  <span>Security & Automation Boundaries</span>
+                </h4>
+                <ul className="space-y-1.5">
+                  {(automationBlueprint?.securityChecks || [
+                    'Only runs locally on developer machine or sandbox repository',
+                    'No elevated OAuth tokens stored or shared',
+                    'Strict separation of personal repositories and community sandboxes',
+                  ]).map((chk, i) => (
+                    <li key={i} className="text-xs text-[#65666A] flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16] shrink-0" />
+                      <span>{chk}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            )}
-          </div>
+
+              <div className="space-y-2 pt-2 border-t border-[#ECEAE1]">
+                <h4 className="text-xs font-bold text-[#101114] uppercase tracking-wider flex items-center gap-1.5">
+                  <AlertTriangle size={14} className="text-amber-500" />
+                  <span>GitHub Ingestion Gotchas</span>
+                </h4>
+                <ul className="space-y-1.5">
+                  {activeBadge.gotchas.map((gotcha, i) => (
+                    <li key={i} className="text-xs text-[#65666A] flex items-start gap-2">
+                      <span className="text-amber-500 font-bold shrink-0">!</span>
+                      <span>{gotcha}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Column (3 cols): Live Console & Community Repo Sandbox */}
@@ -553,6 +559,26 @@ export const GitGlowEnginePage: React.FC = () => {
             </div>
           </div>
 
+          {/* Dedicated Learning Window Card on Right Rail */}
+          <div className="p-5 rounded-3xl bg-[#F7F8EF] border border-[#DCE89E] space-y-3">
+            <div className="flex items-center gap-2">
+              <BookOpen size={16} className="text-[#84CC16]" />
+              <h3 className="text-xs font-bold text-[#101114] uppercase tracking-wider">
+                Concept & Guide
+              </h3>
+            </div>
+            <p className="text-xs text-[#65666A] leading-relaxed">
+              Want to understand why GitHub engineers value {activeBadge.name} before executing? Open the learning guide in a clean separate window.
+            </p>
+            <button
+              onClick={() => setShowLearnModal(true)}
+              className="w-full h-9 rounded-xl bg-white border border-[#DCE89E] hover:border-[#84CC16] text-[#101114] text-xs font-bold inline-flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
+            >
+              <span>Open Learning Window</span>
+              <BookOpen size={13} className="text-[#84CC16]" />
+            </button>
+          </div>
+
           {/* GitGlow Community Sandbox Info */}
           <div className="p-5 rounded-3xl bg-white border border-[#E5E3DA] space-y-3">
             <div className="flex items-center gap-2">
@@ -576,7 +602,18 @@ export const GitGlowEnginePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* ── SEPARATE WINDOW / MODAL FOR LEARNING PART ── */}
+      <BadgeLearningModal
+        isOpen={showLearnModal}
+        onClose={() => setShowLearnModal(false)}
+        activeBadge={activeBadge}
+        pedagogy={pedagogy}
+        onGoToExecution={() => {
+          setShowLearnModal(false);
+          setActiveTab('sandbox');
+        }}
+      />
     </div>
   );
 };
-

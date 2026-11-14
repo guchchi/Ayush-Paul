@@ -49,6 +49,7 @@ const BCyberPreparationPlannerPage = lazy(() => import("./pages/blueprints/b-cyb
 // --- GitGlow Pages (Lazy Loaded) ---
 const GitGlowHomePage = lazy(() => import("./pages/blueprints/gitglow/GitGlowHomePage").then(m => ({ default: m.GitGlowHomePage })));
 const GitGlowEnginePage = lazy(() => import("./pages/blueprints/gitglow/GitGlowEnginePage").then(m => ({ default: m.GitGlowEnginePage })));
+const GitGlowLearnPage = lazy(() => import("./pages/blueprints/gitglow/GitGlowLearnPage").then(m => ({ default: m.GitGlowLearnPage })));
 
 
 
@@ -176,6 +177,7 @@ export default function App() {
               {/* GitGlow Routes (Declared before :slug) */}
               <Route path="/blueprints/gitglow" element={wrapInLayout(<GitGlowHomePage />)} />
               <Route path="/blueprints/gitglow/engine" element={<GitGlowEnginePage />} />
+              <Route path="/blueprints/gitglow/learn" element={<GitGlowLearnPage />} />
               <Route path="/blueprints/:slug" element={wrapInLayout(<BlueprintDetailPage />)} />
               <Route path="/blueprints/:slug/engine" element={<BlueprintEnginePage />} />
               <Route path="/academy" element={<Navigate to="/mastery" replace />} />

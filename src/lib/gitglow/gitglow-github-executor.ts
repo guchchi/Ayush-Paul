@@ -187,3 +187,161 @@ export async function executeRealCloseIssue(
   };
 }
 
+export interface GitHubPullRequestResult {
+  number: number;
+  id: number;
+  title: string;
+  html_url: string;
+  state: 'open' | 'closed';
+  merged: boolean;
+  merged_at?: string;
+  headBranch: string;
+  baseBranch: string;
+}
+
+/**
+ * Real GitHub Pull Shark Action: Create Feature Branch, Commit Contributor Card, and Open PR
+ */
+export async function executeRealCreatePullRequest(
+  accessToken: string,
+  owner: string,
+  repo: string,
+  defaultBranch = 'main'
+): Promise<GitHubPullRequestResult> {
+  const headers = {
+    Accept: 'application/vnd.github.v3+json',
+    Authorization: `Bearer ${accessToken}`,
+    'Content-Type': 'application/json',
+  };
+
+  // 1. Get default branch commit SHA
+  const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${defaultBranch}`, { headers });
+  if (!refRes.ok) {
+    throw new Error(`Could not resolve branch refs/heads/${defaultBranch} (Status: ${refRes.status})`);
+  }
+  const refData = await refRes.json();
+  const baseSha = refData.object.sha;
+
+  // 2. Create feature branch
+  const featureBranch = `feat/gitglow-contributor-${Date.now().toString().slice(-6)}`;
+  const branchRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      ref: `refs/heads/${featureBranch}`,
+      sha: baseSha,
+    }),
+  });
+
+  if (!branchRes.ok) {
+    const err = await branchRes.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to create feature branch.');
+  }
+
+  // 3. Commit contributor card file on feature branch
+  const filePath = `contributors/${owner}.json`;
+  const fileContent = JSON.stringify(
+    {
+      handle: owner,
+      achievementTarget: 'Pull Shark',
+      verifiedTimestamp: new Date().toISOString(),
+      verifiedVia: 'GitGlow Achievements Engine',
+    },
+    null,
+    2
+  );
+  const encodedContent = btoa(fileContent);
+
+  const fileRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      message: `feat: register @${owner} contributor card for Pull Shark milestone`,
+      content: encodedContent,
+      branch: featureBranch,
+    }),
+  });
+
+  if (!fileRes.ok) {
+    const err = await fileRes.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to commit contributor card.');
+  }
+
+  // 4. Open Pull Request into defaultBranch
+  const prRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/pulls`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      title: `feat: add @${owner} contributor profile [Pull Shark Qualification]`,
+      head: featureBranch,
+      base: defaultBranch,
+      body: `### GitGlow Official Achievement Telemetry\n- **Target Badge**: Pull Shark\n- **Contributor**: @${owner}\n- **Branch**: \`${featureBranch}\`\n\nAuto-merging this Pull Request will trigger GitHub's Pull Shark achievement counter on your official profile!`,
+    }),
+  });
+
+  if (!prRes.ok) {
+    const err = await prRes.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to open Pull Request on GitHub.');
+  }
+
+  const pr = await prRes.json();
+  return {
+    number: pr.number,
+    id: pr.id,
+    title: pr.title,
+    html_url: pr.html_url,
+    state: pr.state,
+    merged: pr.merged || false,
+    headBranch: featureBranch,
+    baseBranch: defaultBranch,
+  };
+}
+
+/**
+ * Real GitHub Pull Shark Action: Auto-merge Pull Request into Default Branch
+ */
+export async function executeRealMergePullRequest(
+  accessToken: string,
+  owner: string,
+  repo: string,
+  pullNumber: number
+): Promise<GitHubPullRequestResult> {
+  const headers = {
+    Accept: 'application/vnd.github.v3+json',
+    Authorization: `Bearer ${accessToken}`,
+    'Content-Type': 'application/json',
+  };
+
+  const mergeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/merge`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      commit_title: `Merge pull request #${pullNumber} from GitGlow Engine`,
+      commit_message: `Official Pull Shark qualification merged successfully.`,
+      merge_method: 'merge',
+    }),
+  });
+
+  if (!mergeRes.ok) {
+    const err = await mergeRes.json().catch(() => ({}));
+    throw new Error(err.message || `Failed to merge Pull Request (Status: ${mergeRes.status})`);
+  }
+
+  // Fetch updated PR state
+  const prRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}`, { headers });
+  const pr = await prRes.json();
+
+  return {
+    number: pr.number,
+    id: pr.id,
+    title: pr.title,
+    html_url: pr.html_url,
+    state: pr.state,
+    merged: pr.merged || true,
+    merged_at: pr.merged_at || new Date().toISOString(),
+    headBranch: pr.head?.ref || '',
+    baseBranch: pr.base?.ref || 'main',
+  };
+}
+
+

@@ -174,6 +174,41 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
     }
   };
 
+  // ── Unified Step 1 (Live Real GitHub or Practice Simulation) ──
+  const handleStep1CreateIssue = async () => {
+    if (connectedUser) {
+      await handleRealStep1CreateIssue();
+    } else {
+      // Instant Practice Simulation
+      setSimState('opened');
+      setElapsedSeconds(0);
+      setIssueNumber(1);
+      toggleBadgeStep('quickdraw', 0);
+      setLogs((prev) => [
+        ...prev,
+        { text: `$ [Practice Sandbox] Opening tracking issue for @${targetUsername}...`, type: 'cmd' },
+        { text: `✓ Practice Issue #1 created in sandbox!`, type: 'success' },
+        { text: `[Stopwatch Started]: Close within 300s to qualify for Quickdraw!`, type: 'info' },
+      ]);
+    }
+  };
+
+  // ── Unified Step 2 (Live Real GitHub or Practice Simulation) ──
+  const handleStep2CloseIssue = async () => {
+    if (connectedUser && realIssueResult) {
+      await handleRealStep2CloseIssue();
+    } else {
+      setSimState('closed');
+      toggleBadgeStep('quickdraw', 1);
+      setLogs((prev) => [
+        ...prev,
+        { text: `$ [Practice Sandbox] Closing Issue #${issueNumber}...`, type: 'cmd' },
+        { text: `✓ Issue #${issueNumber} closed in ${elapsedSeconds}s!`, type: 'success' },
+        { text: `Timing: ${elapsedSeconds}s is well under the 300-second window. Click Station 3 to claim badge!`, type: 'info' },
+      ]);
+    }
+  };
+
   // ── REAL GITHUB EXECUTION: Step 2 (Close Issue on Real GitHub) ──
   const handleRealStep2CloseIssue = async () => {
     if (!connectedUser || !realIssueResult) return;
@@ -408,7 +443,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
           </div>
 
           <button
-            onClick={connectedUser ? handleRealStep1CreateIssue : handleConnectGitHub}
+            onClick={handleStep1CreateIssue}
             disabled={simState !== 'idle' || isExecutingLive}
             className="w-full h-10 rounded-xl bg-[#101114] hover:bg-[#1C1E24] text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
           >
@@ -417,7 +452,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
               {simState === 'idle'
                 ? connectedUser
                   ? 'Execute: Open Real Issue'
-                  : 'Connect GitHub to Execute'
+                  : 'Open Practice Issue'
                 : `Issue #${issueNumber} Created ✓`}
             </span>
           </button>
@@ -454,7 +489,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
           </div>
 
           <button
-            onClick={connectedUser ? handleRealStep2CloseIssue : () => {}}
+            onClick={handleStep2CloseIssue}
             disabled={simState !== 'opened' || isExecutingLive}
             className="w-full h-10 rounded-xl bg-[#84CC16] hover:bg-[#65A30D] text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
           >

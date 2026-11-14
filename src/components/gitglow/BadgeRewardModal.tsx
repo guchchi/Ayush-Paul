@@ -21,10 +21,17 @@ interface BadgeRewardModalProps {
   badgeName: string;
   badgeIcon: string;
   username: string;
-  durationSeconds: number;
-  issueNumber: number;
+  durationSeconds?: number;
+  issueNumber?: number;
   repoFullName: string;
   issueUrl?: string;
+  itemType?: 'issue' | 'pr';
+  stat1Label?: string;
+  stat1Value?: string;
+  stat1Sub?: string;
+  stat2Label?: string;
+  stat2Value?: string;
+  stat2Sub?: string;
   onContinueToNext?: () => void;
 }
 
@@ -34,10 +41,17 @@ export const BadgeRewardModal: React.FC<BadgeRewardModalProps> = ({
   badgeName,
   badgeIcon,
   username,
-  durationSeconds,
-  issueNumber,
+  durationSeconds = 25,
+  issueNumber = 1,
   repoFullName,
   issueUrl,
+  itemType = 'issue',
+  stat1Label,
+  stat1Value,
+  stat1Sub,
+  stat2Label,
+  stat2Value,
+  stat2Sub,
   onContinueToNext,
 }) => {
   React.useEffect(() => {
@@ -75,7 +89,8 @@ export const BadgeRewardModal: React.FC<BadgeRewardModalProps> = ({
   if (!isOpen) return null;
 
   const handleShareOnX = () => {
-    const tweet = `Just unlocked the official GitHub "${badgeName}" achievement using @GitGlow! ⚡\n\nIssue #${issueNumber} closed in ${durationSeconds}s. Real webhook verified!\n\nCheck it out on my profile: https://github.com/${username}`;
+    const itemLabel = itemType === 'pr' ? `PR #${issueNumber} merged` : `Issue #${issueNumber} closed in ${durationSeconds}s`;
+    const tweet = `Just unlocked the official GitHub "${badgeName}" achievement using @GitGlow! ⚡\n\n${itemLabel}. Real webhook verified!\n\nCheck it out on my profile: https://github.com/${username}`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`, '_blank');
   };
 
@@ -138,19 +153,27 @@ export const BadgeRewardModal: React.FC<BadgeRewardModalProps> = ({
           {/* Proof Breakdown Stat Grid */}
           <div className="grid grid-cols-3 gap-2.5 p-4 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] text-left">
             <div>
-              <span className="text-[10px] font-mono text-[#65666A] uppercase block">Triage Speed</span>
+              <span className="text-[10px] font-mono text-[#65666A] uppercase block">
+                {stat1Label || (itemType === 'pr' ? 'Pipeline' : 'Triage Speed')}
+              </span>
               <span className="text-base font-extrabold text-[#101114] flex items-center gap-1 mt-0.5">
                 <Clock size={13} className="text-[#84CC16]" />
-                {durationSeconds}s
+                {stat1Value || (itemType === 'pr' ? 'Auto-Merged' : `${durationSeconds}s`)}
               </span>
-              <span className="text-[9.5px] text-[#65A30D] font-bold">&lt; 300s window</span>
+              <span className="text-[9.5px] text-[#65A30D] font-bold">
+                {stat1Sub || (itemType === 'pr' ? 'Default branch' : '< 300s window')}
+              </span>
             </div>
             <div>
-              <span className="text-[10px] font-mono text-[#65666A] uppercase block">Real Issue</span>
-              <span className="text-base font-extrabold text-[#101114] mt-0.5 block">
-                #{issueNumber}
+              <span className="text-[10px] font-mono text-[#65666A] uppercase block">
+                {stat2Label || (itemType === 'pr' ? 'Pull Request' : 'Real Issue')}
               </span>
-              <span className="text-[9.5px] text-[#65A30D] font-bold">Closed state</span>
+              <span className="text-base font-extrabold text-[#101114] mt-0.5 block">
+                {stat2Value || `#${issueNumber}`}
+              </span>
+              <span className="text-[9.5px] text-[#65A30D] font-bold">
+                {stat2Sub || (itemType === 'pr' ? 'Merged into main' : 'Closed state')}
+              </span>
             </div>
             <div>
               <span className="text-[10px] font-mono text-[#65666A] uppercase block">Attribution</span>
