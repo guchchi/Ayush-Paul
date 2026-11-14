@@ -353,7 +353,8 @@ export async function executeRealYoloPullRequest(
   accessToken: string,
   owner: string,
   repo: string,
-  defaultBranch = 'main'
+  defaultBranch = 'main',
+  reviewerHandle?: string
 ): Promise<GitHubPullRequestResult> {
   const headers = {
     Accept: 'application/vnd.github.v3+json',
@@ -424,6 +425,23 @@ export async function executeRealYoloPullRequest(
   }
 
   const pr = await prRes.json();
+
+  // 5. If a collaborator reviewer was specified, request review so GitHub records the bypass event
+  const cleanReviewer = reviewerHandle?.trim().replace(/^@/, '');
+  if (cleanReviewer && cleanReviewer.toLowerCase() !== owner.toLowerCase()) {
+    try {
+      await fetch(`https://api.github.com/repos/${owner}/${repo}/pulls/${pr.number}/requested_reviewers`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          reviewers: [cleanReviewer],
+        }),
+      });
+    } catch (e) {
+      console.warn('Note: Reviewer request optional fallback:', e);
+    }
+  }
+
   return {
     number: pr.number,
     id: pr.id,

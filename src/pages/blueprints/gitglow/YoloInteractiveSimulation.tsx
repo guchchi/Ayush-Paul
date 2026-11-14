@@ -63,6 +63,7 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
   const [isExecutingLive, setIsExecutingLive] = useState<boolean>(false);
   const [realPrResult, setRealPrResult] = useState<GitHubPullRequestResult | null>(null);
   const [activeRepoName, setActiveRepoName] = useState<string>(testRepoName);
+  const [collaboratorReviewer, setCollaboratorReviewer] = useState<string>('');
 
   // Runner State
   const [simState, setSimState] = useState<'idle' | 'branch_created' | 'pr_opened' | 'merged' | 'verified'>('idle');
@@ -128,12 +129,13 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
         { text: `$ git switch -c hotfix/yolo-bypass && git commit -m "fix(emergency): direct patch for YOLO"`, type: 'cmd' },
       ]);
 
-      // 2. Create branch, commit patch, and open PR with 0 reviewers
+      // 2. Create branch, commit patch, and open PR with 0 reviews
       const pr = await executeRealYoloPullRequest(
         connectedUser.accessToken,
         connectedUser.githubUsername,
         sandbox.name,
-        sandbox.default_branch
+        sandbox.default_branch,
+        collaboratorReviewer
       );
 
       setRealPrResult(pr);
@@ -366,6 +368,47 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
               <span>{isConnecting ? 'Connecting GitHub...' : 'Authorize GitHub (1-Click)'}</span>
             </button>
           )}
+        </div>
+      </div>
+
+      {/* ── 2.5 CRITICAL GITHUB INDEXING & COLLABORATOR RULE NOTICE ── */}
+      <div className="p-4 sm:p-5 rounded-3xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-3">
+        <div className="flex items-start gap-3">
+          <div className="w-8 h-8 rounded-xl bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center shrink-0 mt-0.5">
+            <Clock size={16} />
+          </div>
+          <div className="space-y-1">
+            <h5 className="text-xs font-bold text-[#101114] flex items-center gap-2">
+              <span>Why YOLO takes 2–24 Hours on GitHub Profile:</span>
+              <span className="px-2 py-0.2 rounded-md bg-[#F59E0B]/20 text-[#B45309] text-[9.5px] font-mono font-bold">
+                Asynchronous Indexing Queue
+              </span>
+            </h5>
+            <p className="text-[11px] text-[#65666A] leading-relaxed">
+              Unlike Quickdraw which updates in 15–30 minutes, <strong>GitHub's background worker processes YOLO and Pull Shark asynchronously</strong> in scheduled batch jobs. A merged PR is registered immediately on GitHub's API, but the achievement badge can take between <strong>2 to 24 hours</strong> to appear on your public profile.
+            </p>
+          </div>
+        </div>
+
+        {/* Optional Reviewer Handle to guarantee review bypass context */}
+        <div className="pt-3 border-t border-[#ECEAE1] grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+          <div className="sm:col-span-8">
+            <label className="text-[10px] font-bold text-[#65666A] uppercase tracking-wider block">
+              Optional Collaborator / Reviewer Handle (Guarantees Review Bypass Context):
+            </label>
+            <p className="text-[10px] text-[#8E9099]">
+              If you have an alt account, friend, or teammate on GitHub, enter their handle. GitGlow will request review from them and merge immediately to simulate a true YOLO bypass.
+            </p>
+          </div>
+          <div className="sm:col-span-4">
+            <input
+              type="text"
+              value={collaboratorReviewer}
+              onChange={(e) => setCollaboratorReviewer(e.target.value)}
+              placeholder="@collaborator-username (optional)"
+              className="w-full h-8 px-2.5 rounded-xl bg-white border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#84CC16]"
+            />
+          </div>
         </div>
       </div>
 
