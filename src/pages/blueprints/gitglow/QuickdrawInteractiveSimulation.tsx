@@ -30,6 +30,7 @@ import {
   executeRealCloseIssue,
   GitHubIssueResult,
 } from '../../../lib/gitglow/gitglow-github-executor';
+import { BadgeRewardModal } from '../../../components/gitglow/BadgeRewardModal';
 
 interface QuickdrawInteractiveSimulationProps {
   onCompleted?: () => void;
@@ -69,6 +70,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
   const [issueNumber, setIssueNumber] = useState<number>(1);
   const [logs, setLogs] = useState<Array<{ text: string; type?: 'info' | 'success' | 'cmd' | 'error' }>>([]);
+  const [showRewardModal, setShowRewardModal] = useState<boolean>(false);
 
   const timerRef = useRef<any>(null);
 
@@ -223,6 +225,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
     setSimState('verified');
     toggleBadgeStep('quickdraw', 2);
     markMissionCompleted('m1-quickdraw');
+    setShowRewardModal(true);
 
     if (connectedUser?.githubUsername) {
       runScan(connectedUser.githubUsername);
@@ -562,6 +565,24 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
           )}
         </div>
       </div>
+
+      {/* ── 5. CELEBRATORY BADGE REWARD MODAL (Confetti + Proof + Share) ── */}
+      <BadgeRewardModal
+        isOpen={showRewardModal}
+        onClose={() => setShowRewardModal(false)}
+        badgeName="Quickdraw"
+        badgeIcon="/images/badges/quickdraw.png"
+        username={connectedUser?.githubUsername || targetUsername}
+        durationSeconds={realIssueResult?.durationSeconds || elapsedSeconds || 38}
+        issueNumber={realIssueResult?.number || issueNumber}
+        repoFullName={`${connectedUser?.githubUsername || targetUsername}/${activeRepoName}`}
+        issueUrl={realIssueResult?.html_url}
+        onContinueToNext={() => {
+          setShowRewardModal(false);
+          // Route or highlight next badge
+          window.location.search = '?badge=pull-shark';
+        }}
+      />
     </div>
   );
 };
