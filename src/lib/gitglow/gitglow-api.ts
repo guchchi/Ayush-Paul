@@ -141,7 +141,9 @@ export async function analyzeGitHubProfile(username: string): Promise<UserScanAn
   // 3.5 Check Live Public GitHub Achievements Page (Ground Truth)
   let liveEarnedAchievements: string[] = [];
   try {
-    const liveRes = await fetch(`/api/gitglow/achievements/${encodeURIComponent(cleanHandle)}`);
+    const liveRes = await fetch(`/api/gitglow/achievements/${encodeURIComponent(cleanHandle)}`, {
+      signal: AbortSignal.timeout(6000),
+    });
     if (liveRes.ok) {
       const data = await liveRes.json();
       if (Array.isArray(data.achievements)) {

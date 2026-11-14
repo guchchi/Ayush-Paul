@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Play,
   CheckCircle2,
@@ -80,7 +80,15 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
 
   // Runner State
   const [yoloMode, setYoloMode] = useState<'autonomous' | 'collaborator'>('autonomous');
+  const [botConfig, setBotConfig] = useState<{ botConfigured: boolean; botHandle: string; message: string } | null>(null);
   const [simState, setSimState] = useState<'idle' | 'branch_created' | 'pr_opened' | 'merged' | 'verified'>('idle');
+
+  useEffect(() => {
+    fetch('/api/gitglow/bot/status')
+      .then((r) => r.json())
+      .then((d) => setBotConfig(d))
+      .catch(() => {});
+  }, []);
   const [prNumber, setPrNumber] = useState<number>(1);
   const [branchName, setBranchName] = useState<string>('hotfix/yolo-direct-merge');
   const [logs, setLogs] = useState<Array<{ text: string; type?: 'info' | 'success' | 'cmd' | 'error' }>>([]);
@@ -213,13 +221,45 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
         { text: `$ git switch -c hotfix/yolo-bypass && git commit -m "fix(emergency): direct patch for YOLO"`, type: 'cmd' },
       ]);
 
-      // 2. Create branch, commit patch, and open PR with review requirement or reviewer
+      // 2. Prepare reviewer (Autonomous Bot vs Collaborator)
+      let effectiveReviewer = yoloMode === 'collaborator' ? collaboratorReviewer : undefined;
+
+      if (yoloMode === 'autonomous' && botConfig?.botConfigured && botConfig.botHandle) {
+        setLogs((prev) => [
+          ...prev,
+          { text: `[1-Click Bot] Auto-inviting GitGlow companion bot @${botConfig.botHandle}...`, type: 'info' },
+        ]);
+        try {
+          const inv = await inviteCollaboratorToRepo(
+            connectedUser.accessToken,
+            connectedUser.githubUsername,
+            sandbox.name,
+            botConfig.botHandle
+          );
+          if (inv.invitationId) {
+            await fetch('/api/gitglow/bot/accept-invite', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ invitationId: inv.invitationId }),
+            });
+            setLogs((prev) => [
+              ...prev,
+              { text: `✓ GitGlow Companion Bot @${botConfig.botHandle} auto-accepted repository invitation!`, type: 'success' },
+            ]);
+            effectiveReviewer = botConfig.botHandle;
+          }
+        } catch (e: any) {
+          console.warn('Bot auto-invite note:', e.message);
+        }
+      }
+
+      // 3. Create branch, commit patch, and open PR with review requirement or reviewer
       const pr = await executeRealYoloPullRequest(
         connectedUser.accessToken,
         connectedUser.githubUsername,
         sandbox.name,
         sandbox.default_branch,
-        yoloMode === 'collaborator' ? collaboratorReviewer : undefined
+        effectiveReviewer
       );
 
       setRealPrResult(pr);
@@ -532,15 +572,35 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
         </div>
 
         {yoloMode === 'autonomous' ? (
-          <div className="p-4 rounded-2xl bg-[#F7F8EF] border border-[#DCE89E] space-y-2">
-            <div className="flex items-center gap-2 text-xs font-bold text-[#4D7C0F]">
-              <CheckCircle2 size={15} className="text-[#84CC16]" />
-              <span>100% Autonomous Review-Bypass Mode (Zero Friends or Alt-Accounts Needed)</span>
+          botConfig?.botConfigured ? (
+            <div className="p-4 rounded-2xl bg-[#F7F8EF] border border-[#DCE89E] space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#4D7C0F]">
+                <CheckCircle2 size={15} className="text-[#84CC16]" />
+                <span>GitGlow Autonomous Companion Bot (@{botConfig.botHandle}) Active!</span>
+              </div>
+              <p className="text-[11px] text-[#65A30D] leading-relaxed">
+                When you click <strong>1-Click Create Real YOLO PR</strong>, GitGlow auto-invites our platform bot, accepts the invitation via backend API, attaches the bot as the reviewer, and merges without review. <strong>Zero manual effort for any end-user!</strong>
+              </p>
             </div>
-            <p className="text-[11px] text-[#65A30D] leading-relaxed">
-              GitGlow uses GitHub&apos;s Branch Protection API to temporarily enforce a 1-review rule on your default branch, opens the hotfix PR under mandatory review rule, executes the Admin Review Bypass Merge, and auto-cleans the rule. <strong>Completely turnkey for any user with 1 click!</strong>
-            </p>
-          </div>
+          ) : (
+            <div className="p-4 rounded-2xl bg-[#FEFCE8] border border-[#FEF08A] space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#854D0E]">
+                <AlertTriangle size={15} className="text-amber-500 shrink-0" />
+                <span>Platform Companion Bot Token Pending in Server (.env.local)</span>
+              </div>
+              <p className="text-[11px] text-[#713F12] leading-relaxed">
+                GitHub&apos;s achievement daemon strictly requires a real second account to be requested as a reviewer before merging. To make this 1-click autonomous for all visitors, set <code className="px-1.5 py-0.5 rounded-md bg-white border border-[#FEF08A] font-mono text-[10px]">GITGLOW_BOT_TOKEN</code> in <code className="font-mono text-[10px]">.env.local</code>.
+              </p>
+              <div className="pt-1">
+                <button
+                  onClick={() => setYoloMode('collaborator')}
+                  className="text-xs font-bold text-[#854D0E] underline hover:text-black cursor-pointer"
+                >
+                  Switch to Collaborator Mode to test with a second account &rarr;
+                </button>
+              </div>
+            </div>
+          )
         ) : (
           <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#ECEAE1] space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">

@@ -484,15 +484,22 @@ async function startServer() {
   });
 
   // GitGlow Live GitHub Achievements Scanner (Ground Truth)
+  const achievementsCache = new Map<string, { achievements: string[]; timestamp: number }>();
   app.get("/api/gitglow/achievements/:username", async (req, res) => {
     try {
       const { username } = req.params;
-      const clean = username.trim().replace(/^@/, "");
+      const clean = username.trim().replace(/^@/, "").toLowerCase();
+      const cached = achievementsCache.get(clean);
+      if (cached && Date.now() - cached.timestamp < 5 * 60 * 1000) {
+        return res.json({ username: clean, achievements: cached.achievements });
+      }
+
       const ghRes = await fetch(`https://github.com/${encodeURIComponent(clean)}?tab=achievements`, {
         headers: {
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
           "Accept": "text/html,application/xhtml+xml",
         },
+        signal: AbortSignal.timeout(8000),
       });
       if (!ghRes.ok) {
         return res.status(ghRes.status).json({ achievements: [] });
@@ -500,6 +507,7 @@ async function startServer() {
       const html = await ghRes.text();
       const matches = Array.from(html.matchAll(/data-achievement-slug="([^"]+)"/g)).map((m) => m[1]);
       const unique = Array.from(new Set(matches));
+      achievementsCache.set(clean, { achievements: unique, timestamp: Date.now() });
       res.json({ username: clean, achievements: unique });
     } catch (err: any) {
       res.status(500).json({ error: err.message, achievements: [] });
