@@ -310,10 +310,10 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
     }),
     {
       name: 'gitglow-user-progress',
-      version: 4,
+      version: 5,
       migrate: (persistedState: any, version: number) => {
         // Invalidate stale/legacy scanAnalysis and manual overrides
-        if (!version || version < 4) {
+        if (!version || version < 5) {
           return {
             ...persistedState,
             scanAnalysis: null,

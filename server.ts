@@ -506,6 +506,51 @@ async function startServer() {
     }
   });
 
+  // GitGlow Automated Companion Bot Endpoints
+  app.get("/api/gitglow/bot/status", (req, res) => {
+    const hasToken = Boolean(process.env.GITGLOW_BOT_TOKEN);
+    res.json({
+      botConfigured: hasToken,
+      botHandle: process.env.GITGLOW_BOT_USERNAME || "gitglow-bot",
+      message: hasToken
+        ? "Automated companion bot active."
+        : "Bot token not configured in .env. Using 1-Click Branch Protection Override mode.",
+    });
+  });
+
+  app.post("/api/gitglow/bot/accept-invite", async (req, res) => {
+    try {
+      const { invitationId } = req.body;
+      const botToken = process.env.GITGLOW_BOT_TOKEN;
+      if (!botToken) {
+        return res.status(503).json({
+          error: "GITGLOW_BOT_TOKEN not configured in server environment. Use 1-Click Branch Protection Override mode instead.",
+        });
+      }
+
+      if (!invitationId) {
+        return res.status(400).json({ error: "Missing invitationId parameter" });
+      }
+
+      const patchRes = await fetch(`https://api.github.com/user/repository_invitations/${encodeURIComponent(invitationId)}`, {
+        method: "PATCH",
+        headers: {
+          Accept: "application/vnd.github.v3+json",
+          Authorization: `Bearer ${botToken}`,
+        },
+      });
+
+      if (!patchRes.ok) {
+        const err = await patchRes.json().catch(() => ({}));
+        return res.status(patchRes.status).json({ error: err.message || "Failed to accept repository invitation" });
+      }
+
+      res.json({ success: true, message: "Invitation accepted by GitGlow Companion Bot" });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

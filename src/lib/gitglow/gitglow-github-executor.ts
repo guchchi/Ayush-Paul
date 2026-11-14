@@ -449,6 +449,15 @@ export async function executeRealYoloPullRequest(
       reviewRequestError = reviewErr.message || `HTTP ${reviewRes.status}`;
       console.warn(`Review request note: ${reviewRequestError}`);
     }
+  } else {
+    // If no collaborator specified, arm branch protection with 1 required review (admin bypass allowed)
+    // This turns this pull request into an official review-enforced bypass event!
+    try {
+      await enableYoloBranchProtection(accessToken, owner, repo, defaultBranch);
+      reviewRequested = true;
+    } catch (e: any) {
+      console.warn('Branch protection fallback note:', e.message);
+    }
   }
 
   return {
@@ -461,9 +470,66 @@ export async function executeRealYoloPullRequest(
     headBranch: hotfixBranch,
     baseBranch: defaultBranch,
     reviewRequested,
-    reviewerUsername: cleanReviewer,
+    reviewerUsername: cleanReviewer || 'Branch Protection (Admin Bypass)',
     reviewRequestError,
   };
+}
+
+/**
+ * Real GitHub Action: Arm Branch Protection with 1 Required Review (Admin Bypass Allowed)
+ * This turns the default branch into a review-enforced branch so merging without review is an official bypass.
+ */
+export async function enableYoloBranchProtection(
+  accessToken: string,
+  owner: string,
+  repo: string,
+  branch = 'main'
+): Promise<void> {
+  const headers = {
+    Accept: 'application/vnd.github.v3+json',
+    Authorization: `Bearer ${accessToken}`,
+    'Content-Type': 'application/json',
+  };
+
+  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/branches/${branch}/protection`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      required_status_checks: null,
+      enforce_admins: false,
+      required_pull_request_reviews: {
+        dismiss_stale_reviews: false,
+        require_code_owner_reviews: false,
+        required_approving_review_count: 1,
+      },
+      restrictions: null,
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    console.warn('Branch protection warning:', err.message);
+  }
+}
+
+/**
+ * Real GitHub Action: Remove Branch Protection to restore clean state
+ */
+export async function disableYoloBranchProtection(
+  accessToken: string,
+  owner: string,
+  repo: string,
+  branch = 'main'
+): Promise<void> {
+  const headers = {
+    Accept: 'application/vnd.github.v3+json',
+    Authorization: `Bearer ${accessToken}`,
+  };
+
+  await fetch(`https://api.github.com/repos/${owner}/${repo}/branches/${branch}/protection`, {
+    method: 'DELETE',
+    headers,
+  }).catch(() => {});
 }
 
 /**

@@ -79,6 +79,9 @@ export async function connectGitHubForGitGlow(): Promise<GitGlowConnectedUser> {
  * Retrieve active connected GitHub session
  */
 export function getSavedGitGlowSession(): GitGlowConnectedUser | null {
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    return null;
+  }
   try {
     const data = localStorage.getItem(STORAGE_KEY);
     if (data) {
@@ -95,7 +98,9 @@ export function getSavedGitGlowSession(): GitGlowConnectedUser | null {
  */
 export async function disconnectGitGlowSession(): Promise<void> {
   try {
-    localStorage.removeItem(STORAGE_KEY);
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY);
+    }
     await signOut(auth);
   } catch (e) {
     console.warn('Signout warning:', e);

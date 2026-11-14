@@ -31,6 +31,7 @@ import {
   executeRealMergePullRequest,
   inviteCollaboratorToRepo,
   checkCollaboratorStatus,
+  disableYoloBranchProtection,
   GitHubPullRequestResult,
 } from '../../../lib/gitglow/gitglow-github-executor';
 import { BadgeRewardModal } from '../../../components/gitglow/BadgeRewardModal';
@@ -78,6 +79,7 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
   } | null>(null);
 
   // Runner State
+  const [yoloMode, setYoloMode] = useState<'autonomous' | 'collaborator'>('autonomous');
   const [simState, setSimState] = useState<'idle' | 'branch_created' | 'pr_opened' | 'merged' | 'verified'>('idle');
   const [prNumber, setPrNumber] = useState<number>(1);
   const [branchName, setBranchName] = useState<string>('hotfix/yolo-direct-merge');
@@ -211,13 +213,13 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
         { text: `$ git switch -c hotfix/yolo-bypass && git commit -m "fix(emergency): direct patch for YOLO"`, type: 'cmd' },
       ]);
 
-      // 2. Create branch, commit patch, and open PR with 0 reviews
+      // 2. Create branch, commit patch, and open PR with review requirement or reviewer
       const pr = await executeRealYoloPullRequest(
         connectedUser.accessToken,
         connectedUser.githubUsername,
         sandbox.name,
         sandbox.default_branch,
-        collaboratorReviewer
+        yoloMode === 'collaborator' ? collaboratorReviewer : undefined
       );
 
       setRealPrResult(pr);
@@ -232,9 +234,19 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
           ...prev,
           { text: `✓ PULL REQUEST #${pr.number} OPENED ON GITHUB!`, type: 'success' },
           { text: `URL: ${pr.html_url}`, type: 'info' },
-          { text: `✓ REVIEW OFFICIALLY REQUESTED FROM @${pr.reviewerUsername}!`, type: 'success' },
-          { text: `GitHub PR timeline now logs: "@${connectedUser.githubUsername} requested a review from @${pr.reviewerUsername}".`, type: 'info' },
-          { text: `Station 1 & 2 completed! Now proceed to Station 3 to execute direct YOLO merge while review is pending.`, type: 'info' },
+          {
+            text: yoloMode === 'autonomous'
+              ? `✓ REVIEW REQUIREMENT RULE ACTIVATED ON MAIN BRANCH!`
+              : `✓ REVIEW OFFICIALLY REQUESTED FROM @${pr.reviewerUsername}!`,
+            type: 'success',
+          },
+          {
+            text: yoloMode === 'autonomous'
+              ? `PR is enforced: "1 approving review required". Merging directly as Admin executes an official review bypass!`
+              : `GitHub PR timeline now logs: "@${connectedUser.githubUsername} requested a review from @${pr.reviewerUsername}".`,
+            type: 'info',
+          },
+          { text: `Station 1 & 2 completed! Now click Station 3 to execute direct YOLO merge while review is pending.`, type: 'info' },
         ]);
       } else {
         setLogs((prev) => [
@@ -286,6 +298,14 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
       setRealPrResult(mergedPr);
       setSimState('merged');
       toggleBadgeStep('yolo', 2);
+
+      // Clean up temporary branch protection rule if active
+      await disableYoloBranchProtection(
+        connectedUser.accessToken,
+        connectedUser.githubUsername,
+        activeRepoName,
+        realPrResult.baseBranch || 'main'
+      ).catch(() => {});
 
       setLogs((prev) => [
         ...prev,
@@ -469,124 +489,156 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
         </div>
       </div>
 
-      {/* ── 2.5 CRITICAL GITHUB COLLABORATOR REQUIREMENT & INVITATION ── */}
+      {/* ── 2.5 EXECUTION ARCHITECTURE: AUTONOMOUS VS COLLABORATOR ── */}
       <div className="p-5 rounded-3xl bg-white border border-[#E5E3DA] shadow-xs space-y-4">
-        <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#84CC16]/15 text-[#4D7C0F] flex items-center justify-center shrink-0 mt-0.5">
-            <Users size={18} />
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <h5 className="text-xs font-bold text-[#101114]">
-                The Collaborator Rule for YOLO (Why Solo Repos Don't Trigger It)
-              </h5>
-              <span className="px-2 py-0.2 rounded-md bg-[#D7FF36] text-[#101114] text-[9.5px] font-mono font-black uppercase">
-                GitHub Requirement
-              </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-[#84CC16]/15 text-[#4D7C0F] flex items-center justify-center shrink-0">
+              <Zap size={16} />
             </div>
-            <p className="text-[11px] text-[#65666A] leading-relaxed">
-              In a solo repository with only 1 person, GitHub treats merging your own PR as an ordinary self-commit. For GitHub's achievement daemon to award <strong>YOLO</strong>, there must be a real <strong>review context</strong> — meaning a 2nd user (a friend, classmate, or alt account) is in the repo, a review is requested, and you merge <strong>before</strong> they approve!
-            </p>
+            <div>
+              <h5 className="text-xs font-bold text-[#101114]">YOLO Execution Engine</h5>
+              <p className="text-[10px] text-[#65666A]">Select how you want to simulate the code review bypass:</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#FAF9F5] border border-[#ECEAE1]">
+            <button
+              onClick={() => {
+                setYoloMode('autonomous');
+                setCollaboratorReviewer('');
+              }}
+              className={cn(
+                'px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer',
+                yoloMode === 'autonomous'
+                  ? 'bg-[#101114] text-white shadow-2xs'
+                  : 'text-[#65666A] hover:text-[#101114]'
+              )}
+            >
+              ⚡ 1-Click Autonomous (Solo)
+            </button>
+            <button
+              onClick={() => setYoloMode('collaborator')}
+              className={cn(
+                'px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer',
+                yoloMode === 'collaborator'
+                  ? 'bg-[#101114] text-white shadow-2xs'
+                  : 'text-[#65666A] hover:text-[#101114]'
+              )}
+            >
+              👥 Collaborator Mode (Optional)
+            </button>
           </div>
         </div>
 
-        {/* 1-Click Collaborator Invitation Input */}
-        <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#ECEAE1] space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <label className="text-[10px] font-bold text-[#101114] uppercase tracking-wider block">
-              Step A: Invite Collaborator or Alt-Account (Recommended):
-            </label>
-            {connectedUser && (
-              <a
-                href={`https://github.com/${connectedUser.githubUsername}/${activeRepoName}/settings/access`}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[10px] font-mono font-bold text-[#84CC16] hover:underline flex items-center gap-1"
-              >
-                Open GitHub Access Settings <ExternalLink size={10} />
-              </a>
-            )}
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center gap-2">
-            <input
-              type="text"
-              value={collaboratorReviewer}
-              onChange={(e) => setCollaboratorReviewer(e.target.value)}
-              placeholder="e.g. friend-username or alt-account-username"
-              className="w-full sm:flex-1 h-9 px-3 rounded-xl bg-white border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#84CC16]"
-            />
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <button
-                onClick={handleInviteCollaborator}
-                disabled={isInvitingCollaborator || !collaboratorReviewer.trim()}
-                className="flex-1 sm:flex-none h-9 px-3.5 rounded-xl bg-[#101114] hover:bg-[#202228] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
-              >
-                <UserPlus size={13} />
-                <span>{isInvitingCollaborator ? 'Inviting...' : '1. Invite'}</span>
-              </button>
-
-              <button
-                onClick={handleCheckCollaboratorStatus}
-                disabled={isCheckingCollab || !collaboratorReviewer.trim()}
-                className="flex-1 sm:flex-none h-9 px-3.5 rounded-xl bg-[#FAF9F5] hover:bg-white border border-[#E5E3DA] hover:border-[#84CC16] text-[#101114] text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
-              >
-                <CheckCircle2 size={13} className="text-[#84CC16]" />
-                <span>{isCheckingCollab ? 'Checking...' : '2. Verify Status'}</span>
-              </button>
+        {yoloMode === 'autonomous' ? (
+          <div className="p-4 rounded-2xl bg-[#F7F8EF] border border-[#DCE89E] space-y-2">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#4D7C0F]">
+              <CheckCircle2 size={15} className="text-[#84CC16]" />
+              <span>100% Autonomous Review-Bypass Mode (Zero Friends or Alt-Accounts Needed)</span>
             </div>
+            <p className="text-[11px] text-[#65A30D] leading-relaxed">
+              GitGlow uses GitHub&apos;s Branch Protection API to temporarily enforce a 1-review rule on your default branch, opens the hotfix PR under mandatory review rule, executes the Admin Review Bypass Merge, and auto-cleans the rule. <strong>Completely turnkey for any user with 1 click!</strong>
+            </p>
           </div>
-
-          {connectedUser && collaboratorReviewer && (
-            <div className="p-3 rounded-xl bg-white border border-[#ECEAE1] text-xs space-y-1">
-              <span className="text-[10px] font-bold text-[#65666A] uppercase tracking-wider block">
-                Direct Collaborator Acceptance Link:
-              </span>
-              <div className="flex items-center justify-between gap-2">
+        ) : (
+          <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#ECEAE1] space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <label className="text-[10px] font-bold text-[#101114] uppercase tracking-wider block">
+                Invite Collaborator or Alt-Account:
+              </label>
+              {connectedUser && (
                 <a
-                  href={`https://github.com/${connectedUser.githubUsername}/${activeRepoName}/invitations`}
+                  href={`https://github.com/${connectedUser.githubUsername}/${activeRepoName}/settings/access`}
                   target="_blank"
                   rel="noreferrer"
-                  className="font-mono text-[11px] text-[#2563EB] hover:underline truncate"
+                  className="text-[10px] font-mono font-bold text-[#84CC16] hover:underline flex items-center gap-1"
                 >
-                  https://github.com/{connectedUser.githubUsername}/{activeRepoName}/invitations
+                  Open GitHub Access Settings <ExternalLink size={10} />
                 </a>
+              )}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-2">
+              <input
+                type="text"
+                value={collaboratorReviewer}
+                onChange={(e) => setCollaboratorReviewer(e.target.value)}
+                placeholder="e.g. friend-username or alt-account-username"
+                className="w-full sm:flex-1 h-9 px-3 rounded-xl bg-white border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#84CC16]"
+              />
+              <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(`https://github.com/${connectedUser.githubUsername}/${activeRepoName}/invitations`);
-                    setInviteStatus('Link Copied');
-                  }}
-                  className="px-2 py-0.5 rounded-md bg-[#FAF9F5] border border-[#E5E3DA] text-[10px] font-bold text-[#101114] hover:border-[#84CC16] shrink-0"
+                  onClick={handleInviteCollaborator}
+                  disabled={isInvitingCollaborator || !collaboratorReviewer.trim()}
+                  className="flex-1 sm:flex-none h-9 px-3.5 rounded-xl bg-[#101114] hover:bg-[#202228] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
                 >
-                  Copy Link
+                  <UserPlus size={13} />
+                  <span>{isInvitingCollaborator ? 'Inviting...' : '1. Invite'}</span>
+                </button>
+
+                <button
+                  onClick={handleCheckCollaboratorStatus}
+                  disabled={isCheckingCollab || !collaboratorReviewer.trim()}
+                  className="flex-1 sm:flex-none h-9 px-3.5 rounded-xl bg-[#FAF9F5] hover:bg-white border border-[#E5E3DA] hover:border-[#84CC16] text-[#101114] text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
+                >
+                  <CheckCircle2 size={13} className="text-[#84CC16]" />
+                  <span>{isCheckingCollab ? 'Checking...' : '2. Verify Status'}</span>
                 </button>
               </div>
             </div>
-          )}
 
-          {collabVerification && (
-            <div
-              className={cn(
-                'p-3 rounded-xl text-xs font-bold flex items-center gap-2 border',
-                collabVerification.isCollaborator
-                  ? 'bg-[#F7F8EF] border-[#DCE89E] text-[#4D7C0F]'
-                  : collabVerification.isPendingInvite
-                  ? 'bg-[#FEFCE8] border-[#FEF08A] text-[#854D0E]'
-                  : 'bg-[#FAF9F5] border-[#E5E3DA] text-[#65666A]'
-              )}
-            >
-              <CheckCircle2 size={14} className={collabVerification.isCollaborator ? 'text-[#84CC16]' : 'text-[#CA8A04]'} />
-              <span>{collabVerification.message}</span>
-            </div>
-          )}
+            {connectedUser && collaboratorReviewer && (
+              <div className="p-3 rounded-xl bg-white border border-[#ECEAE1] text-xs space-y-1">
+                <span className="text-[10px] font-bold text-[#65666A] uppercase tracking-wider block">
+                  Direct Collaborator Acceptance Link:
+                </span>
+                <div className="flex items-center justify-between gap-2">
+                  <a
+                    href={`https://github.com/${connectedUser.githubUsername}/${activeRepoName}/invitations`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-mono text-[11px] text-[#2563EB] hover:underline truncate"
+                  >
+                    https://github.com/{connectedUser.githubUsername}/{activeRepoName}/invitations
+                  </a>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`https://github.com/${connectedUser.githubUsername}/${activeRepoName}/invitations`);
+                      setInviteStatus('Link Copied');
+                    }}
+                    className="px-2 py-0.5 rounded-md bg-[#FAF9F5] border border-[#E5E3DA] text-[10px] font-bold text-[#101114] hover:border-[#84CC16] shrink-0"
+                  >
+                    Copy Link
+                  </button>
+                </div>
+              </div>
+            )}
 
-          {inviteStatus && !collabVerification && (
-            <div className="text-[11px] font-mono text-[#4D7C0F] flex items-center gap-1.5 font-bold">
-              <CheckCircle2 size={13} className="text-[#84CC16]" />
-              <span>Status: {inviteStatus}. Send the acceptance link to your collaborator.</span>
-            </div>
-          )}
-        </div>
+            {collabVerification && (
+              <div
+                className={cn(
+                  'p-3 rounded-xl text-xs font-bold flex items-center gap-2 border',
+                  collabVerification.isCollaborator
+                    ? 'bg-[#F7F8EF] border-[#DCE89E] text-[#4D7C0F]'
+                    : collabVerification.isPendingInvite
+                    ? 'bg-[#FEFCE8] border-[#FEF08A] text-[#854D0E]'
+                    : 'bg-[#FAF9F5] border-[#E5E3DA] text-[#65666A]'
+                )}
+              >
+                <CheckCircle2 size={14} className={collabVerification.isCollaborator ? 'text-[#84CC16]' : 'text-[#CA8A04]'} />
+                <span>{collabVerification.message}</span>
+              </div>
+            )}
+
+            {inviteStatus && !collabVerification && (
+              <div className="text-[11px] font-mono text-[#4D7C0F] flex items-center gap-1.5 font-bold">
+                <CheckCircle2 size={13} className="text-[#84CC16]" />
+                <span>Status: {inviteStatus}. Send the acceptance link to your collaborator.</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {authError && (
