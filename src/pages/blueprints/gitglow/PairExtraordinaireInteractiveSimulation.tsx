@@ -27,6 +27,7 @@ import {
   getOrCreateStudentSandbox,
   executeRealPairExtraordinairePullRequest,
   executeRealMergePullRequest,
+  resolveGitHubUser,
   GitHubPullRequestResult,
 } from '../../../lib/gitglow/gitglow-github-executor';
 import { BadgeRewardModal } from '../../../components/gitglow/BadgeRewardModal';
@@ -56,8 +57,41 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
   const isAlreadyEarned = isBadgeOwned('pair-extraordinaire');
 
   // Co-author configuration
+  const [coAuthorHandle, setCoAuthorHandle] = useState<string>('');
+  const [isResolvingCoAuthor, setIsResolvingCoAuthor] = useState<boolean>(false);
+  const [resolvedCoAuthor, setResolvedCoAuthor] = useState<{
+    login: string;
+    id: number;
+    name: string;
+    avatar_url: string;
+    verifiedEmail: string;
+  } | null>(null);
+
   const [coAuthorName, setCoAuthorName] = useState<string>('GitGlow Peer Partner');
   const [coAuthorEmail, setCoAuthorEmail] = useState<string>('pair-bot@gitglow.dev');
+
+  // Automatically lookup co-author GitHub details to ensure valid user mapping
+  const handleLookupCoAuthor = async () => {
+    const clean = coAuthorHandle.trim().replace(/^@/, '');
+    if (!clean) return;
+    setIsResolvingCoAuthor(true);
+    setAuthError(null);
+    try {
+      const user = await resolveGitHubUser(clean);
+      setResolvedCoAuthor(user);
+      setCoAuthorName(user.name);
+      setCoAuthorEmail(user.verifiedEmail);
+      setLogs((prev) => [
+        ...prev,
+        { text: `✓ Verified GitHub Co-Author: @${user.login} (ID: ${user.id})`, type: 'success' },
+        { text: `Bound to verified email: ${user.verifiedEmail}`, type: 'info' },
+      ]);
+    } catch (e: any) {
+      setAuthError(e.message || 'Could not resolve co-author GitHub profile.');
+    } finally {
+      setIsResolvingCoAuthor(false);
+    }
+  };
 
   // Auth State
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
@@ -331,7 +365,7 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
       </div>
 
       {/* ── 2. CO-AUTHOR CONFIGURATION PANEL ── */}
-      <div className="p-5 rounded-3xl bg-white border border-[#E5E3DA] shadow-xs space-y-3">
+      <div className="p-5 rounded-3xl bg-white border border-[#E5E3DA] shadow-xs space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Users size={16} className="text-[#10B981]" />
@@ -342,6 +376,45 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
           <span className="text-[10px] font-mono text-[#65666A]">
             RFC 822 Header Format
           </span>
+        </div>
+
+        {/* 1-Click Real Co-Author GitHub Lookup */}
+        <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#ECEAE1] space-y-2.5">
+          <label className="text-[10px] font-bold text-[#101114] uppercase tracking-wider block">
+            Lookup Co-Author by GitHub Username (Recommended):
+          </label>
+          <div className="flex flex-col sm:flex-row items-center gap-2">
+            <input
+              type="text"
+              value={coAuthorHandle}
+              onChange={(e) => setCoAuthorHandle(e.target.value)}
+              placeholder="e.g. friend-username or alt-account-username"
+              className="w-full sm:flex-1 h-9 px-3 rounded-xl bg-white border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#10B981]"
+            />
+            <button
+              onClick={handleLookupCoAuthor}
+              disabled={isResolvingCoAuthor || !coAuthorHandle.trim()}
+              className="w-full sm:w-auto h-9 px-4 rounded-xl bg-[#101114] hover:bg-[#202228] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
+            >
+              <span>{isResolvingCoAuthor ? 'Verifying...' : 'Resolve Verified Email'}</span>
+            </button>
+          </div>
+
+          {resolvedCoAuthor && (
+            <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-[#D1FAE5]">
+              <img
+                src={resolvedCoAuthor.avatar_url}
+                alt={resolvedCoAuthor.login}
+                className="w-8 h-8 rounded-full border border-[#10B981]"
+              />
+              <div className="min-w-0 text-xs">
+                <span className="font-bold text-[#101114]">@{resolvedCoAuthor.login}</span>
+                <span className="text-[11px] font-mono text-[#059669] block truncate">
+                  Verified Noreply: {resolvedCoAuthor.verifiedEmail}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -26,6 +26,9 @@ import { QuickdrawInteractiveSimulation } from './QuickdrawInteractiveSimulation
 import { PullSharkInteractiveSimulation } from './PullSharkInteractiveSimulation';
 import { YoloInteractiveSimulation } from './YoloInteractiveSimulation';
 import { PairExtraordinaireInteractiveSimulation } from './PairExtraordinaireInteractiveSimulation';
+import { GalaxyBrainInteractiveSimulation } from './GalaxyBrainInteractiveSimulation';
+import { StarstruckInteractiveSimulation } from './StarstruckInteractiveSimulation';
+import { PublicSponsorInteractiveSimulation } from './PublicSponsorInteractiveSimulation';
 import { BadgeLearningModal } from '../../../components/gitglow/BadgeLearningModal';
 
 export const GitGlowEnginePage: React.FC = () => {
@@ -451,6 +454,21 @@ export const GitGlowEnginePage: React.FC = () => {
                 <PairExtraordinaireInteractiveSimulation
                   onOpenLearnModal={() => setShowLearnModal(true)}
                   onCompleted={() => handleSelectBadge('galaxy-brain')}
+                />
+              ) : activeBadge.id === 'galaxy-brain' ? (
+                <GalaxyBrainInteractiveSimulation
+                  onOpenLearnModal={() => setShowLearnModal(true)}
+                  onCompleted={() => handleSelectBadge('starstruck')}
+                />
+              ) : activeBadge.id === 'starstruck' ? (
+                <StarstruckInteractiveSimulation
+                  onOpenLearnModal={() => setShowLearnModal(true)}
+                  onCompleted={() => handleSelectBadge('public-sponsor')}
+                />
+              ) : activeBadge.id === 'public-sponsor' ? (
+                <PublicSponsorInteractiveSimulation
+                  onOpenLearnModal={() => setShowLearnModal(true)}
+                  onCompleted={() => handleSelectBadge('quickdraw')}
                 />
               ) : (
                 <div className="p-6 rounded-3xl bg-white border border-[#E5E3DA] space-y-4 shadow-xs">

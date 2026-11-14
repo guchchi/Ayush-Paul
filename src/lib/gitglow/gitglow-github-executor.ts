@@ -429,16 +429,16 @@ export async function executeRealYoloPullRequest(
   // 5. If a collaborator reviewer was specified, request review so GitHub records the bypass event
   const cleanReviewer = reviewerHandle?.trim().replace(/^@/, '');
   if (cleanReviewer && cleanReviewer.toLowerCase() !== owner.toLowerCase()) {
-    try {
-      await fetch(`https://api.github.com/repos/${owner}/${repo}/pulls/${pr.number}/requested_reviewers`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          reviewers: [cleanReviewer],
-        }),
-      });
-    } catch (e) {
-      console.warn('Note: Reviewer request optional fallback:', e);
+    const reviewRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/pulls/${pr.number}/requested_reviewers`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        reviewers: [cleanReviewer],
+      }),
+    });
+    if (!reviewRes.ok) {
+      const reviewErr = await reviewRes.json().catch(() => ({}));
+      console.warn(`Review request note: ${reviewErr.message || 'Review request pending collaborator acceptance'}`);
     }
   }
 
@@ -547,5 +547,126 @@ export async function executeRealPairExtraordinairePullRequest(
     baseBranch: defaultBranch,
   };
 }
+
+/**
+ * Real GitHub Action: Invite a Collaborator to the Sandbox Repository
+ * Essential for the YOLO achievement (requires a 2nd user to simulate a review bypass).
+ */
+export async function inviteCollaboratorToRepo(
+  accessToken: string,
+  owner: string,
+  repo: string,
+  collaboratorUsername: string
+): Promise<{ status: string; invitationId?: number }> {
+  const cleanUser = collaboratorUsername.trim().replace(/^@/, '');
+  const headers = {
+    Accept: 'application/vnd.github.v3+json',
+    Authorization: `Bearer ${accessToken}`,
+    'Content-Type': 'application/json',
+  };
+
+  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/collaborators/${cleanUser}`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      permission: 'push',
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `Failed to add collaborator @${cleanUser} (Status: ${res.status})`);
+  }
+
+  const data = await res.json().catch(() => ({}));
+  return {
+    status: res.status === 201 ? 'Invitation sent' : 'Collaborator already added',
+    invitationId: data.id,
+  };
+}
+
+/**
+ * Check if a collaborator is active or pending on a repository
+ */
+export async function checkCollaboratorStatus(
+  accessToken: string,
+  owner: string,
+  repo: string,
+  username: string
+): Promise<{ isCollaborator: boolean; isPendingInvite: boolean; message: string }> {
+  const cleanUser = username.trim().replace(/^@/, '');
+  const headers = {
+    Accept: 'application/vnd.github.v3+json',
+    Authorization: `Bearer ${accessToken}`,
+  };
+
+  // 1. Direct collaborator check
+  const collabRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/collaborators/${cleanUser}`, {
+    headers,
+  });
+
+  if (collabRes.status === 204) {
+    return {
+      isCollaborator: true,
+      isPendingInvite: false,
+      message: `@${cleanUser} is an active collaborator!`,
+    };
+  }
+
+  // 2. Check pending invitations
+  const invRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/invitations`, {
+    headers,
+  });
+
+  if (invRes.ok) {
+    const invites = await invRes.json().catch(() => []);
+    const matching = (invites || []).find((inv: any) => inv.invitee?.login?.toLowerCase() === cleanUser.toLowerCase());
+    if (matching) {
+      return {
+        isCollaborator: false,
+        isPendingInvite: true,
+        message: `@${cleanUser} has a pending invite (Invitation #${matching.id}). They must accept it.`,
+      };
+    }
+  }
+
+  return {
+    isCollaborator: false,
+    isPendingInvite: false,
+    message: `@${cleanUser} is not yet a collaborator on ${owner}/${repo}.`,
+  };
+}
+
+/**
+ * Look up GitHub user details to get real numeric ID and format verified no-reply email
+ */
+export async function resolveGitHubUser(username: string): Promise<{
+  login: string;
+  id: number;
+  name: string;
+  avatar_url: string;
+  verifiedEmail: string;
+}> {
+  const clean = username.trim().replace(/^@/, '');
+  const res = await fetch(`https://api.github.com/users/${encodeURIComponent(clean)}`, {
+    headers: { Accept: 'application/vnd.github.v3+json' },
+  });
+
+  if (!res.ok) {
+    throw new Error(`GitHub user @${clean} not found. Please verify the handle.`);
+  }
+
+  const user = await res.json();
+  const verifiedEmail = user.email || `${user.id}+${user.login}@users.noreply.github.com`;
+
+  return {
+    login: user.login,
+    id: user.id,
+    name: user.name || user.login,
+    avatar_url: user.avatar_url,
+    verifiedEmail,
+  };
+}
+
 
 

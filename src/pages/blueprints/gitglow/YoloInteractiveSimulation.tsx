@@ -736,9 +736,9 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
         stat1Label="Code Reviews"
         stat1Value="0 Reviews"
         stat1Sub="Direct Unreviewed Merge"
-        stat2Label="Webhook SLA"
-        stat2Value="10–30 Mins"
-        stat2Sub="GitHub Profile Sync"
+        stat2Label="Trigger Event"
+        stat2Value="Review Bypassed"
+        stat2Sub="Direct PR Merge"
         onContinueToNext={() => {
           setShowRewardModal(false);
           if (onCompleted) onCompleted();
