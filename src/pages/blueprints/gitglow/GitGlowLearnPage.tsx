@@ -8,10 +8,12 @@ import {
   ExternalLink,
   Zap,
   CheckCircle2,
+  Check,
 } from 'lucide-react';
 import { GITHUB_BADGES } from '../../../data/gitglow/github-badges';
 import { BADGE_CURRICULUM } from '../../../data/gitglow/badge-curriculum';
 import { BadgeCurriculumView } from './BadgeCurriculumView';
+import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
 import { cn } from '../../../lib/utils';
 
 export const GitGlowLearnPage: React.FC = () => {
@@ -19,8 +21,10 @@ export const GitGlowLearnPage: React.FC = () => {
   const navigate = useNavigate();
   const badgeId = searchParams.get('badge') || 'quickdraw';
 
+  const { isBadgeOwned } = useGitGlowStore();
   const activeBadge = GITHUB_BADGES.find((b) => b.id === badgeId) || GITHUB_BADGES[0];
   const pedagogy = BADGE_CURRICULUM[activeBadge.id];
+  const isOwned = isBadgeOwned(activeBadge.id);
 
   const handleSelectBadge = (newBadgeId: string) => {
     setSearchParams({ badge: newBadgeId });
@@ -55,9 +59,16 @@ export const GitGlowLearnPage: React.FC = () => {
                 <span className="font-extrabold text-sm sm:text-base tracking-tight text-[#101114]">
                   {activeBadge.name}: Deep Learning & Concepts
                 </span>
-                <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-[#F7F8EF] text-[#65A30D] border border-[#DCE89E] text-[10px] font-bold">
-                  Chapter Guide
-                </span>
+                {isOwned ? (
+                  <span className="px-2 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] border border-[#84CC16] text-[9.5px] font-mono font-black uppercase flex items-center gap-1 shadow-2xs">
+                    <Check size={9} strokeWidth={3} />
+                    YOU HAVE THIS
+                  </span>
+                ) : (
+                  <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-[#F7F8EF] text-[#65A30D] border border-[#DCE89E] text-[10px] font-bold">
+                    Chapter Guide
+                  </span>
+                )}
               </div>
               <p className="text-[11px] text-[#65666A] hidden sm:block">
                 Dedicated learning companion for real GitHub achievement qualification

@@ -45,6 +45,9 @@ export const GitGlowEnginePage: React.FC = () => {
     executionLogs,
     appendLog,
     clearLogs,
+    isBadgeOwned,
+    toggleBadgeOwnership,
+    connectedUser,
   } = useGitGlowStore();
 
   const [activeTab, setActiveTab] = useState<'sandbox' | 'terminal' | 'actions' | 'security'>('sandbox');
@@ -168,35 +171,57 @@ export const GitGlowEnginePage: React.FC = () => {
             {GITHUB_BADGES.map((badge) => {
               const isSelected = badge.id === activeBadge.id;
               const evalData = scanAnalysis?.badgeEvaluations[badge.id];
+              const isOwned = isBadgeOwned(badge.id);
               return (
                 <button
                   key={badge.id}
                   onClick={() => handleSelectBadge(badge.id)}
                   className={cn(
-                    'w-full text-left p-3 rounded-2xl border transition-all flex items-center justify-between group cursor-pointer',
+                    'w-full text-left p-3 rounded-2xl border transition-all flex items-center justify-between group cursor-pointer relative',
                     isSelected
                       ? 'bg-white border-[#84CC16] shadow-sm'
+                      : isOwned
+                      ? 'bg-[#F7F8EF]/60 border-[#DCE89E] hover:bg-white'
                       : 'bg-[#FAF9F5] border-[#E5E3DA] hover:bg-white hover:border-[#DCE89E]'
                   )}
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <img
-                      src={badge.image}
-                      alt={badge.name}
-                      className="w-9 h-9 object-contain shrink-0"
-                      onError={(e) => {
-                        (e.target as HTMLElement).style.display = 'none';
-                      }}
-                    />
+                    <div className="relative shrink-0">
+                      <img
+                        src={badge.image}
+                        alt={badge.name}
+                        className="w-9 h-9 object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                      {isOwned && (
+                        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#84CC16] text-white flex items-center justify-center text-[8px] font-bold shadow-2xs">
+                          ✓
+                        </span>
+                      )}
+                    </div>
                     <div className="min-w-0">
-                      <div className="text-xs font-bold text-[#101114] truncate">{badge.name}</div>
+                      <div className="text-xs font-bold text-[#101114] truncate flex items-center gap-1.5">
+                        <span>{badge.name}</span>
+                        {isOwned && (
+                          <span className="px-1.5 py-0.2 rounded-md bg-[#D7FF36] text-[#101114] text-[8.5px] font-mono font-black uppercase">
+                            OWNED
+                          </span>
+                        )}
+                      </div>
                       <div className="text-[10px] text-[#65666A] truncate">
-                        {evalData ? evalData.statusLabel : badge.difficulty}
+                        {isOwned ? 'Active on Profile' : evalData ? evalData.statusLabel : badge.difficulty}
                       </div>
                     </div>
                   </div>
 
-                  {evalData?.isUnlocked ? (
+                  {isOwned ? (
+                    <span className="px-2 py-0.5 rounded-full bg-[#84CC16]/15 text-[#4D7C0F] text-[10px] font-mono font-bold flex items-center gap-1">
+                      <Check size={11} strokeWidth={3} />
+                      <span className="hidden sm:inline">YOU HAVE</span>
+                    </span>
+                  ) : evalData?.isUnlocked ? (
                     <CheckCircle2 size={16} className="text-[#84CC16] shrink-0" />
                   ) : (
                     <span className="text-[10px] font-mono font-bold text-[#65666A]">
@@ -261,9 +286,16 @@ export const GitGlowEnginePage: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-xl font-extrabold text-[#101114]">{activeBadge.name}</h2>
-                    <span className="px-2 py-0.5 rounded-full bg-[#F7F8EF] text-[#65A30D] border border-[#DCE89E] text-[10px] font-bold">
-                      {activeBadge.statusLabel}
-                    </span>
+                    {isBadgeOwned(activeBadge.id) ? (
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] border border-[#84CC16] text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-2xs">
+                        <Check size={11} strokeWidth={3} />
+                        YOU HAVE THIS
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-full bg-[#F7F8EF] text-[#65A30D] border border-[#DCE89E] text-[10px] font-bold">
+                        {activeBadge.statusLabel}
+                      </span>
+                    )}
                   </div>
                   <p className="text-xs text-[#65666A] mt-1">{activeBadge.tagline}</p>
                 </div>
@@ -272,16 +304,65 @@ export const GitGlowEnginePage: React.FC = () => {
               {/* Progress pill */}
               <div className="text-right">
                 <span className="text-xs font-mono font-bold text-[#84CC16]">
-                  {currentEval ? `${currentEval.progressPercent}% Qualification` : 'Ready to Run'}
+                  {isBadgeOwned(activeBadge.id)
+                    ? '100% Unlocked'
+                    : currentEval
+                    ? `${currentEval.progressPercent}% Qualification`
+                    : 'Ready to Run'}
                 </span>
                 <div className="w-24 h-1.5 rounded-full bg-[#FAF9F5] mt-1.5 overflow-hidden border border-[#E5E3DA]">
                   <div
                     className="h-full bg-[#84CC16] rounded-full transition-all duration-500"
-                    style={{ width: `${currentEval?.progressPercent || 20}%` }}
+                    style={{ width: `${isBadgeOwned(activeBadge.id) ? 100 : currentEval?.progressPercent || 20}%` }}
                   />
                 </div>
               </div>
             </div>
+
+            {/* YOU HAVE THIS BADGE BANNER & MANUAL TOGGLE OPTION */}
+            {isBadgeOwned(activeBadge.id) ? (
+              <div className="p-4 rounded-2xl bg-[#F7F8EF] border border-[#84CC16]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-[#84CC16] text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <CheckCircle2 size={22} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black uppercase tracking-wider text-[#101114]">
+                        🎉 You Already Own This Badge!
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] text-[9.5px] font-mono font-black uppercase">
+                        ON YOUR GITHUB PROFILE
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#4D7C0F] mt-0.5">
+                      Verified for @{connectedUser?.githubUsername || targetUsername}. You already achieved this milestone! You can still test in the sandbox below.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => toggleBadgeOwnership(activeBadge.id)}
+                  title="Click to toggle ownership status"
+                  className="text-[11px] font-bold text-[#65666A] hover:text-[#101114] underline cursor-pointer whitespace-nowrap self-start sm:self-auto"
+                >
+                  Mark as unearned
+                </button>
+              </div>
+            ) : (
+              <div className="p-3 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-between gap-3 text-xs">
+                <span className="text-[#65666A]">
+                  Already unlocked this badge on GitHub earlier?
+                </span>
+                <button
+                  onClick={() => toggleBadgeOwnership(activeBadge.id)}
+                  className="px-3 py-1 rounded-xl bg-white border border-[#DCE89E] hover:border-[#84CC16] text-[#4D7C0F] font-bold text-xs inline-flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs whitespace-nowrap"
+                >
+                  <Check size={12} strokeWidth={2.5} />
+                  <span>I Have This Badge</span>
+                </button>
+              </div>
+            )}
 
             {/* SEPARATE WINDOW FOR LEARNING PART (User Request) */}
             <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-[#ECEAE1]">

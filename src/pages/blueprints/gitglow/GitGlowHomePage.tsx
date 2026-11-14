@@ -1099,6 +1099,8 @@ export const GitGlowHomePage: React.FC = () => {
     scanAnalysis,
     completedMissionIds,
     toggleMission,
+    isBadgeOwned,
+    toggleBadgeOwnership,
   } = useGitGlowStore();
 
   const [usernameInput, setUsernameInput] = useState<string>(targetUsername || '');
@@ -1501,13 +1503,16 @@ export const GitGlowHomePage: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {filteredBadges.map((badge) => {
               const isSelected = badge.id === selectedBadgeId;
+              const isOwned = isBadgeOwned(badge.id);
               return (
                 <div
                   key={badge.id}
                   className={cn(
-                    'p-5 rounded-2xl bg-white border transition-all duration-200 flex flex-col justify-between group hover:-translate-y-1 hover:shadow-[0_16px_36px_-6px_rgba(16,17,20,0.08)] cursor-pointer',
+                    'p-5 rounded-2xl bg-white border transition-all duration-200 flex flex-col justify-between group hover:-translate-y-1 hover:shadow-[0_16px_36px_-6px_rgba(16,17,20,0.08)] cursor-pointer relative',
                     isSelected
                       ? 'border-[#84CC16] ring-2 ring-[#D7FF36]/40 shadow-sm'
+                      : isOwned
+                      ? 'border-[#84CC16]/70 bg-[#F7F8EF]/20'
                       : 'border-[#E5E3DA]'
                   )}
                   onClick={() => {
@@ -1518,6 +1523,12 @@ export const GitGlowHomePage: React.FC = () => {
                   <div className="space-y-4">
                     {/* Badge Image Pedestal */}
                     <div className="w-full h-32 rounded-xl bg-[#FAF9F5] border border-[#ECEAE1] flex items-center justify-center relative overflow-hidden group-hover:border-[#84CC16]/40 transition-colors">
+                      {isOwned && (
+                        <span className="absolute top-2.5 left-2.5 text-[9px] font-mono font-black bg-[#D7FF36] text-[#101114] border border-[#84CC16] px-2 py-0.5 rounded-full shadow-xs flex items-center gap-1 z-10">
+                          <Check size={9} strokeWidth={3} />
+                          YOU HAVE THIS
+                        </span>
+                      )}
                       <img
                         src={badge.image}
                         alt={badge.name}
@@ -1537,9 +1548,15 @@ export const GitGlowHomePage: React.FC = () => {
                         <h3 className="text-lg font-bold text-[#101114] tracking-tight">
                           {badge.name}
                         </h3>
-                        <span className="text-[10px] font-mono font-bold text-[#101114] bg-[#F7F8EF] border border-[#DCE89E] px-2 py-0.5 rounded-full">
-                          Official
-                        </span>
+                        {isOwned ? (
+                          <span className="text-[10px] font-mono font-bold text-[#4D7C0F] bg-[#D7FF36]/40 border border-[#84CC16] px-2 py-0.5 rounded-full">
+                            Earned ✓
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-mono font-bold text-[#101114] bg-[#F7F8EF] border border-[#DCE89E] px-2 py-0.5 rounded-full">
+                            Official
+                          </span>
+                        )}
                       </div>
                       <p className="text-xs text-[#65666A] font-medium leading-relaxed mt-1">
                         {badge.tagline}
@@ -1558,7 +1575,7 @@ export const GitGlowHomePage: React.FC = () => {
                       type="button"
                       className="w-full py-2 px-3 rounded-lg bg-[#FAF9F5] group-hover:bg-[#101114] group-hover:text-white border border-[#E5E3DA] group-hover:border-[#101114] text-xs font-bold text-[#101114] inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                     >
-                      <span>Start Mission</span>
+                      <span>{isOwned ? 'Practice in Sandbox (Owned ✓)' : 'Start Mission'}</span>
                       <ArrowRight size={12} />
                     </button>
                   </div>

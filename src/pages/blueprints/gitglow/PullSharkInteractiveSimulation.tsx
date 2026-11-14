@@ -47,9 +47,10 @@ export const PullSharkInteractiveSimulation: React.FC<PullSharkInteractiveSimula
     toggleBadgeStep,
     markMissionCompleted,
     runScan,
+    isBadgeOwned,
   } = useGitGlowStore();
 
-  const isAlreadyEarned = scanAnalysis ? scanAnalysis.pullSharkTier !== 'None' : false;
+  const isAlreadyEarned = isBadgeOwned('pull-shark');
 
   // Auth State
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
@@ -316,6 +317,20 @@ export const PullSharkInteractiveSimulation: React.FC<PullSharkInteractiveSimula
             </a>
           )}
         </div>
+
+        {isAlreadyEarned && simState === 'idle' && (
+          <div className="p-3.5 rounded-2xl bg-[#F7F8EF] border border-[#DCE89E] flex items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2 text-[#4D7C0F]">
+              <CheckCircle2 size={16} className="text-[#84CC16] shrink-0" />
+              <span>
+                <strong>Profile Status:</strong> You already unlocked Pull Shark on your GitHub profile! Merging PRs here will help you advance toward higher tier multipliers (x2, x16, x128).
+              </span>
+            </div>
+            <span className="px-2.5 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] text-[9.5px] font-mono font-black shrink-0 shadow-2xs">
+              YOU HAVE THIS
+            </span>
+          </div>
+        )}
       </div>
 
       {/* ── 2. GITHUB ACCOUNT CONNECTION BAR ── */}

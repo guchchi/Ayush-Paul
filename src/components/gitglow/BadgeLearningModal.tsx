@@ -8,10 +8,12 @@ import {
   ArrowRight,
   Shield,
   HelpCircle,
+  Check,
 } from 'lucide-react';
 import { GitHubBadge } from '../../data/gitglow/github-badges';
 import { BadgePedagogy } from '../../data/gitglow/badge-curriculum';
 import { BadgeCurriculumView } from '../../pages/blueprints/gitglow/BadgeCurriculumView';
+import { useGitGlowStore } from '../../lib/gitglow/gitglow-store';
 
 interface BadgeLearningModalProps {
   isOpen: boolean;
@@ -28,6 +30,9 @@ export const BadgeLearningModal: React.FC<BadgeLearningModalProps> = ({
   pedagogy,
   onGoToExecution,
 }) => {
+  const { isBadgeOwned } = useGitGlowStore();
+  const isOwned = isBadgeOwned(activeBadge.id);
+
   if (!isOpen) return null;
 
   const handleOpenStandaloneTab = () => {
@@ -59,9 +64,16 @@ export const BadgeLearningModal: React.FC<BadgeLearningModalProps> = ({
                   <h3 className="text-sm font-extrabold text-[#101114]">
                     {activeBadge.name}: Deep Learning & Concepts
                   </h3>
-                  <span className="px-2 py-0.5 rounded-full bg-[#F7F8EF] text-[#65A30D] border border-[#DCE89E] text-[10px] font-bold">
-                    Chapter Curriculum
-                  </span>
+                  {isOwned ? (
+                    <span className="px-2 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] border border-[#84CC16] text-[9.5px] font-mono font-black uppercase flex items-center gap-1 shadow-2xs">
+                      <Check size={9} strokeWidth={3} />
+                      YOU HAVE THIS
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full bg-[#F7F8EF] text-[#65A30D] border border-[#DCE89E] text-[10px] font-bold">
+                      Chapter Curriculum
+                    </span>
+                  )}
                 </div>
                 <p className="text-[11px] text-[#65666A]">
                   Industry Context, Engineering Concepts, Interactive Architecture & Knowledge Quiz
