@@ -197,6 +197,9 @@ export interface GitHubPullRequestResult {
   merged_at?: string;
   headBranch: string;
   baseBranch: string;
+  reviewRequested?: boolean;
+  reviewerUsername?: string;
+  reviewRequestError?: string;
 }
 
 /**
@@ -427,7 +430,10 @@ export async function executeRealYoloPullRequest(
   const pr = await prRes.json();
 
   // 5. If a collaborator reviewer was specified, request review so GitHub records the bypass event
+  let reviewRequested = false;
+  let reviewRequestError: string | undefined = undefined;
   const cleanReviewer = reviewerHandle?.trim().replace(/^@/, '');
+
   if (cleanReviewer && cleanReviewer.toLowerCase() !== owner.toLowerCase()) {
     const reviewRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/pulls/${pr.number}/requested_reviewers`, {
       method: 'POST',
@@ -436,9 +442,12 @@ export async function executeRealYoloPullRequest(
         reviewers: [cleanReviewer],
       }),
     });
-    if (!reviewRes.ok) {
+    if (reviewRes.ok) {
+      reviewRequested = true;
+    } else {
       const reviewErr = await reviewRes.json().catch(() => ({}));
-      console.warn(`Review request note: ${reviewErr.message || 'Review request pending collaborator acceptance'}`);
+      reviewRequestError = reviewErr.message || `HTTP ${reviewRes.status}`;
+      console.warn(`Review request note: ${reviewRequestError}`);
     }
   }
 
@@ -451,6 +460,9 @@ export async function executeRealYoloPullRequest(
     merged: pr.merged || false,
     headBranch: hotfixBranch,
     baseBranch: defaultBranch,
+    reviewRequested,
+    reviewerUsername: cleanReviewer,
+    reviewRequestError,
   };
 }
 

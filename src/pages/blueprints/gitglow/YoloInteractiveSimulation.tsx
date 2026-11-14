@@ -30,6 +30,7 @@ import {
   executeRealYoloPullRequest,
   executeRealMergePullRequest,
   inviteCollaboratorToRepo,
+  checkCollaboratorStatus,
   GitHubPullRequestResult,
 } from '../../../lib/gitglow/gitglow-github-executor';
 import { BadgeRewardModal } from '../../../components/gitglow/BadgeRewardModal';
@@ -69,6 +70,12 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
   const [collaboratorReviewer, setCollaboratorReviewer] = useState<string>('');
   const [isInvitingCollaborator, setIsInvitingCollaborator] = useState<boolean>(false);
   const [inviteStatus, setInviteStatus] = useState<string | null>(null);
+  const [isCheckingCollab, setIsCheckingCollab] = useState<boolean>(false);
+  const [collabVerification, setCollabVerification] = useState<{
+    isCollaborator: boolean;
+    isPendingInvite: boolean;
+    message: string;
+  } | null>(null);
 
   // Runner State
   const [simState, setSimState] = useState<'idle' | 'branch_created' | 'pr_opened' | 'merged' | 'verified'>('idle');
@@ -141,6 +148,41 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
     }
   };
 
+  const handleCheckCollaboratorStatus = async () => {
+    if (!connectedUser) {
+      handleConnectGitHub();
+      return;
+    }
+    const cleanCollab = collaboratorReviewer.trim().replace(/^@/, '');
+    if (!cleanCollab) {
+      setAuthError('Please enter the collaborator username to check.');
+      return;
+    }
+
+    setIsCheckingCollab(true);
+    setAuthError(null);
+    try {
+      const res = await checkCollaboratorStatus(
+        connectedUser.accessToken,
+        connectedUser.githubUsername,
+        activeRepoName,
+        cleanCollab
+      );
+      setCollabVerification(res);
+      setLogs((prev) => [
+        ...prev,
+        {
+          text: `[Collaborator Status] ${res.message}`,
+          type: res.isCollaborator ? 'success' : 'info',
+        },
+      ]);
+    } catch (err: any) {
+      setAuthError(err.message || 'Failed to check collaborator status.');
+    } finally {
+      setIsCheckingCollab(false);
+    }
+  };
+
   // ── Station 1: Branch, Commit Hotfix Patch & Open Real PR with 0 Reviewers ──
   const handleRealStep1CreatePR = async () => {
     if (!connectedUser) {
@@ -185,13 +227,29 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
       toggleBadgeStep('yolo', 0);
       toggleBadgeStep('yolo', 1);
 
-      setLogs((prev) => [
-        ...prev,
-        { text: `✓ PULL REQUEST #${pr.number} OPENED ON GITHUB!`, type: 'success' },
-        { text: `URL: ${pr.html_url}`, type: 'info' },
-        { text: `Zero-Review Rule Checked: 0 Reviewers Assigned (Ready for direct YOLO merge)`, type: 'success' },
-        { text: `Station 1 & 2 completed. Now proceed to Station 3 to execute direct merge!`, type: 'info' },
-      ]);
+      if (pr.reviewRequested) {
+        setLogs((prev) => [
+          ...prev,
+          { text: `✓ PULL REQUEST #${pr.number} OPENED ON GITHUB!`, type: 'success' },
+          { text: `URL: ${pr.html_url}`, type: 'info' },
+          { text: `✓ REVIEW OFFICIALLY REQUESTED FROM @${pr.reviewerUsername}!`, type: 'success' },
+          { text: `GitHub PR timeline now logs: "@${connectedUser.githubUsername} requested a review from @${pr.reviewerUsername}".`, type: 'info' },
+          { text: `Station 1 & 2 completed! Now proceed to Station 3 to execute direct YOLO merge while review is pending.`, type: 'info' },
+        ]);
+      } else {
+        setLogs((prev) => [
+          ...prev,
+          { text: `✓ PULL REQUEST #${pr.number} OPENED ON GITHUB!`, type: 'success' },
+          { text: `URL: ${pr.html_url}`, type: 'info' },
+          { text: `Reviewer request note: ${pr.reviewRequestError || 'No reviewer assigned'}.`, type: 'info' },
+          { text: collaboratorReviewer
+            ? `Note: GitHub only allows review requests if @${collaboratorReviewer} has accepted the collaborator invite. Have them accept at https://github.com/${connectedUser.githubUsername}/${activeRepoName}/invitations.`
+            : `Tip: Adding an alt-account or collaborator creates the official review-bypass record on GitHub.`,
+            type: 'info'
+          },
+          { text: `Proceed to Station 3 to execute direct merge.`, type: 'info' },
+        ]);
+      }
     } catch (err: any) {
       setAuthError(err.message || 'Failed to create hotfix pull request.');
       setLogs((prev) => [
@@ -458,20 +516,74 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
               placeholder="e.g. friend-username or alt-account-username"
               className="w-full sm:flex-1 h-9 px-3 rounded-xl bg-white border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#84CC16]"
             />
-            <button
-              onClick={handleInviteCollaborator}
-              disabled={isInvitingCollaborator || !collaboratorReviewer.trim()}
-              className="w-full sm:w-auto h-9 px-4 rounded-xl bg-[#101114] hover:bg-[#202228] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
-            >
-              <UserPlus size={13} />
-              <span>{isInvitingCollaborator ? 'Inviting...' : 'Invite to Sandbox'}</span>
-            </button>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                onClick={handleInviteCollaborator}
+                disabled={isInvitingCollaborator || !collaboratorReviewer.trim()}
+                className="flex-1 sm:flex-none h-9 px-3.5 rounded-xl bg-[#101114] hover:bg-[#202228] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
+              >
+                <UserPlus size={13} />
+                <span>{isInvitingCollaborator ? 'Inviting...' : '1. Invite'}</span>
+              </button>
+
+              <button
+                onClick={handleCheckCollaboratorStatus}
+                disabled={isCheckingCollab || !collaboratorReviewer.trim()}
+                className="flex-1 sm:flex-none h-9 px-3.5 rounded-xl bg-[#FAF9F5] hover:bg-white border border-[#E5E3DA] hover:border-[#84CC16] text-[#101114] text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
+              >
+                <CheckCircle2 size={13} className="text-[#84CC16]" />
+                <span>{isCheckingCollab ? 'Checking...' : '2. Verify Status'}</span>
+              </button>
+            </div>
           </div>
 
-          {inviteStatus && (
+          {connectedUser && collaboratorReviewer && (
+            <div className="p-3 rounded-xl bg-white border border-[#ECEAE1] text-xs space-y-1">
+              <span className="text-[10px] font-bold text-[#65666A] uppercase tracking-wider block">
+                Direct Collaborator Acceptance Link:
+              </span>
+              <div className="flex items-center justify-between gap-2">
+                <a
+                  href={`https://github.com/${connectedUser.githubUsername}/${activeRepoName}/invitations`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-mono text-[11px] text-[#2563EB] hover:underline truncate"
+                >
+                  https://github.com/{connectedUser.githubUsername}/{activeRepoName}/invitations
+                </a>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`https://github.com/${connectedUser.githubUsername}/${activeRepoName}/invitations`);
+                    setInviteStatus('Link Copied');
+                  }}
+                  className="px-2 py-0.5 rounded-md bg-[#FAF9F5] border border-[#E5E3DA] text-[10px] font-bold text-[#101114] hover:border-[#84CC16] shrink-0"
+                >
+                  Copy Link
+                </button>
+              </div>
+            </div>
+          )}
+
+          {collabVerification && (
+            <div
+              className={cn(
+                'p-3 rounded-xl text-xs font-bold flex items-center gap-2 border',
+                collabVerification.isCollaborator
+                  ? 'bg-[#F7F8EF] border-[#DCE89E] text-[#4D7C0F]'
+                  : collabVerification.isPendingInvite
+                  ? 'bg-[#FEFCE8] border-[#FEF08A] text-[#854D0E]'
+                  : 'bg-[#FAF9F5] border-[#E5E3DA] text-[#65666A]'
+              )}
+            >
+              <CheckCircle2 size={14} className={collabVerification.isCollaborator ? 'text-[#84CC16]' : 'text-[#CA8A04]'} />
+              <span>{collabVerification.message}</span>
+            </div>
+          )}
+
+          {inviteStatus && !collabVerification && (
             <div className="text-[11px] font-mono text-[#4D7C0F] flex items-center gap-1.5 font-bold">
               <CheckCircle2 size={13} className="text-[#84CC16]" />
-              <span>Status: {inviteStatus}. Review bypass context is now armed on GitHub!</span>
+              <span>Status: {inviteStatus}. Send the acceptance link to your collaborator.</span>
             </div>
           )}
         </div>
@@ -535,9 +647,9 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
                 <CheckCircle2 size={18} className="text-[#84CC16]" />
               )}
             </div>
-            <h4 className="text-xs font-bold text-[#101114]">Station 2: Zero-Review PR</h4>
+            <h4 className="text-xs font-bold text-[#101114]">Station 2: PR &amp; Review Request</h4>
             <p className="text-[11px] text-[#65666A]">
-              Opens PR into default branch without assigning any reviewers.
+              Opens PR targeting main and requests review from @{collaboratorReviewer || 'collaborator'} to arm the bypass event.
             </p>
           </div>
 
@@ -553,7 +665,7 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
               </a>
             ) : (
               <span className="text-[10px] font-mono text-[#65666A]">
-                Rule: 0 Reviewers Required
+                Reviewer: @{collaboratorReviewer || 'collaborator'}
               </span>
             )}
           </div>
@@ -597,17 +709,17 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
           <div>
             <h4 className="text-sm font-bold text-[#101114]">
               {simState === 'idle'
-                ? 'Step 1: Create Hotfix Branch & Open Zero-Review PR'
+                ? 'Step 1: Create Branch & Open PR with Review Request'
                 : simState === 'pr_opened'
                 ? 'Step 2: Execute YOLO Direct Merge into Main'
-                : 'Step 3: Webhook Telemetry Recorded'}
+                : 'Step 3: Direct YOLO Merge Completed!'}
             </h4>
             <p className="text-xs text-[#65666A] mt-0.5">
               {simState === 'idle'
-                ? 'Click below to automatically create the hotfix branch and open the unreviewed PR.'
+                ? `Click below to create the hotfix branch and open PR with review requested from @${collaboratorReviewer || 'collaborator'}.`
                 : simState === 'pr_opened'
-                ? 'PR is open with 0 reviewers. Click below to merge it directly into the default branch.'
-                : 'Pull request merged! Telemetry dispatched to GitHub achievements indexing system.'}
+                ? 'PR is open with review pending! Click below to merge it directly before any review is submitted.'
+                : 'Pull request merged! Review bypass event registered by GitHub.'}
             </p>
           </div>
 
