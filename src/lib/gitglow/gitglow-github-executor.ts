@@ -580,7 +580,7 @@ export async function executeRealPairExtraordinairePullRequest(
   const fileContent = `# Pair Programming Sprint\n\n- Primary Author: @${owner}\n- Co-Author: ${coAuthorName} <${coAuthorEmail}>\n- Engine: GitGlow Achievements Engine\n- Timestamp: ${new Date().toISOString()}\n`;
   const encodedContent = btoa(fileContent);
 
-  const commitMessage = `feat(collab): pair programming session #${branchSuffix}\n\nCo-authored-by: ${owner} <${owner}@users.noreply.github.com>\nCo-authored-by: ${coAuthorName} <${coAuthorEmail}>`;
+  const commitMessage = `feat(collab): pair programming session #${branchSuffix}\n\nCo-authored-by: ${coAuthorName} <${coAuthorEmail}>`;
 
   const fileRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
     method: 'PUT',

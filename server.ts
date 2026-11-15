@@ -661,22 +661,49 @@ async function startServer() {
         return res.status(branchRes.status).json({ error: err.message || "Bot failed to create pair branch" });
       }
 
-      // 3. Commit file authored by gitglow-agent with USER as Co-author
-      const filePath = `pair-sessions/session-${branchSuffix}.md`;
+      // 3. Create Dual Co-Authored Commits on the Branch (Discussion #20481 Standard)
       const resolvedUserName = userName || userLogin || owner;
       const resolvedUserEmail = userEmail || `${owner}@users.noreply.github.com`;
 
-      const fileContent = `# Pair Programming Sprint\n\n- Primary Author: @${botUser}\n- Co-Author: @${owner} <${resolvedUserEmail}>\n- Engine: GitGlow Achievements Engine\n- Timestamp: ${new Date().toISOString()}\n`;
-      const encodedContent = Buffer.from(fileContent).toString("base64");
+      // Commit 1: Authored by the User, co-authored by the Bot
+      const file1Path = `pair-sessions/user-${branchSuffix}.md`;
+      const file1Content = Buffer.from(`# Pair Programming Sprint\n\n- Primary Author: @${owner}\n- Partner: @${botUser}\n- Timestamp: ${new Date().toISOString()}\n`).toString("base64");
+      const commit1Message = `feat(collab): initiate pairing session #${branchSuffix}\n\nCo-authored-by: ${botUser} <356865526+${botUser}@users.noreply.github.com>`;
 
-      const commitMessage = `feat(collab): pair programming session with @${owner} #${branchSuffix}\n\nCo-authored-by: ${resolvedUserName} <${resolvedUserEmail}>\nCo-authored-by: ${botUser} <356865526+${botUser}@users.noreply.github.com>`;
-
-      const fileRes = await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodeURIComponent(filePath)}`, {
+      const file1Res = await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodeURIComponent(file1Path)}`, {
         method: "PUT",
         headers,
         body: JSON.stringify({
-          message: commitMessage,
-          content: encodedContent,
+          message: commit1Message,
+          content: file1Content,
+          branch: pairBranch,
+          author: {
+            name: resolvedUserName,
+            email: resolvedUserEmail,
+          },
+          committer: {
+            name: resolvedUserName,
+            email: resolvedUserEmail,
+          },
+        }),
+      });
+
+      if (!file1Res.ok) {
+        const err = await file1Res.json().catch(() => ({}));
+        return res.status(file1Res.status).json({ error: err.message || "Failed to commit user pairing patch" });
+      }
+
+      // Commit 2: Authored by the Bot, co-authored by the User
+      const file2Path = `pair-sessions/partner-${branchSuffix}.md`;
+      const file2Content = Buffer.from(`# Partner Collaboration Record\n\n- Verified Partner: @${botUser}\n- Co-Author: @${owner}\n- Timestamp: ${new Date().toISOString()}\n`).toString("base64");
+      const commit2Message = `feat(collab): partner signoff #${branchSuffix}\n\nCo-authored-by: ${resolvedUserName} <${resolvedUserEmail}>`;
+
+      const file2Res = await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodeURIComponent(file2Path)}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({
+          message: commit2Message,
+          content: file2Content,
           branch: pairBranch,
           author: {
             name: botUser,
@@ -689,9 +716,9 @@ async function startServer() {
         }),
       });
 
-      if (!fileRes.ok) {
-        const err = await fileRes.json().catch(() => ({}));
-        return res.status(fileRes.status).json({ error: err.message || "Bot failed to commit co-authored patch" });
+      if (!file2Res.ok) {
+        const err = await file2Res.json().catch(() => ({}));
+        return res.status(file2Res.status).json({ error: err.message || "Failed to commit partner co-authored patch" });
       }
 
       // 4. Bot opens Pull Request into defaultBranch

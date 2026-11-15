@@ -320,13 +320,21 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
     setIsExecutingLive(true);
     setAuthError(null);
 
+    let resolvedUserName = connectedUser.githubUsername;
+    let resolvedUserEmail = `${connectedUser.githubUsername}@users.noreply.github.com`;
+    try {
+      const userDetails = await resolveGitHubUser(connectedUser.githubUsername);
+      resolvedUserName = userDetails.name || connectedUser.githubUsername;
+      resolvedUserEmail = userDetails.verifiedEmail;
+    } catch (e) {
+      console.warn('Could not resolve user details for merge trailer:', e);
+    }
+
     const partnerName = partnerMode === 'bot' ? DEFAULT_BOT_COAUTHOR.name : (coAuthorName || 'collaborator');
     const partnerEmail = partnerMode === 'bot' ? DEFAULT_BOT_COAUTHOR.verifiedEmail : (coAuthorEmail || `${partnerName}@users.noreply.github.com`);
-    const resolvedUserName = connectedUser.githubUsername;
-    const resolvedUserEmail = `${connectedUser.githubUsername}@users.noreply.github.com`;
 
     const squashTitle = `feat(collab): pair programming session with @${partnerName} (#${realPrResult.number})`;
-    const squashMessage = `Official Pair Extraordinaire collaboration.\n\nCo-authored-by: ${resolvedUserName} <${resolvedUserEmail}>\nCo-authored-by: ${partnerName} <${partnerEmail}>`;
+    const squashMessage = `Co-authored-by: ${resolvedUserName} <${resolvedUserEmail}>\nCo-authored-by: ${partnerName} <${partnerEmail}>`;
 
     setLogs((prev) => [
       ...prev,
