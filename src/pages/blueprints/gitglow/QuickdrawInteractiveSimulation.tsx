@@ -53,6 +53,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
     markMissionCompleted,
     runScan,
     isBadgeOwned,
+    setBadgeOwnership,
   } = useGitGlowStore();
 
   const isAlreadyEarned = isBadgeOwned('quickdraw');
@@ -261,6 +262,7 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
     setSimState('verified');
     toggleBadgeStep('quickdraw', 2);
     markMissionCompleted('m1-quickdraw');
+    setBadgeOwnership('quickdraw', true);
     setShowRewardModal(true);
 
     if (connectedUser?.githubUsername) {

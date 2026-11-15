@@ -1420,13 +1420,22 @@ export const GitGlowHomePage: React.FC = () => {
                         <div className="text-[11px] text-[#65666A]">Start with: <strong>{scanResult.targetName}</strong></div>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => { setSelectedBadgeId(scanResult.targetId); document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' }); }}
-                      className="px-3 py-1.5 rounded-full bg-[#101114] hover:bg-[#23272F] text-[#D7FF36] border border-[#D7FF36]/40 text-[11px] font-semibold shrink-0 cursor-pointer transition-colors shadow-2xs"
-                    >
-                      View Mission →
-                    </button>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => { setSelectedBadgeId(scanResult.targetId); document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' }); }}
+                        className="px-3 py-1.5 rounded-full bg-white hover:bg-[#FAF9F5] text-[#101114] border border-[#E5E3DA] text-[11px] font-bold cursor-pointer transition-colors shadow-2xs"
+                      >
+                        Inspect
+                      </button>
+                      <Link
+                        to={`/blueprints/gitglow/engine?badge=${scanResult.targetId}`}
+                        className="px-3.5 py-1.5 rounded-full bg-[#101114] hover:bg-[#1C1E24] text-[#D7FF36] border border-[#D7FF36]/40 text-[11px] font-bold cursor-pointer transition-colors shadow-2xs inline-flex items-center gap-1"
+                      >
+                        <span>Launch Sandbox</span>
+                        <Zap size={11} className="text-[#D7FF36] fill-[#D7FF36]" />
+                      </Link>
+                    </div>
                   </motion.div>
                 )}
               </motion.div>
@@ -1585,13 +1594,14 @@ export const GitGlowHomePage: React.FC = () => {
 
                   {/* Card Bottom CTA */}
                   <div className="pt-4 mt-2">
-                    <button
-                      type="button"
-                      className="w-full py-2 px-3 rounded-lg bg-[#FAF9F5] group-hover:bg-[#101114] group-hover:text-white border border-[#E5E3DA] group-hover:border-[#101114] text-xs font-bold text-[#101114] inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    <Link
+                      to={`/blueprints/gitglow/engine?badge=${badge.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-full py-2.5 px-3 rounded-xl bg-[#FAF9F5] group-hover:bg-[#101114] group-hover:text-white border border-[#E5E3DA] group-hover:border-[#101114] text-xs font-bold text-[#101114] inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-[0.98]"
                     >
-                      <span>{isOwned ? 'Practice in Sandbox (Owned ✓)' : 'Start Mission'}</span>
-                      <ArrowRight size={12} />
-                    </button>
+                      <span>{isOwned ? 'Practice in Sandbox (Owned ✓)' : 'Claim in 1-Click Sandbox'}</span>
+                      <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
                   </div>
                 </div>
               );

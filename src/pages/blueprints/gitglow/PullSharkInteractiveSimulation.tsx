@@ -48,6 +48,7 @@ export const PullSharkInteractiveSimulation: React.FC<PullSharkInteractiveSimula
     markMissionCompleted,
     runScan,
     isBadgeOwned,
+    setBadgeOwnership,
   } = useGitGlowStore();
 
   const isAlreadyEarned = isBadgeOwned('pull-shark');
@@ -199,6 +200,7 @@ export const PullSharkInteractiveSimulation: React.FC<PullSharkInteractiveSimula
   const triggerStep3Verify = async () => {
     setSimState('verified');
     markMissionCompleted('m2-pullshark');
+    setBadgeOwnership('pull-shark', true);
     setShowRewardModal(true);
 
     if (connectedUser?.githubUsername) {

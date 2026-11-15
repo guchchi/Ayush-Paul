@@ -56,6 +56,7 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
     markMissionCompleted,
     runScan,
     isBadgeOwned,
+    setBadgeOwnership,
   } = useGitGlowStore();
 
   const isAlreadyEarned = isBadgeOwned('yolo');
@@ -388,6 +389,7 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
   const triggerStep3Verify = async () => {
     setSimState('verified');
     markMissionCompleted('m4-yolo-merge');
+    setBadgeOwnership('yolo', true);
     setShowRewardModal(true);
 
     if (connectedUser?.githubUsername) {

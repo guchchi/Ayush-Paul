@@ -125,43 +125,67 @@ export const GitGlowEnginePage: React.FC = () => {
         <div className="flex items-center gap-3">
           <Link
             to="/blueprints/gitglow"
-            className="w-8 h-8 rounded-full bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-center text-[#65666A] hover:text-[#101114] hover:bg-white transition-all shadow-2xs"
+            className="w-9 h-9 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-center text-[#65666A] hover:text-[#101114] hover:bg-white hover:border-[#84CC16] transition-all shadow-2xs group"
             title="Return to GitGlow Overview"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-base tracking-tight text-[#101114]">GitGlow Sandbox Engine</span>
-              <span className="px-2 py-0.5 rounded-full bg-[#D7FF36]/40 text-[#4D7C0F] text-[10px] font-mono font-bold uppercase tracking-wider">
-                1-Click Execution
+              <Link to="/blueprints/gitglow" className="font-extrabold text-base tracking-tight text-[#101114] hover:text-[#4D7C0F] transition-colors flex items-center gap-1.5">
+                <span>GitGlow</span>
+                <span className="text-[#84CC16] text-xs font-mono font-bold">/</span>
+                <span className="text-[#4D7C0F]">Engine</span>
+              </Link>
+              <span className="px-2 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] text-[10px] font-mono font-black uppercase tracking-wider shadow-2xs">
+                {activeBadge.name}
               </span>
+              {['quickdraw', 'pull-shark', 'yolo', 'pair-extraordinaire', 'galaxy-brain'].includes(activeBadge.id) && (
+                <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-[#101114] text-[#D7FF36] text-[9.5px] font-mono font-bold uppercase tracking-wider items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D7FF36] animate-pulse" />
+                  1-Click Live Bot
+                </span>
+              )}
             </div>
-            <p className="text-[11px] text-[#65666A]">
-              Real GitHub Achievements · 100% Genuine Webhook Ingestion · Zero-OAuth
+            <p className="text-[11px] text-[#65666A] hidden sm:block">
+              Official GitHub Profile Achievements · Real Webhook Ingestion · 100% Genuine Activity
             </p>
           </div>
         </div>
 
         {/* User Handle & Repo Config */}
-        <div className="flex items-center gap-2.5">
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] text-xs font-mono">
-            <span className="text-[#65666A]">Target:</span>
-            <input
-              type="text"
-              value={targetUsername}
-              onChange={(e) => setTargetUsername(e.target.value)}
-              placeholder="github-username"
-              className="bg-transparent border-none text-[#101114] font-bold focus:outline-hidden w-28"
-            />
-          </div>
+        <div className="flex items-center gap-2 sm:gap-3">
+          {connectedUser ? (
+            <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-[#F7F8EF] border border-[#DCE89E] shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-[#84CC16] animate-pulse shrink-0" />
+              <span className="text-xs font-mono font-bold text-[#101114] truncate max-w-[120px]">
+                @{connectedUser.githubUsername}
+              </span>
+              <span className="px-1.5 py-0.2 rounded-md bg-[#84CC16]/20 text-[#4D7C0F] text-[9px] font-mono font-bold uppercase">
+                Auth
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] text-xs font-mono shadow-2xs">
+              <span className="text-[#65666A] hidden sm:inline">Target:</span>
+              <input
+                type="text"
+                value={targetUsername}
+                onChange={(e) => setTargetUsername(e.target.value)}
+                placeholder="github-username"
+                className="bg-transparent border-none text-[#101114] font-bold focus:outline-hidden w-24 sm:w-28 text-xs"
+              />
+            </div>
+          )}
+
           <button
-            onClick={() => runScan(targetUsername)}
+            onClick={() => runScan(connectedUser?.githubUsername || targetUsername)}
             disabled={isScanning}
-            className="h-8 px-3 rounded-lg bg-[#101114] text-white text-xs font-bold flex items-center gap-1.5 hover:bg-[#1C1E24] transition-all cursor-pointer shadow-2xs"
+            className="h-8.5 px-3.5 rounded-xl bg-[#101114] text-white text-xs font-bold flex items-center gap-1.5 hover:bg-[#1C1E24] hover:border-[#D7FF36] border border-transparent transition-all cursor-pointer shadow-2xs active:scale-95"
+            title="Rescan GitHub Profile for Achievements"
           >
             <RefreshCw size={12} className={cn(isScanning && 'animate-spin')} />
-            <span>{isScanning ? 'Syncing...' : 'Sync GitHub'}</span>
+            <span>{isScanning ? 'Syncing...' : 'Sync Profile'}</span>
           </button>
         </div>
       </header>
@@ -184,6 +208,8 @@ export const GitGlowEnginePage: React.FC = () => {
               const isSelected = badge.id === activeBadge.id;
               const evalData = scanAnalysis?.badgeEvaluations[badge.id];
               const isOwned = isBadgeOwned(badge.id);
+              const isActionable = ['quickdraw', 'pull-shark', 'yolo', 'pair-extraordinaire', 'galaxy-brain'].includes(badge.id);
+
               return (
                 <button
                   key={badge.id}
@@ -191,22 +217,27 @@ export const GitGlowEnginePage: React.FC = () => {
                   className={cn(
                     'w-full text-left p-3 rounded-2xl border transition-all flex items-center justify-between group cursor-pointer relative',
                     isSelected
-                      ? 'bg-white border-[#84CC16] shadow-sm'
+                      ? 'bg-[#101114] text-white border-[#101114] shadow-md ring-2 ring-[#D7FF36]/30'
                       : isOwned
-                      ? 'bg-[#F7F8EF]/60 border-[#DCE89E] hover:bg-white'
-                      : 'bg-[#FAF9F5] border-[#E5E3DA] hover:bg-white hover:border-[#DCE89E]'
+                      ? 'bg-[#F7F8EF]/80 border-[#DCE89E] hover:bg-white text-[#101114]'
+                      : 'bg-[#FAF9F5] border-[#E5E3DA] hover:bg-white hover:border-[#DCE89E] text-[#101114]'
                   )}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="relative shrink-0">
-                      <img
-                        src={badge.image}
-                        alt={badge.name}
-                        className="w-9 h-9 object-contain"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = 'none';
-                        }}
-                      />
+                      <div className={cn(
+                        "w-9 h-9 rounded-xl flex items-center justify-center p-1 transition-transform group-hover:scale-105",
+                        isSelected ? "bg-white/10" : "bg-white border border-[#E5E3DA]"
+                      )}>
+                        <img
+                          src={badge.image}
+                          alt={badge.name}
+                          className="w-full h-full object-contain drop-shadow-xs"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
+                        />
+                      </div>
                       {isOwned && (
                         <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#84CC16] text-white flex items-center justify-center text-[8px] font-bold shadow-2xs">
                           ✓
@@ -214,27 +245,40 @@ export const GitGlowEnginePage: React.FC = () => {
                       )}
                     </div>
                     <div className="min-w-0">
-                      <div className="text-xs font-bold text-[#101114] truncate flex items-center gap-1.5">
-                        <span>{badge.name}</span>
-                        {isOwned && (
-                          <span className="px-1.5 py-0.2 rounded-md bg-[#D7FF36] text-[#101114] text-[8.5px] font-mono font-black uppercase">
+                      <div className="text-xs font-bold truncate flex items-center gap-1.5">
+                        <span className={isSelected ? "text-white" : "text-[#101114]"}>{badge.name}</span>
+                        {isOwned ? (
+                          <span className="px-1.5 py-0.2 rounded-md bg-[#D7FF36] text-[#101114] text-[8px] font-mono font-black uppercase">
                             OWNED
                           </span>
-                        )}
+                        ) : isActionable ? (
+                          <span className={cn(
+                            "px-1.5 py-0.2 rounded-md text-[8px] font-mono font-bold uppercase",
+                            isSelected ? "bg-[#D7FF36] text-[#101114]" : "bg-[#101114] text-[#D7FF36]"
+                          )}>
+                            ⚡ 1-Click
+                          </span>
+                        ) : null}
                       </div>
-                      <div className="text-[10px] text-[#65666A] truncate">
+                      <div className={cn("text-[10px] truncate", isSelected ? "text-slate-400" : "text-[#65666A]")}>
                         {isOwned ? 'Active on Profile' : evalData ? evalData.statusLabel : badge.difficulty}
                       </div>
                     </div>
                   </div>
 
                   {isOwned ? (
-                    <span className="px-2 py-0.5 rounded-full bg-[#84CC16]/15 text-[#4D7C0F] text-[10px] font-mono font-bold flex items-center gap-1">
+                    <span className={cn(
+                      "px-2 py-0.5 rounded-full text-[10px] font-mono font-bold flex items-center gap-1",
+                      isSelected ? "bg-white/15 text-[#D7FF36]" : "bg-[#84CC16]/15 text-[#4D7C0F]"
+                    )}>
                       <Check size={11} strokeWidth={3} />
-                      <span className="hidden sm:inline">YOU HAVE</span>
+                      <span className="hidden sm:inline">DONE</span>
                     </span>
                   ) : (
-                    <span className="text-[10px] font-mono font-bold text-[#65666A]">
+                    <span className={cn(
+                      "text-[10px] font-mono font-bold",
+                      isSelected ? "text-[#D7FF36]" : "text-[#65666A]"
+                    )}>
                       {evalData?.progressPercent ? `${evalData.progressPercent}%` : 'Ready'}
                     </span>
                   )}
@@ -245,21 +289,33 @@ export const GitGlowEnginePage: React.FC = () => {
 
           {/* User Profile Insight Card */}
           {scanAnalysis && (
-            <div className="p-4 rounded-2xl bg-white border border-[#E5E3DA] space-y-3">
-              <div className="flex items-center gap-2.5">
-                <img
-                  src={scanAnalysis.user.avatar_url}
-                  alt={scanAnalysis.user.login}
-                  className="w-10 h-10 rounded-full border border-[#E5E3DA]"
-                />
-                <div className="min-w-0">
-                  <div className="text-xs font-bold text-[#101114] truncate">
-                    {scanAnalysis.user.name || `@${scanAnalysis.user.login}`}
-                  </div>
-                  <div className="text-[10px] font-mono text-[#65666A]">
-                    @{scanAnalysis.user.login}
+            <div className="p-4 rounded-2xl bg-white border border-[#E5E3DA] space-y-3 shadow-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <img
+                    src={scanAnalysis.user.avatar_url}
+                    alt={scanAnalysis.user.login}
+                    className="w-10 h-10 rounded-full border border-[#E5E3DA] shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-[#101114] truncate">
+                      {scanAnalysis.user.name || `@${scanAnalysis.user.login}`}
+                    </div>
+                    <div className="text-[10px] font-mono text-[#65666A]">
+                      @{scanAnalysis.user.login}
+                    </div>
                   </div>
                 </div>
+
+                <a
+                  href={`https://github.com/${scanAnalysis.user.login}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-lg bg-[#FAF9F5] border border-[#E5E3DA] text-[#65666A] hover:text-[#101114] hover:border-[#84CC16] transition-colors"
+                  title="View Profile on GitHub"
+                >
+                  <ExternalLink size={12} />
+                </a>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-center pt-2 border-t border-[#ECEAE1]">
@@ -657,6 +713,82 @@ export const GitGlowEnginePage: React.FC = () => {
 
         {/* Right Column (3 cols): Live Console & Community Repo Sandbox */}
         <div className="lg:col-span-3 space-y-6">
+          {/* Actionable Big 5 Speedrun Widget */}
+          <div className="p-5 rounded-3xl bg-white border border-[#E5E3DA] space-y-3.5 shadow-xs">
+            <div className="flex items-center justify-between pb-2 border-b border-[#ECEAE1]">
+              <div className="flex items-center gap-2">
+                <Zap size={16} className="text-[#84CC16]" />
+                <h3 className="text-xs font-bold text-[#101114] uppercase tracking-wider">
+                  Actionable 5 Badges
+                </h3>
+              </div>
+              <span className="text-[10.5px] font-mono font-black text-[#4D7C0F] bg-[#D7FF36]/40 px-2 py-0.5 rounded-full border border-[#84CC16]">
+                {['yolo', 'pair-extraordinaire', 'galaxy-brain', 'quickdraw', 'pull-shark'].filter((id) => isBadgeOwned(id)).length}/5 Unlocked
+              </span>
+            </div>
+
+            <div className="space-y-1.5">
+              {[
+                { id: 'quickdraw', name: 'Quickdraw', time: '< 5m', desc: '120s issue loop' },
+                { id: 'pull-shark', name: 'Pull Shark', time: '1-Click', desc: 'PR sandbox merge' },
+                { id: 'yolo', name: 'YOLO', time: 'Instant', desc: 'Merge without review' },
+                { id: 'pair-extraordinaire', name: 'Pair Extraordinaire', time: 'Bot Pair', desc: 'Co-author trailer' },
+                { id: 'galaxy-brain', name: 'Galaxy Brain', time: '2 Answers', desc: 'Discussions solver' },
+              ].map((item) => {
+                const owned = isBadgeOwned(item.id);
+                const isCurrent = activeBadge.id === item.id;
+                const badgeData = GITHUB_BADGES.find((b) => b.id === item.id);
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleSelectBadge(item.id)}
+                    className={cn(
+                      'w-full p-2.5 rounded-xl border text-left flex items-center justify-between gap-2.5 transition-all cursor-pointer',
+                      isCurrent
+                        ? 'bg-[#101114] text-white border-[#101114] shadow-xs'
+                        : owned
+                        ? 'bg-[#F7F8EF] border-[#DCE89E] hover:bg-white text-[#101114]'
+                        : 'bg-[#FAF9F5] border-[#E5E3DA] hover:bg-white hover:border-[#DCE89E] text-[#101114]'
+                    )}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <img
+                        src={badgeData?.image}
+                        alt={item.name}
+                        className="w-6 h-6 object-contain shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold truncate flex items-center gap-1.5">
+                          <span className={isCurrent ? 'text-white' : 'text-[#101114]'}>{item.name}</span>
+                        </div>
+                        <span className={cn('text-[10px] block truncate', isCurrent ? 'text-slate-400' : 'text-[#65666A]')}>
+                          {item.desc}
+                        </span>
+                      </div>
+                    </div>
+
+                    {owned ? (
+                      <span className={cn(
+                        'px-2 py-0.5 rounded-full text-[9px] font-mono font-bold flex items-center gap-0.5 shrink-0',
+                        isCurrent ? 'bg-[#D7FF36] text-[#101114]' : 'bg-[#84CC16]/20 text-[#4D7C0F]'
+                      )}>
+                        <Check size={10} strokeWidth={3} />
+                        <span>DONE</span>
+                      </span>
+                    ) : (
+                      <span className={cn(
+                        'text-[10px] font-mono font-bold shrink-0',
+                        isCurrent ? 'text-[#D7FF36]' : 'text-[#65666A]'
+                      )}>
+                        {item.time}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Simulated Terminal Console */}
           <div className="p-4 rounded-3xl bg-[#101114] text-white space-y-3 shadow-md border border-[#23262D]">
             <div className="flex items-center justify-between pb-2 border-b border-[#23262D]">
