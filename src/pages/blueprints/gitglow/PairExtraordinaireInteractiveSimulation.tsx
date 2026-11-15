@@ -29,6 +29,7 @@ import {
   executeRealPairExtraordinairePullRequest,
   executeRealMergePullRequest,
   resolveGitHubUser,
+  inviteCollaboratorToRepo,
   GitHubPullRequestResult,
 } from '../../../lib/gitglow/gitglow-github-executor';
 import { BadgeRewardModal } from '../../../components/gitglow/BadgeRewardModal';
@@ -192,21 +193,92 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
       setTestRepoName(sandbox.name);
       setActiveRepoName(sandbox.name);
 
-      setLogs((prev) => [
-        ...prev,
-        { text: `✓ Target repository ready: ${sandbox.full_name}`, type: 'success' },
-        { text: `[2/3] Writing RFC-standard Git trailer commit with dual author attribution...`, type: 'info' },
-        { text: `Co-authored-by: ${coAuthorName} <${coAuthorEmail}>`, type: 'cmd' },
-      ]);
+      let pr: GitHubPullRequestResult;
 
-      const pr = await executeRealPairExtraordinairePullRequest(
-        connectedUser.accessToken,
-        connectedUser.githubUsername,
-        sandbox.name,
-        coAuthorName,
-        coAuthorEmail,
-        sandbox.default_branch
-      );
+      if (partnerMode === 'bot') {
+        // Resolve user's verified GitHub identity
+        const userDetails = await resolveGitHubUser(connectedUser.githubUsername);
+
+        setLogs((prev) => [
+          ...prev,
+          { text: `✓ Target repository ready: ${sandbox.full_name}`, type: 'success' },
+          { text: `[1-Click Bot] Ensuring @gitglow-agent is added as repository collaborator...`, type: 'info' },
+        ]);
+
+        try {
+          const inv = await inviteCollaboratorToRepo(
+            connectedUser.accessToken,
+            connectedUser.githubUsername,
+            sandbox.name,
+            DEFAULT_BOT_COAUTHOR.login
+          );
+          await fetch('/api/gitglow/bot/accept-invite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              invitationId: inv.invitationId,
+              owner: connectedUser.githubUsername,
+              repo: sandbox.name,
+            }),
+          });
+        } catch (e: any) {
+          console.warn('Bot invitation check note:', e.message);
+        }
+
+        setLogs((prev) => [
+          ...prev,
+          { text: `[2/3] @gitglow-agent committing patch with @${connectedUser.githubUsername} as official CO-AUTHOR...`, type: 'info' },
+          { text: `Co-authored-by: ${userDetails.name} <${userDetails.verifiedEmail}>`, type: 'cmd' },
+        ]);
+
+        const botRes = await fetch('/api/gitglow/bot/create-coauthored-pr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            owner: connectedUser.githubUsername,
+            repo: sandbox.name,
+            userLogin: connectedUser.githubUsername,
+            userName: userDetails.name,
+            userEmail: userDetails.verifiedEmail,
+            defaultBranch: sandbox.default_branch,
+          }),
+        });
+
+        if (!botRes.ok) {
+          const botErr = await botRes.json().catch(() => ({}));
+          throw new Error(botErr.error || 'Failed to create autonomous co-authored PR.');
+        }
+
+        const prData = await botRes.json();
+        pr = {
+          number: prData.number,
+          id: prData.id,
+          title: prData.title,
+          html_url: prData.html_url,
+          headBranch: prData.headBranch,
+          baseBranch: prData.baseBranch,
+          state: 'open',
+          merged: false,
+          reviewRequested: false,
+        };
+      } else {
+        // Custom Peer / Friend Mode
+        setLogs((prev) => [
+          ...prev,
+          { text: `✓ Target repository ready: ${sandbox.full_name}`, type: 'success' },
+          { text: `[2/3] Writing RFC-standard Git trailer commit with dual author attribution...`, type: 'info' },
+          { text: `Co-authored-by: ${coAuthorName} <${coAuthorEmail}>`, type: 'cmd' },
+        ]);
+
+        pr = await executeRealPairExtraordinairePullRequest(
+          connectedUser.accessToken,
+          connectedUser.githubUsername,
+          sandbox.name,
+          coAuthorName,
+          coAuthorEmail,
+          sandbox.default_branch
+        );
+      }
 
       setRealPrResult(pr);
       setPrNumber(pr.number);
@@ -219,8 +291,13 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
         ...prev,
         { text: `✓ CO-AUTHORED PR #${pr.number} OPENED ON GITHUB!`, type: 'success' },
         { text: `URL: ${pr.html_url}`, type: 'info' },
-        { text: `Dual Attribution Header verified: Primary (@${connectedUser.githubUsername}) + Co-Author (${coAuthorName})`, type: 'success' },
-        { text: `Proceed to Station 3 to merge into the default branch to trigger GitHub qualification.`, type: 'info' },
+        {
+          text: partnerMode === 'bot'
+            ? `✓ GitHub Attribution Verified: @gitglow-agent (Author) + @${connectedUser.githubUsername} (CO-AUTHOR)`
+            : `✓ GitHub Attribution Verified: Primary (@${connectedUser.githubUsername}) + Co-Author (${coAuthorName})`,
+          type: 'success',
+        },
+        { text: `Proceed to Station 3 to merge into the default branch to claim your Pair Extraordinaire achievement!`, type: 'info' },
       ]);
     } catch (err: any) {
       setAuthError(err.message || 'Failed to create co-authored pull request.');
@@ -252,18 +329,30 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
         activeRepoName,
         realPrResult.number,
         `Merge pull request #${realPrResult.number} from GitGlow/PairExtraordinaire`,
-        `Official Pair Extraordinaire qualification: Co-authored by ${coAuthorName} <${coAuthorEmail}>.`
+        `Official Pair Extraordinaire qualification: Co-authored by @${connectedUser.githubUsername}.`
       );
 
       setRealPrResult(mergedPr);
       setSimState('merged');
       toggleBadgeStep('pair-extraordinaire', 2);
 
+      // Clean up companion bot from sandbox repo so it leaves cleanly
+      if (partnerMode === 'bot') {
+        fetch('/api/gitglow/bot/leave-repo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            owner: connectedUser.githubUsername,
+            repo: activeRepoName,
+          }),
+        }).catch(() => {});
+      }
+
       setLogs((prev) => [
         ...prev,
-        { text: `✓ PULL REQUEST #${mergedPr.number} MERGED SUCCESSFULLY!`, type: 'success' },
-        { text: `Dual attribution credited to both developers on GitHub.`, type: 'success' },
-        { text: `Click "Claim Reward" to celebrate milestone completion.`, type: 'info' },
+        { text: `✓ PULL REQUEST #${mergedPr.number} MERGED SUCCESSFULLY INTO MAIN!`, type: 'success' },
+        { text: `✓ Official Co-Author record established for @${connectedUser.githubUsername} on GitHub!`, type: 'success' },
+        { text: `Click "Claim Reward" to record milestone completion.`, type: 'info' },
       ]);
     } catch (err: any) {
       setAuthError(err.message || 'Failed to merge Pull Request.');

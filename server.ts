@@ -617,6 +617,118 @@ async function startServer() {
     }
   });
 
+  // GitGlow Autonomous Pair Extraordinaire PR Engine
+  app.post("/api/gitglow/bot/create-coauthored-pr", async (req, res) => {
+    try {
+      const { owner, repo, userName, userEmail, userLogin, defaultBranch = "main" } = req.body;
+      const botToken = process.env.GITGLOW_BOT_TOKEN;
+      const botUser = process.env.GITGLOW_BOT_USERNAME || "gitglow-agent";
+
+      if (!botToken || !owner || !repo) {
+        return res.status(400).json({ error: "Missing required parameters" });
+      }
+
+      const headers = {
+        Accept: "application/vnd.github.v3+json",
+        Authorization: `Bearer ${botToken}`,
+        "Content-Type": "application/json",
+      };
+
+      // 1. Get default branch commit SHA
+      const refRes = await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/git/ref/heads/${encodeURIComponent(defaultBranch)}`, {
+        headers,
+      });
+      if (!refRes.ok) {
+        return res.status(refRes.status).json({ error: `Could not resolve branch refs/heads/${defaultBranch}` });
+      }
+      const refData = await refRes.json();
+      const baseSha = refData.object.sha;
+
+      // 2. Create feature branch by bot
+      const branchSuffix = Date.now().toString().slice(-4);
+      const pairBranch = `feat/pair-with-${owner.toLowerCase()}-${branchSuffix}`;
+      const branchRes = await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/git/refs`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          ref: `refs/heads/${pairBranch}`,
+          sha: baseSha,
+        }),
+      });
+
+      if (!branchRes.ok) {
+        const err = await branchRes.json().catch(() => ({}));
+        return res.status(branchRes.status).json({ error: err.message || "Bot failed to create pair branch" });
+      }
+
+      // 3. Commit file authored by gitglow-agent with USER as Co-author
+      const filePath = `pair-sessions/session-${branchSuffix}.md`;
+      const resolvedUserName = userName || userLogin || owner;
+      const resolvedUserEmail = userEmail || `${owner}@users.noreply.github.com`;
+
+      const fileContent = `# Pair Programming Sprint\n\n- Primary Author: @${botUser}\n- Co-Author: @${owner} <${resolvedUserEmail}>\n- Engine: GitGlow Achievements Engine\n- Timestamp: ${new Date().toISOString()}\n`;
+      const encodedContent = Buffer.from(fileContent).toString("base64");
+
+      const commitMessage = `feat(collab): pair programming session with @${owner} #${branchSuffix}\n\nCo-authored-by: ${resolvedUserName} <${resolvedUserEmail}>`;
+
+      const fileRes = await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodeURIComponent(filePath)}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({
+          message: commitMessage,
+          content: encodedContent,
+          branch: pairBranch,
+          author: {
+            name: botUser,
+            email: `356865526+${botUser}@users.noreply.github.com`,
+          },
+          committer: {
+            name: botUser,
+            email: `356865526+${botUser}@users.noreply.github.com`,
+          },
+        }),
+      });
+
+      if (!fileRes.ok) {
+        const err = await fileRes.json().catch(() => ({}));
+        return res.status(fileRes.status).json({ error: err.message || "Bot failed to commit co-authored patch" });
+      }
+
+      // 4. Bot opens Pull Request into defaultBranch
+      const prRes = await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          title: `feat(collab): pair programming session with @${owner} #${branchSuffix}`,
+          head: pairBranch,
+          base: defaultBranch,
+          body: `### Pair Extraordinaire Qualification\n\nThis pull request is created by **@${botUser}** and officially co-authored by **@${owner}** via RFC Git trailer:\n\`\`\`\nCo-authored-by: ${resolvedUserName} <${resolvedUserEmail}>\n\`\`\`\n\nMerging this PR qualifies **@${owner}** for the official GitHub **Pair Extraordinaire** achievement!`,
+        }),
+      });
+
+      if (!prRes.ok) {
+        const err = await prRes.json().catch(() => ({}));
+        return res.status(prRes.status).json({ error: err.message || "Bot failed to open Pull Request" });
+      }
+
+      const pr = await prRes.json();
+      return res.json({
+        success: true,
+        number: pr.number,
+        id: pr.id,
+        title: pr.title,
+        html_url: pr.html_url,
+        headBranch: pairBranch,
+        baseBranch: defaultBranch,
+        primaryAuthor: botUser,
+        coAuthorName: resolvedUserName,
+        coAuthorEmail: resolvedUserEmail,
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
