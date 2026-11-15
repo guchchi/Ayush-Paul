@@ -519,7 +519,7 @@ async function startServer() {
     const hasToken = Boolean(process.env.GITGLOW_BOT_TOKEN);
     res.json({
       botConfigured: hasToken,
-      botHandle: process.env.GITGLOW_BOT_USERNAME || "gitglow-bot",
+      botHandle: process.env.GITGLOW_BOT_USERNAME || "gitglow-agent",
       message: hasToken
         ? "Automated companion bot active."
         : "Bot token not configured in .env. Using 1-Click Branch Protection Override mode.",
@@ -528,19 +528,54 @@ async function startServer() {
 
   app.post("/api/gitglow/bot/accept-invite", async (req, res) => {
     try {
-      const { invitationId } = req.body;
+      const { invitationId, owner, repo } = req.body;
       const botToken = process.env.GITGLOW_BOT_TOKEN;
       if (!botToken) {
         return res.status(503).json({
-          error: "GITGLOW_BOT_TOKEN not configured in server environment. Use 1-Click Branch Protection Override mode instead.",
+          error: "GITGLOW_BOT_TOKEN not configured in server environment.",
         });
       }
 
-      if (!invitationId) {
-        return res.status(400).json({ error: "Missing invitationId parameter" });
+      let targetInviteId = invitationId;
+
+      // If invitationId not provided, search pending invitations for gitglow-agent
+      if (!targetInviteId && owner && repo) {
+        const listRes = await fetch("https://api.github.com/user/repository_invitations", {
+          headers: {
+            Accept: "application/vnd.github.v3+json",
+            Authorization: `Bearer ${botToken}`,
+          },
+        });
+        if (listRes.ok) {
+          const invites = await listRes.json();
+          const match = Array.isArray(invites) && invites.find((inv: any) => 
+            inv.repository?.owner?.login?.toLowerCase() === owner.toLowerCase() &&
+            inv.repository?.name?.toLowerCase() === repo.toLowerCase()
+          );
+          if (match) {
+            targetInviteId = match.id;
+          }
+        }
       }
 
-      const patchRes = await fetch(`https://api.github.com/user/repository_invitations/${encodeURIComponent(invitationId)}`, {
+      if (!targetInviteId) {
+        // Check if bot is already a collaborator
+        if (owner && repo) {
+          const botUser = process.env.GITGLOW_BOT_USERNAME || "gitglow-agent";
+          const checkRes = await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/collaborators/${encodeURIComponent(botUser)}`, {
+            headers: {
+              Accept: "application/vnd.github.v3+json",
+              Authorization: `Bearer ${botToken}`,
+            },
+          });
+          if (checkRes.status === 204) {
+            return res.json({ success: true, message: "Bot is already an active collaborator on repository" });
+          }
+        }
+        return res.status(400).json({ error: "Missing invitationId or matching repository invitation" });
+      }
+
+      const patchRes = await fetch(`https://api.github.com/user/repository_invitations/${encodeURIComponent(targetInviteId)}`, {
         method: "PATCH",
         headers: {
           Accept: "application/vnd.github.v3+json",
@@ -554,6 +589,29 @@ async function startServer() {
       }
 
       res.json({ success: true, message: "Invitation accepted by GitGlow Companion Bot" });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/gitglow/bot/leave-repo", async (req, res) => {
+    try {
+      const { owner, repo } = req.body;
+      const botToken = process.env.GITGLOW_BOT_TOKEN;
+      const botUser = process.env.GITGLOW_BOT_USERNAME || "gitglow-agent";
+      if (!botToken || !owner || !repo) {
+        return res.status(400).json({ error: "Missing required parameters" });
+      }
+
+      await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/collaborators/${encodeURIComponent(botUser)}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/vnd.github.v3+json",
+          Authorization: `Bearer ${botToken}`,
+        },
+      });
+
+      res.json({ success: true, message: `GitGlow Bot @${botUser} cleanly left repository ${owner}/${repo}` });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }

@@ -236,17 +236,25 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
             sandbox.name,
             botConfig.botHandle
           );
-          if (inv.invitationId) {
-            await fetch('/api/gitglow/bot/accept-invite', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ invitationId: inv.invitationId }),
-            });
+          
+          const acceptRes = await fetch('/api/gitglow/bot/accept-invite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              invitationId: inv.invitationId,
+              owner: connectedUser.githubUsername,
+              repo: sandbox.name,
+            }),
+          });
+
+          if (acceptRes.ok) {
             setLogs((prev) => [
               ...prev,
-              { text: `✓ GitGlow Companion Bot @${botConfig.botHandle} auto-accepted repository invitation!`, type: 'success' },
+              { text: `✓ GitGlow Companion Bot @${botConfig.botHandle} confirmed as active collaborator!`, type: 'success' },
             ]);
             effectiveReviewer = botConfig.botHandle;
+          } else {
+            console.warn('Bot accept response:', await acceptRes.text());
           }
         } catch (e: any) {
           console.warn('Bot auto-invite note:', e.message);
@@ -346,6 +354,18 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
         activeRepoName,
         realPrResult.baseBranch || 'main'
       ).catch(() => {});
+
+      // Clean up companion bot from sandbox repo so it leaves cleanly
+      if (yoloMode === 'autonomous' && botConfig?.botConfigured) {
+        fetch('/api/gitglow/bot/leave-repo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            owner: connectedUser.githubUsername,
+            repo: activeRepoName,
+          }),
+        }).catch(() => {});
+      }
 
       setLogs((prev) => [
         ...prev,
