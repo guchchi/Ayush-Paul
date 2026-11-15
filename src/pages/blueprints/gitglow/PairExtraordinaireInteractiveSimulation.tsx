@@ -52,10 +52,13 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
     setTestRepoName,
     toggleBadgeStep,
     markMissionCompleted,
+    completedMissionIds,
+    setBadgeOwnership,
     runScan,
     isBadgeOwned,
   } = useGitGlowStore();
 
+  const isMissionCompleted = completedMissionIds.includes('m3-pair-collab');
   const isAlreadyEarned = isBadgeOwned('pair-extraordinaire');
 
   const DEFAULT_BOT_COAUTHOR = {
@@ -138,7 +141,9 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
   const [activeRepoName, setActiveRepoName] = useState<string>(testRepoName);
 
   // Runner State
-  const [simState, setSimState] = useState<'idle' | 'branch_created' | 'pr_opened' | 'merged' | 'verified'>('idle');
+  const [simState, setSimState] = useState<'idle' | 'branch_created' | 'pr_opened' | 'merged' | 'verified'>(
+    isMissionCompleted ? 'verified' : 'idle'
+  );
   const [prNumber, setPrNumber] = useState<number>(1);
   const [branchName, setBranchName] = useState<string>('feat/pair-collab');
   const [logs, setLogs] = useState<Array<{ text: string; type?: 'info' | 'success' | 'cmd' | 'error' }>>([]);
@@ -384,6 +389,10 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
   const triggerStep3Verify = async () => {
     setSimState('verified');
     markMissionCompleted('m3-pair-collab');
+    setBadgeOwnership('pair-extraordinaire', true);
+    toggleBadgeStep('pair-extraordinaire', 0);
+    toggleBadgeStep('pair-extraordinaire', 1);
+    toggleBadgeStep('pair-extraordinaire', 2);
     setShowRewardModal(true);
 
     if (connectedUser?.githubUsername) {
@@ -392,8 +401,10 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
 
     setLogs((prev) => [
       ...prev,
-      { text: `🎉 QUALIFIED! GitHub Pair Extraordinaire webhook recorded.`, type: 'success' },
+      { text: `🎉 QUALIFIED & CLAIMED! Commit merged into main with dual author attribution.`, type: 'success' },
+      { text: `✓ Co-Authored PR #${realPrResult?.number || prNumber} recorded into default branch.`, type: 'success' },
       { text: `Dual achievement indexed for @${connectedUser?.githubUsername || targetUsername} & ${coAuthorName}!`, type: 'info' },
+      { text: `✓ GitGlow Status: Unlocked & Ingested. GitHub profile tab updates asynchronously (15-60m).`, type: 'cmd' },
     ]);
 
     if (onCompleted) onCompleted();
@@ -872,10 +883,20 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
               </button>
             )}
 
-            {['merged', 'verified'].includes(simState) && (
+            {simState === 'verified' && (
               <button
                 onClick={triggerStep3Verify}
-                className="px-5 py-2.5 rounded-xl bg-[#D7FF36] text-[#101114] border border-[#84CC16] text-xs font-black flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+                className="px-5 py-2.5 rounded-xl bg-[#84CC16] hover:bg-[#65A30D] text-white text-xs font-black flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+              >
+                <Check size={14} strokeWidth={3} />
+                <span>Claimed (View Certificate)</span>
+              </button>
+            )}
+
+            {simState === 'merged' && (
+              <button
+                onClick={triggerStep3Verify}
+                className="px-5 py-2.5 rounded-xl bg-[#D7FF36] hover:bg-[#C9F227] text-[#101114] border border-[#84CC16] text-xs font-black flex items-center gap-2 transition-all cursor-pointer shadow-xs animate-bounce"
               >
                 <Trophy size={14} />
                 <span>Claim & View Pair Extraordinaire</span>

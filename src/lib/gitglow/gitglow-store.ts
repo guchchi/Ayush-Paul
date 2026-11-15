@@ -41,6 +41,7 @@ export interface GitGlowStoreState {
   manualOwnershipOverrides: Record<string, boolean>;
   userOwnedBadgeIds?: string[];
   toggleBadgeOwnership: (badgeId: string) => void;
+  setBadgeOwnership: (badgeId: string, owned: boolean) => void;
   isBadgeOwned: (badgeId: string) => boolean;
 
   // Step checklist state per badge
@@ -179,14 +180,34 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         current[badgeId] = !currentlyOwned;
         set({ manualOwnershipOverrides: current });
       },
+      setBadgeOwnership: (badgeId: string, owned: boolean) => {
+        const current = { ...get().manualOwnershipOverrides };
+        current[badgeId] = owned;
+        set({ manualOwnershipOverrides: current });
+      },
       isBadgeOwned: (badgeId: string) => {
         const state = get();
-        // 1. Check manual user override
+        // 1. Check manual user override / explicitly claimed
         if (state.manualOwnershipOverrides[badgeId] !== undefined) {
           return state.manualOwnershipOverrides[badgeId];
         }
 
-        // 2. Check precise live GitHub achievements & verified metrics
+        // 2. Check completed verified in-app qualification mission
+        const missionMapping: Record<string, string> = {
+          quickdraw: 'm1-quickdraw-speed',
+          'pull-shark': 'm2-pr-powerhouse',
+          'pair-extraordinaire': 'm3-pair-collab',
+          yolo: 'm4-yolo-merge',
+          starstruck: 'm5-star-velocity',
+          'galaxy-brain': 'm6-discussion-mastery',
+          'public-sponsor': 'm7-sponsor-economy',
+        };
+        const targetMission = missionMapping[badgeId];
+        if (targetMission && state.completedMissionIds.includes(targetMission)) {
+          return true;
+        }
+
+        // 3. Check precise live GitHub achievements & verified metrics
         const analysis = state.scanAnalysis;
         if (analysis) {
           const live = Array.isArray(analysis.liveEarnedAchievements)

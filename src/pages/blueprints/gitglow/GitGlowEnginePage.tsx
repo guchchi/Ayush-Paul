@@ -339,14 +339,20 @@ export const GitGlowEnginePage: React.FC = () => {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-black uppercase tracking-wider text-[#101114]">
-                        🎉 You Already Own This Badge!
+                        {scanAnalysis?.liveEarnedAchievements?.includes(activeBadge.id)
+                          ? '🎉 You Already Own This Badge!'
+                          : '🎉 Milestone Qualified & Claimed!'}
                       </span>
                       <span className="px-2 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] text-[9.5px] font-mono font-black uppercase">
-                        ON YOUR GITHUB PROFILE
+                        {scanAnalysis?.liveEarnedAchievements?.includes(activeBadge.id)
+                          ? 'ON YOUR GITHUB PROFILE'
+                          : 'GITHUB INDEXING ACTIVE'}
                       </span>
                     </div>
                     <p className="text-[11px] text-[#4D7C0F] mt-0.5">
-                      Verified for @{connectedUser?.githubUsername || targetUsername}. You already achieved this milestone! You can still test in the sandbox below.
+                      {scanAnalysis?.liveEarnedAchievements?.includes(activeBadge.id)
+                        ? `Verified for @${connectedUser?.githubUsername || targetUsername}. You already achieved this milestone! You can still test in the sandbox below.`
+                        : `Qualifying commit merged into default branch for @${connectedUser?.githubUsername || targetUsername}! GitHub's background indexer is processing your commit (typically reflects in 15–60m).`}
                     </p>
                   </div>
                 </div>
