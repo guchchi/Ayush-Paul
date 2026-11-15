@@ -309,7 +309,8 @@ export async function executeRealMergePullRequest(
   repo: string,
   pullNumber: number,
   commitTitle?: string,
-  commitMessage?: string
+  commitMessage?: string,
+  mergeMethod: 'merge' | 'squash' | 'rebase' = 'merge'
 ): Promise<GitHubPullRequestResult> {
   const headers = {
     Accept: 'application/vnd.github.v3+json',
@@ -323,7 +324,7 @@ export async function executeRealMergePullRequest(
     body: JSON.stringify({
       commit_title: commitTitle || `Merge pull request #${pullNumber} from GitGlow Engine`,
       commit_message: commitMessage || `Official qualification merged successfully without code review.`,
-      merge_method: 'merge',
+      merge_method: mergeMethod,
     }),
   });
 
@@ -579,7 +580,7 @@ export async function executeRealPairExtraordinairePullRequest(
   const fileContent = `# Pair Programming Sprint\n\n- Primary Author: @${owner}\n- Co-Author: ${coAuthorName} <${coAuthorEmail}>\n- Engine: GitGlow Achievements Engine\n- Timestamp: ${new Date().toISOString()}\n`;
   const encodedContent = btoa(fileContent);
 
-  const commitMessage = `feat(collab): pair programming session #${branchSuffix}\n\nCo-authored-by: ${coAuthorName} <${coAuthorEmail}>`;
+  const commitMessage = `feat(collab): pair programming session #${branchSuffix}\n\nCo-authored-by: ${owner} <${owner}@users.noreply.github.com>\nCo-authored-by: ${coAuthorName} <${coAuthorEmail}>`;
 
   const fileRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
     method: 'PUT',

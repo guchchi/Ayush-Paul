@@ -669,7 +669,7 @@ async function startServer() {
       const fileContent = `# Pair Programming Sprint\n\n- Primary Author: @${botUser}\n- Co-Author: @${owner} <${resolvedUserEmail}>\n- Engine: GitGlow Achievements Engine\n- Timestamp: ${new Date().toISOString()}\n`;
       const encodedContent = Buffer.from(fileContent).toString("base64");
 
-      const commitMessage = `feat(collab): pair programming session with @${owner} #${branchSuffix}\n\nCo-authored-by: ${resolvedUserName} <${resolvedUserEmail}>`;
+      const commitMessage = `feat(collab): pair programming session with @${owner} #${branchSuffix}\n\nCo-authored-by: ${resolvedUserName} <${resolvedUserEmail}>\nCo-authored-by: ${botUser} <356865526+${botUser}@users.noreply.github.com>`;
 
       const fileRes = await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodeURIComponent(filePath)}`, {
         method: "PUT",
