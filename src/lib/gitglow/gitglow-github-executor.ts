@@ -539,8 +539,8 @@ export async function executeRealPairExtraordinairePullRequest(
   accessToken: string,
   owner: string,
   repo: string,
-  coAuthorName = 'GitGlow Pairing Bot',
-  coAuthorEmail = 'bot@gitglow.dev',
+  coAuthorName = 'gitglow-agent',
+  coAuthorEmail = '356865526+gitglow-agent@users.noreply.github.com',
   defaultBranch = 'main'
 ): Promise<GitHubPullRequestResult> {
   const headers = {

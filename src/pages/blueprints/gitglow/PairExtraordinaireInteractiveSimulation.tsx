@@ -19,6 +19,7 @@ import {
   GitMerge,
   Users,
   UserPlus,
+  Bot,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
@@ -56,8 +57,17 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
 
   const isAlreadyEarned = isBadgeOwned('pair-extraordinaire');
 
+  const DEFAULT_BOT_COAUTHOR = {
+    login: 'gitglow-agent',
+    id: 356865526,
+    name: 'gitglow-agent',
+    avatar_url: 'https://avatars.githubusercontent.com/u/356865526?v=4',
+    verifiedEmail: '356865526+gitglow-agent@users.noreply.github.com',
+  };
+
   // Co-author configuration
-  const [coAuthorHandle, setCoAuthorHandle] = useState<string>('');
+  const [partnerMode, setPartnerMode] = useState<'bot' | 'custom'>('bot');
+  const [coAuthorHandle, setCoAuthorHandle] = useState<string>('gitglow-agent');
   const [isResolvingCoAuthor, setIsResolvingCoAuthor] = useState<boolean>(false);
   const [resolvedCoAuthor, setResolvedCoAuthor] = useState<{
     login: string;
@@ -65,10 +75,34 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
     name: string;
     avatar_url: string;
     verifiedEmail: string;
-  } | null>(null);
+  } | null>(DEFAULT_BOT_COAUTHOR);
 
-  const [coAuthorName, setCoAuthorName] = useState<string>('GitGlow Peer Partner');
-  const [coAuthorEmail, setCoAuthorEmail] = useState<string>('pair-bot@gitglow.dev');
+  const [coAuthorName, setCoAuthorName] = useState<string>('gitglow-agent');
+  const [coAuthorEmail, setCoAuthorEmail] = useState<string>('356865526+gitglow-agent@users.noreply.github.com');
+
+  const handleSelectBotPartner = () => {
+    setPartnerMode('bot');
+    setResolvedCoAuthor(DEFAULT_BOT_COAUTHOR);
+    setCoAuthorName(DEFAULT_BOT_COAUTHOR.name);
+    setCoAuthorEmail(DEFAULT_BOT_COAUTHOR.verifiedEmail);
+    setCoAuthorHandle('gitglow-agent');
+    setLogs((prev) => [
+      ...prev,
+      { text: `[Partner Switched] Autonomous GitGlow Partner @gitglow-agent selected.`, type: 'info' },
+    ]);
+  };
+
+  const handleSelectCustomPartner = () => {
+    setPartnerMode('custom');
+    setResolvedCoAuthor(null);
+    setCoAuthorName('');
+    setCoAuthorEmail('');
+    setCoAuthorHandle('');
+    setLogs((prev) => [
+      ...prev,
+      { text: `[Partner Switched] Custom peer mode active. Enter any GitHub handle to resolve verified email.`, type: 'info' },
+    ]);
+  };
 
   // Automatically lookup co-author GitHub details to ensure valid user mapping
   const handleLookupCoAuthor = async () => {
@@ -378,71 +412,138 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
           </span>
         </div>
 
-        {/* 1-Click Real Co-Author GitHub Lookup */}
-        <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#ECEAE1] space-y-2.5">
-          <label className="text-[10px] font-bold text-[#101114] uppercase tracking-wider block">
-            Lookup Co-Author by GitHub Username (Recommended):
-          </label>
-          <div className="flex flex-col sm:flex-row items-center gap-2">
-            <input
-              type="text"
-              value={coAuthorHandle}
-              onChange={(e) => setCoAuthorHandle(e.target.value)}
-              placeholder="e.g. friend-username or alt-account-username"
-              className="w-full sm:flex-1 h-9 px-3 rounded-xl bg-white border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#10B981]"
-            />
-            <button
-              onClick={handleLookupCoAuthor}
-              disabled={isResolvingCoAuthor || !coAuthorHandle.trim()}
-              className="w-full sm:w-auto h-9 px-4 rounded-xl bg-[#101114] hover:bg-[#202228] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
-            >
-              <span>{isResolvingCoAuthor ? 'Verifying...' : 'Resolve Verified Email'}</span>
-            </button>
-          </div>
+        {/* Mode Selector: 1-Click Autonomous vs Custom Peer */}
+        <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-[#FAF9F5] border border-[#ECEAE1]">
+          <button
+            type="button"
+            onClick={handleSelectBotPartner}
+            className={cn(
+              'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer',
+              partnerMode === 'bot'
+                ? 'bg-[#101114] text-white shadow-xs'
+                : 'text-[#65666A] hover:text-[#101114]'
+            )}
+          >
+            <Bot size={14} className={cn(partnerMode === 'bot' ? 'text-[#84CC16]' : 'text-[#65666A]')} />
+            <span>1-Click Autonomous Partner (@gitglow-agent)</span>
+          </button>
+          <button
+            type="button"
+            onClick={handleSelectCustomPartner}
+            className={cn(
+              'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer',
+              partnerMode === 'custom'
+                ? 'bg-[#101114] text-white shadow-xs'
+                : 'text-[#65666A] hover:text-[#101114]'
+            )}
+          >
+            <UserPlus size={14} />
+            <span>Custom Peer / Friend</span>
+          </button>
+        </div>
 
-          {resolvedCoAuthor && (
-            <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-[#D1FAE5]">
+        {/* Autonomous Partner Card (Turnkey) */}
+        {partnerMode === 'bot' && (
+          <div className="p-4 rounded-2xl bg-[#F0FDF4] border border-[#BBF7D0] space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="px-2.5 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] border border-[#84CC16] text-[10px] font-black uppercase tracking-wider shadow-2xs">
+                Zero Configuration · Turnkey
+              </span>
+              <span className="text-[10px] font-mono text-[#059669] font-bold">
+                Verified GitHub Machine Account
+              </span>
+            </div>
+            <div className="flex items-center gap-3.5 p-3 rounded-xl bg-white border border-[#D1FAE5]">
               <img
-                src={resolvedCoAuthor.avatar_url}
-                alt={resolvedCoAuthor.login}
-                className="w-8 h-8 rounded-full border border-[#10B981]"
+                src={DEFAULT_BOT_COAUTHOR.avatar_url}
+                alt="gitglow-agent"
+                className="w-10 h-10 rounded-full border-2 border-[#10B981] shadow-2xs"
               />
-              <div className="min-w-0 text-xs">
-                <span className="font-bold text-[#101114]">@{resolvedCoAuthor.login}</span>
-                <span className="text-[11px] font-mono text-[#059669] block truncate">
-                  Verified Noreply: {resolvedCoAuthor.verifiedEmail}
+              <div className="min-w-0 flex-1 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="font-black text-[#101114]">@{DEFAULT_BOT_COAUTHOR.login}</span>
+                  <span className="px-2 py-0.2 rounded-md bg-[#10B981]/15 text-[#059669] text-[9.5px] font-mono font-bold">
+                    Official GitGlow Agent
+                  </span>
+                </div>
+                <span className="text-[11px] font-mono text-[#059669] block truncate mt-0.5 font-bold">
+                  Verified RFC Noreply: {DEFAULT_BOT_COAUTHOR.verifiedEmail}
                 </span>
               </div>
             </div>
-          )}
-        </div>
+            <p className="text-[11px] text-[#065F46] leading-relaxed">
+              When you click <strong>"1-Click Create Co-Authored PR"</strong>, GitGlow injects <code>@{DEFAULT_BOT_COAUTHOR.login}</code>'s verified RFC trailer into the patch commit. GitHub recognizes the real user, attaches both developer avatars to the PR, and triggers the <strong>Pair Extraordinaire</strong> achievement upon merge.
+            </p>
+          </div>
+        )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label className="text-[10px] font-bold text-[#65666A] uppercase tracking-wider block mb-1">
-              Co-Author Name
+        {/* Custom Peer Lookup Form */}
+        {partnerMode === 'custom' && (
+          <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#ECEAE1] space-y-2.5">
+            <label className="text-[10px] font-bold text-[#101114] uppercase tracking-wider block">
+              Lookup Co-Author by GitHub Username:
             </label>
-            <input
-              type="text"
-              value={coAuthorName}
-              onChange={(e) => setCoAuthorName(e.target.value)}
-              placeholder="e.g. Alex Morgan"
-              className="w-full h-9 px-3 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#10B981]"
-            />
+            <div className="flex flex-col sm:flex-row items-center gap-2">
+              <input
+                type="text"
+                value={coAuthorHandle}
+                onChange={(e) => setCoAuthorHandle(e.target.value)}
+                placeholder="e.g. friend-username or teammate"
+                className="w-full sm:flex-1 h-9 px-3 rounded-xl bg-white border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#10B981]"
+              />
+              <button
+                onClick={handleLookupCoAuthor}
+                disabled={isResolvingCoAuthor || !coAuthorHandle.trim()}
+                className="w-full sm:w-auto h-9 px-4 rounded-xl bg-[#101114] hover:bg-[#202228] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
+              >
+                <span>{isResolvingCoAuthor ? 'Verifying...' : 'Resolve Verified Email'}</span>
+              </button>
+            </div>
+
+            {resolvedCoAuthor && (
+              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-[#D1FAE5]">
+                <img
+                  src={resolvedCoAuthor.avatar_url}
+                  alt={resolvedCoAuthor.login}
+                  className="w-8 h-8 rounded-full border border-[#10B981]"
+                />
+                <div className="min-w-0 text-xs">
+                  <span className="font-bold text-[#101114]">@{resolvedCoAuthor.login}</span>
+                  <span className="text-[11px] font-mono text-[#059669] block truncate">
+                    Verified Noreply: {resolvedCoAuthor.verifiedEmail}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div>
+                <label className="text-[10px] font-bold text-[#65666A] uppercase tracking-wider block mb-1">
+                  Co-Author Name
+                </label>
+                <input
+                  type="text"
+                  value={coAuthorName}
+                  onChange={(e) => setCoAuthorName(e.target.value)}
+                  placeholder="e.g. Alex Morgan"
+                  className="w-full h-9 px-3 rounded-xl bg-white border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#10B981]"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-[#65666A] uppercase tracking-wider block mb-1">
+                  Co-Author Email
+                </label>
+                <input
+                  type="email"
+                  value={coAuthorEmail}
+                  onChange={(e) => setCoAuthorEmail(e.target.value)}
+                  placeholder="e.g. alex@example.com"
+                  className="w-full h-9 px-3 rounded-xl bg-white border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#10B981]"
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <label className="text-[10px] font-bold text-[#65666A] uppercase tracking-wider block mb-1">
-              Co-Author Email
-            </label>
-            <input
-              type="email"
-              value={coAuthorEmail}
-              onChange={(e) => setCoAuthorEmail(e.target.value)}
-              placeholder="e.g. alex@example.com"
-              className="w-full h-9 px-3 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] text-xs font-bold text-[#101114] focus:outline-hidden focus:border-[#10B981]"
-            />
-          </div>
-        </div>
+        )}
 
         {/* Live Preview of Commit Message */}
         <div className="p-3 rounded-xl bg-[#FAF9F5] border border-[#ECEAE1] text-xs font-mono text-[#101114] space-y-1">
