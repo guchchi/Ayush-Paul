@@ -339,14 +339,16 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
     const partnerEmail = partnerMode === 'bot' ? DEFAULT_BOT_COAUTHOR.verifiedEmail : (coAuthorEmail || `${partnerName}@users.noreply.github.com`);
 
     const squashTitle = `feat(collab): pair programming session with @${partnerName} (#${realPrResult.number})`;
-    const squashMessage = `Co-authored-by: ${resolvedUserName} <${resolvedUserEmail}>\nCo-authored-by: ${partnerName} <${partnerEmail}>`;
+    // RFC Standard: Only include the co-author who is NOT the primary commit author
+    const squashMessage = partnerMode === 'bot'
+      ? `Co-authored-by: ${resolvedUserName} <${resolvedUserEmail}>`
+      : `Co-authored-by: ${partnerName} <${partnerEmail}>`;
 
     setLogs((prev) => [
       ...prev,
       { text: `$ PUT https://api.github.com/repos/${connectedUser.githubUsername}/${activeRepoName}/pulls/${realPrResult.number}/merge`, type: 'cmd' },
-      { text: `Executing Squash and Merge to consolidate co-author trailers into default branch (Discussion #20481 standard)...`, type: 'info' },
-      { text: `Co-authored-by: ${resolvedUserName} <${resolvedUserEmail}>`, type: 'cmd' },
-      { text: `Co-authored-by: ${partnerName} <${partnerEmail}>`, type: 'cmd' },
+      { text: `Executing Squash and Merge to record co-author trailer into default branch...`, type: 'info' },
+      { text: squashMessage, type: 'cmd' },
     ]);
 
     try {
