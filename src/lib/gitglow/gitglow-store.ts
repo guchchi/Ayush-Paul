@@ -269,11 +269,13 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
 
         // If all 3 are completed, mark corresponding mission as completed
         const missionMapping: Record<string, string> = {
-          quickdraw: 'm1-quickdraw',
-          'pull-shark': 'm2-pull-shark',
+          quickdraw: 'm1-quickdraw-speed',
+          'pull-shark': 'm2-pr-powerhouse',
           'pair-extraordinaire': 'm3-pair-collab',
           yolo: 'm4-yolo-merge',
-          'galaxy-brain': 'm5-discussion-solver',
+          'galaxy-brain': 'm6-discussion-mastery',
+          starstruck: 'm5-star-velocity',
+          'public-sponsor': 'm7-sponsor-economy',
         };
 
         const targetMission = missionMapping[badgeId];

@@ -756,6 +756,143 @@ async function startServer() {
     }
   });
 
+  // ── Galaxy Brain Automation Endpoints ──
+  const GALAXY_BRAIN_REPO_ID = "R_kgDOVvDYUg";
+  const GALAXY_BRAIN_CATEGORY_ID = "DIC_kwDOVvDYUs4DLLMD"; // Q&A Category
+
+  const GALAXY_QUESTION_POOL = [
+    {
+      title: "How to resolve TypeScript 'Type is not assignable to type never' in generic conditional types?",
+      body: "I am writing a generic utility helper in TypeScript 5+ and running into `Type is not assignable to never` when filtering union types.\n\n```ts\ntype NonNullable<T> = T extends null | undefined ? never : T;\n```\n\nWhat is the standard and type-safe way to distribute unions or prevent unwanted never reduction?",
+      solution: "In TypeScript, conditional types distribute over union types automatically when the type parameter is naked. To prevent distribution or enforce tuple matching, wrap both sides in square brackets:\n\n```ts\ntype SafeMatch<T> = [T] extends [never] ? true : false;\n```\n\nAdditionally, ensure your tsconfig enables `strictNullChecks: true` to prevent `never` from being accidentally coerced during type widening.",
+    },
+    {
+      title: "What is the optimal caching strategy for TanStack Query v5 with React 19 Server Components?",
+      body: "With React 19 server components and TanStack Query v5, how should `staleTime` and `gcTime` be tuned to avoid duplicate network waterfalls during client hydration?",
+      solution: "In TanStack Query v5, set `staleTime: 60 * 1000` (1 minute) and `gcTime: 5 * 60 * 1000` so queries don't refetch on initial client hydration.\n\n```tsx\n// query-client.ts\nexport const queryClient = new QueryClient({\n  defaultOptions: {\n    queries: {\n      staleTime: 60 * 1000,\n      gcTime: 10 * 60 * 1000,\n      refetchOnWindowFocus: false,\n    },\n  },\n});\n```\n\nWrap server fetching in `dehydrate(queryClient)` so the client automatically reuses the server-rendered snapshot.",
+    },
+    {
+      title: "How to prevent race conditions during asynchronous batch updates in Zustand 5?",
+      body: "When two asynchronous actions update the same nested Zustand store slice simultaneously, how do you ensure sequential consistency without corrupting localStorage persistence?",
+      solution: "Always use functional state updates inside `set((state) => ({ ... }))` instead of reading from `get()` beforehand. For concurrent async actions, wrap with an `AbortController` or a sequencing promise queue:\n\n```ts\nconst useStore = create<State>((set) => ({\n  counter: 0,\n  incrementSafe: async () => {\n    set((state) => ({ counter: state.counter + 1 }));\n  },\n}));\n```\n\nThis guarantees atomicity across asynchronous microtask intervals.",
+    },
+  ];
+
+  app.post("/api/gitglow/bot/create-galaxy-discussion", async (req, res) => {
+    try {
+      const { topicIndex = 0, targetUsername = "developer" } = req.body;
+      const botToken = process.env.GITGLOW_BOT_TOKEN;
+      if (!botToken) {
+        return res.status(503).json({ error: "GITGLOW_BOT_TOKEN not configured." });
+      }
+
+      const selected = GALAXY_QUESTION_POOL[topicIndex % GALAXY_QUESTION_POOL.length];
+      const titleWithTag = `${selected.title} [Session #${Date.now().toString().slice(-4)}]`;
+
+      const gqlRes = await fetch("https://api.github.com/graphql", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${botToken}`,
+          "User-Agent": "GitGlow-Engine",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: `
+            mutation($repositoryId: ID!, $categoryId: ID!, $title: String!, $body: String!) {
+              createDiscussion(input: {
+                repositoryId: $repositoryId,
+                categoryId: $categoryId,
+                title: $title,
+                body: $body
+              }) {
+                discussion {
+                  id
+                  number
+                  url
+                }
+              }
+            }
+          `,
+          variables: {
+            repositoryId: GALAXY_BRAIN_REPO_ID,
+            categoryId: GALAXY_BRAIN_CATEGORY_ID,
+            title: titleWithTag,
+            body: `### Community Technical Question\n\n${selected.body}\n\n*Targeted for discussion by @${targetUsername} on GitGlow Community Hub.*`,
+          },
+        }),
+      });
+
+      const data = await gqlRes.json();
+      if (data.errors && data.errors.length > 0) {
+        return res.status(400).json({ error: data.errors[0].message });
+      }
+
+      const discussion = data.data?.createDiscussion?.discussion;
+      res.json({
+        success: true,
+        discussionId: discussion.id,
+        discussionNumber: discussion.number,
+        discussionUrl: discussion.url,
+        title: titleWithTag,
+        body: selected.body,
+        suggestedAnswer: selected.solution,
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/gitglow/bot/mark-galaxy-answer", async (req, res) => {
+    try {
+      const { commentId } = req.body;
+      const botToken = process.env.GITGLOW_BOT_TOKEN;
+      if (!botToken || !commentId) {
+        return res.status(400).json({ error: "Missing required commentId or botToken" });
+      }
+
+      const gqlRes = await fetch("https://api.github.com/graphql", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${botToken}`,
+          "User-Agent": "GitGlow-Engine",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: `
+            mutation($commentId: ID!) {
+              markDiscussionCommentAsAnswer(input: {
+                id: $commentId
+              }) {
+                discussion {
+                  id
+                  answer {
+                    id
+                    isAnswer
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            commentId,
+          },
+        }),
+      });
+
+      const data = await gqlRes.json();
+      if (data.errors && data.errors.length > 0) {
+        return res.status(400).json({ error: data.errors[0].message });
+      }
+
+      res.json({
+        success: true,
+        isAnswer: data.data?.markDiscussionCommentAsAnswer?.discussion?.answer?.isAnswer ?? true,
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

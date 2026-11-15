@@ -747,5 +747,86 @@ export async function resolveGitHubUser(username: string): Promise<{
   };
 }
 
+// ── Galaxy Brain Automation Functions ──
+export interface GalaxyDiscussionResult {
+  discussionId: string;
+  discussionNumber: number;
+  discussionUrl: string;
+  title: string;
+  body: string;
+  suggestedAnswer: string;
+}
+
+export async function createRealGalaxyDiscussion(
+  targetUsername: string,
+  topicIndex = 0
+): Promise<GalaxyDiscussionResult> {
+  const res = await fetch('/api/gitglow/bot/create-galaxy-discussion', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ targetUsername, topicIndex }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || 'Failed to initialize community discussion.');
+  }
+  return res.json();
+}
+
+export async function postDiscussionAnswerComment(
+  accessToken: string,
+  discussionId: string,
+  body: string
+): Promise<{ commentId: string; commentUrl: string }> {
+  const res = await fetch('https://api.github.com/graphql', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'User-Agent': 'GitGlow-Client',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($discussionId: ID!, $body: String!) {
+          addDiscussionComment(input: {
+            discussionId: $discussionId,
+            body: $body
+          }) {
+            comment {
+              id
+              url
+            }
+          }
+        }
+      `,
+      variables: { discussionId, body },
+    }),
+  });
+  const data = await res.json();
+  if (data.errors && data.errors.length > 0) {
+    throw new Error(data.errors[0].message || 'Failed to submit discussion answer.');
+  }
+  const comment = data.data?.addDiscussionComment?.comment;
+  return {
+    commentId: comment.id,
+    commentUrl: comment.url,
+  };
+}
+
+export async function markRealDiscussionAnswer(
+  commentId: string
+): Promise<{ success: boolean; isAnswer: boolean }> {
+  const res = await fetch('/api/gitglow/bot/mark-galaxy-answer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ commentId }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || 'Failed to mark discussion answer as accepted.');
+  }
+  return res.json();
+}
+
 
 
