@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   ExternalLink,
   Shield,
+  ShieldCheck,
   Clock,
   GitPullRequest,
   Check,
@@ -836,6 +837,105 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
         </div>
       </div>
 
+      {/* ── 4B. SILICON VALLEY TELEMETRY & INGESTION PIPELINE CARD ── */}
+      {['merged', 'verified'].includes(simState) && (
+        <div className="p-6 rounded-3xl bg-[#101114] text-white border border-[#202228] shadow-md space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#202228]">
+            <div className="flex items-center gap-2.5">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#84CC16] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#84CC16]"></span>
+              </span>
+              <span className="text-xs font-mono font-bold tracking-wider text-[#D7FF36] uppercase">
+                GitHub Ingestion Telemetry · Live Queue
+              </span>
+            </div>
+            <span className="text-[11px] font-mono text-[#8E9099] flex items-center gap-1.5">
+              <ShieldCheck size={14} className="text-[#84CC16]" /> SLA Window: 24–72 Hours Ingestion
+            </span>
+          </div>
+
+          {/* Ingestion 4-Stage Architecture Pipeline */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-left">
+            <div className="p-3.5 rounded-2xl bg-[#18191E] border border-[#282A30] space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono text-[#8E9099] uppercase">Stage 01</span>
+                <CheckCircle2 size={13} className="text-[#84CC16]" />
+              </div>
+              <div className="text-xs font-bold text-white">RFC Git Trailer</div>
+              <div className="text-[10px] text-[#84CC16] font-mono font-bold">100% Passed</div>
+              <p className="text-[10.5px] text-[#8E9099] leading-tight pt-1">
+                RFC-822 formatted commit with verified noreply ID mapping.
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-[#18191E] border border-[#282A30] space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono text-[#8E9099] uppercase">Stage 02</span>
+                <CheckCircle2 size={13} className="text-[#84CC16]" />
+              </div>
+              <div className="text-xs font-bold text-white">Default Branch Merge</div>
+              <div className="text-[10px] text-[#84CC16] font-mono font-bold">Merged into main</div>
+              <p className="text-[10.5px] text-[#8E9099] leading-tight pt-1">
+                PR #{realPrResult?.number || prNumber} squashed into default branch.
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-[#18191E] border border-[#282A30] space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono text-[#8E9099] uppercase">Stage 03</span>
+                <CheckCircle2 size={13} className="text-[#84CC16]" />
+              </div>
+              <div className="text-xs font-bold text-white">Multi-Author Resolution</div>
+              <div className="text-[10px] text-[#84CC16] font-mono font-bold">Dual Authors Bound</div>
+              <p className="text-[10.5px] text-[#8E9099] leading-tight pt-1">
+                GitHub API verified both @{connectedUser?.githubUsername || targetUsername} & @{coAuthorName}.
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-[#1E2026] border border-[#D7FF36]/40 space-y-1.5 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-[#D7FF36]/10 rounded-full blur-xl pointer-events-none" />
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono text-[#D7FF36] uppercase font-bold">Stage 04</span>
+                <Clock size={13} className="text-[#D7FF36] animate-spin" />
+              </div>
+              <div className="text-xs font-bold text-white">Profile Achievement Cron</div>
+              <div className="text-[10px] text-[#D7FF36] font-mono font-bold">Batch Ingestion Active</div>
+              <p className="text-[10.5px] text-[#8E9099] leading-tight pt-1">
+                Scheduled background worker. Typically reflects in 24–72 hours.
+              </p>
+            </div>
+          </div>
+
+          {/* Silicon Valley Technical Transparency Box */}
+          <div className="p-4 rounded-2xl bg-[#15171C] border border-[#282A30] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-white">Why is there a 24–72 hour indexer window?</span>
+                <span className="px-2 py-0.5 rounded-full bg-[#202228] text-[#8E9099] text-[9.5px] font-mono">
+                  Silicon Valley Telemetry Standard
+                </span>
+              </div>
+              <p className="text-[11px] text-[#8E9099] max-w-xl leading-relaxed">
+                Unlike instant webhook badges (such as YOLO), Pair Extraordinaire is processed by GitHub's scheduled commit attribution graph worker. Your qualifying commits are 100% verified, signed, and permanently merged into <code className="text-[#D7FF36]">main</code>.
+              </p>
+            </div>
+
+            {connectedUser && (
+              <a
+                href={`https://github.com/${connectedUser.githubUsername}/${activeRepoName}/commits/main`}
+                target="_blank"
+                rel="noreferrer"
+                className="px-3.5 py-2 rounded-xl bg-[#202228] hover:bg-[#282A32] text-white font-mono text-[11px] font-bold flex items-center gap-1.5 shrink-0 transition-colors cursor-pointer border border-[#30333C]"
+              >
+                <span>Inspect Commits on GitHub</span>
+                <ExternalLink size={11} />
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ── 5. ACTION CONTROLS & REAL EXECUTION BUTTONS ── */}
       <div className="p-6 rounded-3xl bg-white border border-[#E5E3DA] shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -994,6 +1094,8 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
         stat2Label="RFC Format"
         stat2Value="Git Trailer"
         stat2Sub="Co-authored-by Header"
+        isAsyncIndexerBadge={true}
+        slaTime="24–72 Hours"
         onContinueToNext={() => {
           setShowRewardModal(false);
           if (onCompleted) onCompleted();
