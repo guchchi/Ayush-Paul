@@ -49,6 +49,9 @@ import { GITHUB_BADGES, GitHubBadge } from '../../../data/gitglow/github-badges'
 import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
 import { GitGlowStageshowBento } from '../../../components/gitglow/GitGlowStageshowBento';
 
+// ─── Automated 5-Badge Active Set ─────────────────────────────────────────────
+const AUTOMATED_BADGE_IDS = ['quickdraw', 'pull-shark', 'yolo', 'pair-extraordinaire', 'galaxy-brain'];
+
 // ─── Badge Terminal Recipes Definition ────────────────────────────────────────
 interface BadgeRecipe {
   command1: string;
@@ -219,18 +222,6 @@ const GUIDED_MISSIONS: GuidedMission[] = [
     targetBadgeImage: '/images/badges/galaxy-brain.png',
     summary: 'Answer a developer question in GitHub Discussions and have your solution accepted by the author.',
     completionRate: '78% Success Rate',
-  },
-  {
-    id: 'm6-open-source',
-    title: 'Open Source Contributor Launchpad',
-    category: 'Open Source',
-    difficulty: 'Advanced',
-    estimatedTime: '25 Mins',
-    skillPracticed: 'Upstream remotes, fork synchronization & PR etiquette',
-    targetBadgeName: 'Open Sourcerer',
-    targetBadgeImage: '/images/badges/open-sourcerer.png',
-    summary: 'Fork a public repository, synchronize remotes, squash commits, and land a merged pull request.',
-    completionRate: '82% Success Rate',
   },
 ];
 
@@ -1086,7 +1077,7 @@ const HeroMonument3D: React.FC = () => {
 
 export const GitGlowHomePage: React.FC = () => {
   const [selectedBadgeId, setSelectedBadgeId] = useState<string>('quickdraw');
-  const [badgeCategoryFilter, setBadgeCategoryFilter] = useState<string>('all');
+  const [badgeCategoryFilter, setBadgeCategoryFilter] = useState<string>('automated');
   const [missionCategoryFilter, setMissionCategoryFilter] = useState<string>('all');
   const [badgeSearchQuery, setBadgeSearchQuery] = useState<string>('');
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
@@ -1161,7 +1152,8 @@ export const GitGlowHomePage: React.FC = () => {
 
   const filteredBadges = useMemo(() => {
     let list = GITHUB_BADGES;
-    if (badgeCategoryFilter === 'starter') list = list.filter((b) => b.isRecommendedStarter);
+    if (badgeCategoryFilter === 'automated') list = list.filter((b) => AUTOMATED_BADGE_IDS.includes(b.id));
+    else if (badgeCategoryFilter === 'starter') list = list.filter((b) => b.isRecommendedStarter);
     else if (badgeCategoryFilter === 'tiers') list = list.filter((b) => b.tiers && b.tiers.length > 0);
     else if (badgeCategoryFilter === 'legacy') list = list.filter((b) => !b.isObtainable);
 
@@ -1402,7 +1394,7 @@ export const GitGlowHomePage: React.FC = () => {
                     }}
                     className="font-medium text-[#101114] hover:text-[#4D7C0F] transition-colors whitespace-nowrap shrink-0"
                   >
-                    Browse all 10 badge guides ↓
+                    Explore the 5 official achievement missions ↓
                   </a>
                 </div>
 
@@ -1503,8 +1495,8 @@ export const GitGlowHomePage: React.FC = () => {
           {/* Filter Pills */}
           <div className="flex items-center justify-center gap-2 mb-10 flex-wrap">
             {[
+              { id: 'automated', label: '1-Click Blueprints (5)' },
               { id: 'all', label: 'All Badges (10)' },
-              { id: 'starter', label: 'Starter Friendly (4)' },
               { id: 'tiers', label: 'Multi-Tier Multipliers (4)' },
               { id: 'legacy', label: 'Historic (1)' },
             ].map((tab) => (
@@ -1575,6 +1567,11 @@ export const GitGlowHomePage: React.FC = () => {
                         {isOwned ? (
                           <span className="text-[10px] font-mono font-bold text-[#4D7C0F] bg-[#D7FF36]/40 border border-[#84CC16] px-2 py-0.5 rounded-full">
                             Earned ✓
+                          </span>
+                        ) : AUTOMATED_BADGE_IDS.includes(badge.id) ? (
+                          <span className="text-[10px] font-mono font-bold text-[#101114] bg-[#D7FF36] border border-[#84CC16] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#101114] animate-pulse" />
+                            1-Click Bot
                           </span>
                         ) : (
                           <span className="text-[10px] font-mono font-bold text-[#101114] bg-[#F7F8EF] border border-[#DCE89E] px-2 py-0.5 rounded-full">
@@ -1655,28 +1652,27 @@ export const GitGlowHomePage: React.FC = () => {
 
           {/* Interactive Badge Selector Pills */}
           <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
-            {['quickdraw', 'pull-shark', 'pair-extraordinaire', 'yolo', 'galaxy-brain', 'starstruck'].map(
-              (id) => {
-                const badge = GITHUB_BADGES.find((b) => b.id === id);
-                if (!badge) return null;
-                const isSelected = activeBadge.id === badge.id;
-                return (
-                  <button
-                    key={badge.id}
-                    onClick={() => setSelectedBadgeId(badge.id)}
-                    className={cn(
-                      'px-3.5 py-1.5 rounded-full text-xs font-bold inline-flex items-center gap-2 border transition-all cursor-pointer',
-                      isSelected
-                        ? 'bg-[#101114] text-white border-[#101114] shadow-xs'
-                        : 'bg-white text-[#65666A] border-[#E5E3DA] hover:bg-[#F7F8EF] hover:text-[#101114]'
-                    )}
-                  >
-                    <img src={badge.image} alt={badge.name} className="w-4 h-4 object-contain" />
-                    <span>{badge.name}</span>
-                  </button>
-                );
-              }
-            )}
+            {AUTOMATED_BADGE_IDS.map((id) => {
+              const badge = GITHUB_BADGES.find((b) => b.id === id);
+              if (!badge) return null;
+              const isSelected = activeBadge.id === badge.id;
+              return (
+                <button
+                  key={badge.id}
+                  onClick={() => setSelectedBadgeId(badge.id)}
+                  className={cn(
+                    'px-4 py-2 rounded-full text-xs font-bold inline-flex items-center gap-2 border transition-all cursor-pointer shadow-2xs',
+                    isSelected
+                      ? 'bg-[#101114] text-white border-[#101114] shadow-sm ring-2 ring-[#D7FF36]/40'
+                      : 'bg-white text-[#65666A] border-[#E5E3DA] hover:bg-[#F7F8EF] hover:text-[#101114]'
+                  )}
+                >
+                  <img src={badge.image} alt={badge.name} className="w-4 h-4 object-contain" />
+                  <span>{badge.name}</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
+                </button>
+              );
+            })}
           </div>
 
           {/* Dual-Pane Mission Workbench */}
@@ -2111,34 +2107,51 @@ export const GitGlowHomePage: React.FC = () => {
               </div>
             </div>
 
-            {/* Skill Mastery Row */}
-            <div className="grid md:grid-cols-3 gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#101114]">Git Branching</span>
-                  <span className="font-mono text-[#65A30D] font-bold">Level 2</span>
-                </div>
-                <div className="w-full h-1.5 rounded-full bg-[#E5E3DA] overflow-hidden">
-                  <div className="h-full bg-[#84CC16] w-[80%]" />
-                </div>
+            {/* 5-Badge Status Pipeline Grid */}
+            <div className="pt-2 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#101114]">
+                  5 Official Bot-Automated Badges Status
+                </span>
+                <span className="text-[11px] font-mono text-[#65A30D] font-bold">
+                  SLA: 24h–72h Webhook Delivery
+                </span>
               </div>
-              <div className="p-4 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#101114]">PR Etiquette</span>
-                  <span className="font-mono text-[#65A30D] font-bold">Level 3</span>
-                </div>
-                <div className="w-full h-1.5 rounded-full bg-[#E5E3DA] overflow-hidden">
-                  <div className="h-full bg-[#84CC16] w-[100%]" />
-                </div>
-              </div>
-              <div className="p-4 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#101114]">Git Trailers</span>
-                  <span className="font-mono text-[#65A30D] font-bold">Level 1</span>
-                </div>
-                <div className="w-full h-1.5 rounded-full bg-[#E5E3DA] overflow-hidden">
-                  <div className="h-full bg-[#84CC16] w-[60%]" />
-                </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                {AUTOMATED_BADGE_IDS.map((badgeId) => {
+                  const badge = GITHUB_BADGES.find((b) => b.id === badgeId);
+                  if (!badge) return null;
+                  const isOwned = isBadgeOwned(badge.id);
+                  return (
+                    <Link
+                      key={badge.id}
+                      to={`/blueprints/gitglow/engine?badge=${badge.id}`}
+                      className="p-3.5 rounded-2xl bg-[#FAF9F5] hover:bg-white border border-[#E5E3DA] hover:border-[#84CC16] transition-all flex flex-col justify-between group shadow-2xs"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <img src={badge.image} alt={badge.name} className="w-8 h-8 object-contain" />
+                        {isOwned ? (
+                          <span className="text-[9px] font-mono font-bold bg-[#D7FF36] text-[#101114] border border-[#84CC16] px-1.5 py-0.5 rounded-full">
+                            Earned ✓
+                          </span>
+                        ) : (
+                          <span className="text-[9px] font-mono font-bold bg-[#101114] text-[#D7FF36] px-1.5 py-0.5 rounded-full flex items-center gap-1">
+                            <span className="w-1 h-1 rounded-full bg-[#D7FF36] animate-pulse" />
+                            Live
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-2.5">
+                        <div className="text-xs font-bold text-[#101114] group-hover:text-[#4D7C0F] transition-colors truncate">
+                          {badge.name}
+                        </div>
+                        <div className="text-[10px] text-[#65666A] mt-0.5 line-clamp-1">
+                          {badge.tagline}
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>

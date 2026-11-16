@@ -16,6 +16,9 @@ import {
   BookOpen,
   AlertTriangle,
   Zap,
+  Info,
+  Clock,
+  X,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { GITHUB_BADGES } from '../../../data/gitglow/github-badges';
@@ -57,8 +60,11 @@ export const GitGlowEnginePage: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'sandbox' | 'terminal' | 'actions' | 'security'>('sandbox');
   const [showLearnModal, setShowLearnModal] = useState<boolean>(false);
+  const [showSlaInfoModal, setShowSlaInfoModal] = useState<boolean>(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [isRunningSim, setIsRunningSim] = useState<boolean>(false);
+
+  const AUTOMATED_BADGE_IDS = ['quickdraw', 'pull-shark', 'yolo', 'pair-extraordinaire', 'galaxy-brain'];
 
   // Selected Badge
   const activeBadge = GITHUB_BADGES.find((b) => b.id === badgeQuery) || GITHUB_BADGES[0];
@@ -179,6 +185,15 @@ export const GitGlowEnginePage: React.FC = () => {
           )}
 
           <button
+            onClick={() => setShowSlaInfoModal(true)}
+            className="h-8.5 px-3 rounded-xl bg-[#F7F8EF] border border-[#DCE89E] hover:border-[#84CC16] text-[#4D7C0F] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+            title="GitHub 24h-72h Indexing SLA Explained"
+          >
+            <Clock size={12} className="text-[#84CC16]" />
+            <span className="hidden sm:inline">24h–72h SLA</span>
+          </button>
+
+          <button
             onClick={() => runScan(connectedUser?.githubUsername || targetUsername)}
             disabled={isScanning}
             className="h-8.5 px-3.5 rounded-xl bg-[#101114] text-white text-xs font-bold flex items-center gap-1.5 hover:bg-[#1C1E24] hover:border-[#D7FF36] border border-transparent transition-all cursor-pointer shadow-2xs active:scale-95"
@@ -203,12 +218,21 @@ export const GitGlowEnginePage: React.FC = () => {
             </span>
           </div>
 
+          {/* 1. Primary Group: 5 Automated 1-Click Bots */}
           <div className="space-y-2">
-            {GITHUB_BADGES.map((badge) => {
+            <div className="px-1 flex items-center justify-between text-[11px] font-mono font-bold text-[#101114]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#84CC16] animate-pulse" />
+                5 Automated Bots
+              </span>
+              <span className="text-[#65A30D]">
+                {GITHUB_BADGES.filter((b) => AUTOMATED_BADGE_IDS.includes(b.id) && isBadgeOwned(b.id)).length}/5 Ready
+              </span>
+            </div>
+            {GITHUB_BADGES.filter((b) => AUTOMATED_BADGE_IDS.includes(b.id)).map((badge) => {
               const isSelected = badge.id === activeBadge.id;
               const evalData = scanAnalysis?.badgeEvaluations[badge.id];
               const isOwned = isBadgeOwned(badge.id);
-              const isActionable = ['quickdraw', 'pull-shark', 'yolo', 'pair-extraordinaire', 'galaxy-brain'].includes(badge.id);
 
               return (
                 <button
@@ -251,14 +275,14 @@ export const GitGlowEnginePage: React.FC = () => {
                           <span className="px-1.5 py-0.2 rounded-md bg-[#D7FF36] text-[#101114] text-[8px] font-mono font-black uppercase">
                             OWNED
                           </span>
-                        ) : isActionable ? (
+                        ) : (
                           <span className={cn(
                             "px-1.5 py-0.2 rounded-md text-[8px] font-mono font-bold uppercase",
                             isSelected ? "bg-[#D7FF36] text-[#101114]" : "bg-[#101114] text-[#D7FF36]"
                           )}>
-                            ⚡ 1-Click
+                            ⚡ Live Bot
                           </span>
-                        ) : null}
+                        )}
                       </div>
                       <div className={cn("text-[10px] truncate", isSelected ? "text-slate-400" : "text-[#65666A]")}>
                         {isOwned ? 'Active on Profile' : evalData ? evalData.statusLabel : badge.difficulty}
@@ -282,6 +306,46 @@ export const GitGlowEnginePage: React.FC = () => {
                       {evalData?.progressPercent ? `${evalData.progressPercent}%` : 'Ready'}
                     </span>
                   )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* 2. Secondary Group: Manual / Community Guides */}
+          <div className="space-y-2 pt-2 border-t border-[#ECEAE1]">
+            <div className="px-1 flex items-center justify-between text-[10.5px] font-mono font-bold text-[#65666A]">
+              <span>Community Guides</span>
+              <span className="text-[9.5px]">Manual</span>
+            </div>
+            {GITHUB_BADGES.filter((b) => !AUTOMATED_BADGE_IDS.includes(b.id)).map((badge) => {
+              const isSelected = badge.id === activeBadge.id;
+              const isOwned = isBadgeOwned(badge.id);
+              return (
+                <button
+                  key={badge.id}
+                  onClick={() => handleSelectBadge(badge.id)}
+                  className={cn(
+                    'w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between group cursor-pointer relative',
+                    isSelected
+                      ? 'bg-[#101114] text-white border-[#101114] shadow-sm'
+                      : isOwned
+                      ? 'bg-[#F7F8EF]/60 border-[#DCE89E] text-[#101114]'
+                      : 'bg-white border-[#E5E3DA] hover:border-[#DCE89E] text-[#65666A]'
+                  )}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <img
+                      src={badge.image}
+                      alt={badge.name}
+                      className="w-6 h-6 object-contain shrink-0"
+                    />
+                    <span className={cn("text-xs font-semibold truncate", isSelected ? "text-white" : "text-[#101114]")}>
+                      {badge.name}
+                    </span>
+                  </div>
+                  <span className="text-[9px] font-mono text-[#65666A]">
+                    {isOwned ? '✓' : 'Guide'}
+                  </span>
                 </button>
               );
             })}
@@ -874,6 +938,77 @@ export const GitGlowEnginePage: React.FC = () => {
           setActiveTab('sandbox');
         }}
       />
+
+      {/* ── SILICON VALLEY 24H–72H SLA INDEXING MODAL ── */}
+      {showSlaInfoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+          <div className="relative w-full max-w-lg rounded-[32px] bg-white border border-[#E5E3DA] p-6 sm:p-8 shadow-2xl text-left space-y-6 overflow-hidden">
+            <button
+              onClick={() => setShowSlaInfoModal(false)}
+              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-center text-[#65666A] hover:text-[#101114] cursor-pointer"
+            >
+              <X size={16} />
+            </button>
+
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F7F8EF] border border-[#DCE89E] text-[11px] font-bold text-[#4D7C0F]">
+                <Clock size={12} className="text-[#84CC16]" />
+                <span>GitHub Telemetry Standard</span>
+              </div>
+              <h3 className="text-2xl font-extrabold text-[#101114] tracking-tight">
+                24h–72h Indexing SLA
+              </h3>
+              <p className="text-xs text-[#65666A] leading-relaxed">
+                Why does GitHub take 24 to 72 hours to render certain profile badges?
+              </p>
+            </div>
+
+            <div className="space-y-3 text-xs text-[#101114]">
+              <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-1">
+                <div className="font-bold flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
+                  1. Git Tree Verification (Immediate)
+                </div>
+                <p className="text-[#65666A] text-[11px] pl-3.5 leading-relaxed">
+                  The moment your PR is merged, your commit trailer and author signatures are cryptographically sealed in the Git tree on GitHub.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-1">
+                <div className="font-bold flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
+                  2. Asynchronous Queue Processing (12h–48h)
+                </div>
+                <p className="text-[#65666A] text-[11px] pl-3.5 leading-relaxed">
+                  GitHub runs background cron workers across 100M+ accounts to prevent webhook load spikes. Attribution workers index achievements in scheduled batches.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-1">
+                <div className="font-bold flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
+                  3. Official Profile Unfurl (24h–72h)
+                </div>
+                <p className="text-[#65666A] text-[11px] pl-3.5 leading-relaxed">
+                  Once verified, GitHub automatically displays the 3D medallion in your public profile's Achievements panel at <span className="font-mono text-[#101114]">github.com/&#123;username&#125;?tab=achievements</span>.
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-2 flex items-center justify-between gap-3 border-t border-[#ECEAE1]">
+              <span className="text-[11px] text-[#65A30D] font-mono font-bold">
+                ✓ 100% Genuine Webhook Ingestion
+              </span>
+              <button
+                onClick={() => setShowSlaInfoModal(false)}
+                className="px-5 py-2.5 rounded-xl bg-[#101114] text-white text-xs font-bold hover:bg-[#1C1E24] cursor-pointer transition-colors shadow-sm"
+              >
+                Understood
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
