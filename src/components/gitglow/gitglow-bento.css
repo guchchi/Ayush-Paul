@@ -1,0 +1,269 @@
+/* GitGlow Bento Grid - Stageshow Craft Layout */
+.gitglow-bento {
+  --pad: 26px;
+  --gap: 16px;
+  --tile-bg: #FFFFFF;
+  --tile-border: #E5E3DA;
+  --ink: #101114;
+  --ink-muted: #65666A;
+  --accent: #84CC16;
+  --lime: #D7FF36;
+  container-type: inline-size;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.gitglow-bento .gb-grid {
+  display: grid;
+  gap: var(--gap);
+  max-width: 1140px;
+  margin: 0 auto;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 
+    'hero'
+    'stat'
+    'card'
+    'approve'
+    'code';
+}
+
+@container (min-width: 640px) {
+  .gitglow-bento .gb-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: 390px 320px 320px;
+    grid-template-areas: 
+      'hero hero'
+      'stat card'
+      'approve code';
+  }
+}
+
+@container (min-width: 980px) {
+  .gitglow-bento .gb-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: 410px 340px;
+    grid-template-areas: 
+      'hero hero stat'
+      'card approve code';
+  }
+}
+
+/* Base Tile Architecture */
+.gitglow-bento .gb-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 26px;
+  background: var(--tile-bg);
+  border: 1px solid var(--tile-border);
+  box-shadow: 0 4px 20px rgba(16, 17, 20, 0.04);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.gitglow-bento .gb-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(16, 17, 20, 0.08);
+  border-color: rgba(132, 204, 22, 0.5);
+}
+
+.gitglow-bento .gb-tile--dark {
+  background: #101114;
+  border-color: #262930;
+  color: #FFFFFF;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.gitglow-bento .gb-tile--dark:hover {
+  border-color: rgba(215, 255, 54, 0.6);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+}
+
+.gitglow-bento .gb-tile--hero { grid-area: hero; }
+.gitglow-bento .gb-tile--stat { grid-area: stat; }
+.gitglow-bento .gb-tile--card { grid-area: card; }
+.gitglow-bento .gb-tile--approve { grid-area: approve; }
+.gitglow-bento .gb-tile--code { grid-area: code; }
+
+/* Run-in Copy: Bold lead + Muted continuation */
+.gitglow-bento .gb-copy {
+  position: relative;
+  z-index: 10;
+  max-width: 440px;
+  margin: 0;
+  padding: 22px var(--pad) 0;
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: -0.012em;
+  color: var(--ink-muted);
+}
+
+.gitglow-bento .gb-copy b {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.gitglow-bento .gb-tile--dark .gb-copy {
+  color: #94A3B8;
+}
+
+.gitglow-bento .gb-tile--dark .gb-copy b {
+  color: #FFFFFF;
+}
+
+.gitglow-bento .gb-tile--hero .gb-copy {
+  max-width: 520px;
+}
+
+/* Picture slot: pinned to bottom & cropped by tile */
+.gitglow-bento .gb-picture {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.gitglow-bento .gb-picture--hero {
+  height: 280px;
+  left: var(--pad);
+  right: 0;
+  justify-content: flex-start;
+}
+
+.gitglow-bento .gb-picture--card {
+  height: 230px;
+  align-items: center;
+}
+
+.gitglow-bento .gb-picture--aligned {
+  height: 230px;
+  left: var(--pad);
+  right: var(--pad);
+}
+
+/* Stage override inside bento */
+.gitglow-bento .gb-stage {
+  width: 100%;
+}
+
+/* Stat Tile Elements */
+.gitglow-bento .gb-stat {
+  position: relative;
+  z-index: 10;
+  padding: 30px var(--pad) 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.gitglow-bento .gb-stat-lead {
+  font-family: monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--lime);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gitglow-bento .gb-stat-number {
+  font-size: clamp(52px, 5.5vw, 68px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  color: #FFFFFF;
+  margin: 12px 0 8px;
+}
+
+.gitglow-bento .gb-stat-unit {
+  font-size: 26px;
+  color: var(--lime);
+  font-weight: 800;
+}
+
+.gitglow-bento .gb-stat-label {
+  font-size: 13px;
+  line-height: 19px;
+  color: #94A3B8;
+  max-width: 260px;
+}
+
+/* Faux Window styling */
+.gitglow-bento .gb-window {
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+  border: 1px solid #E5E3DA;
+  background: #FFFFFF;
+}
+
+/* Pull Request Rows */
+.gitglow-bento .gb-pr-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #F1F0EA;
+  font-size: 12px;
+}
+
+.gitglow-bento .gb-pr-title {
+  font-weight: 700;
+  color: #101114;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gitglow-bento .gb-pr-meta {
+  font-family: monospace;
+  font-size: 10px;
+  color: #65666A;
+}
+
+/* Discussions Card inside Tile */
+.gitglow-bento .gb-disc-card {
+  width: 100%;
+  border-radius: 16px;
+  background: #FAF9F5;
+  border: 1px solid #E5E3DA;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Diagram nodes and connections */
+.gitglow-bento .gb-diagram-node {
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: #FFFFFF;
+  border: 1px solid #E5E3DA;
+  font-size: 11px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #101114;
+  box-shadow: 0 2px 6px rgba(16, 17, 20, 0.04);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gitglow-bento .gb-diagram-target {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #101114;
+  border: 1px solid #262930;
+  color: var(--lime);
+  font-size: 11px;
+  font-family: monospace;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}

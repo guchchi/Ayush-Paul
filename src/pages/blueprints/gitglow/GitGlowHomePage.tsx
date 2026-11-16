@@ -47,6 +47,7 @@ import { cn } from '../../../lib/utils';
 import { DURATION, EASING } from '../../../lib/motion-presets';
 import { GITHUB_BADGES, GitHubBadge } from '../../../data/gitglow/github-badges';
 import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
+import { GitGlowStageshowBento } from '../../../components/gitglow/GitGlowStageshowBento';
 
 // ─── Badge Terminal Recipes Definition ────────────────────────────────────────
 interface BadgeRecipe {
@@ -1864,84 +1865,28 @@ export const GitGlowHomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── SECTION 04: HOW GITGLOW WORKS ─────────────────────────────────── */}
+      {/* ─── SECTION 04: HOW GITGLOW WORKS / STAGESHOW BENTO ────────────────── */}
       <section
         id="how-it-works"
-        className="scroll-mt-20 py-20 bg-[#FAF9F5] border-b border-[#E5E3DA] select-none text-left"
+        className="scroll-mt-20 py-24 bg-[#FAF9F5] border-b border-[#E5E3DA] select-none text-left"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center space-y-3 mb-14">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F7F8EF] text-[#101114] border border-[#DCE89E] text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
               <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
-              <span>4-Step Execution Pipeline</span>
+              <span>Real Telemetry Pipeline</span>
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#101114] tracking-[-0.035em] leading-[1.12]">
-              Learn it. Do it. Earn it.
+              Real git telemetry. Zero synthetic fluff.
             </h2>
             <p className="text-base sm:text-lg text-[#65666A] max-w-2xl mx-auto font-normal leading-relaxed">
-              No boring video playlists or fake README badges. A structured engineering workflow from zero to real contribution.
+              Every medallion is registered through legitimate pull requests, co-authors, and discussion resolutions. Follow the live telemetry pipeline below.
             </p>
           </div>
 
-          {/* 4 Horizontal Steps */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                step: '01',
-                title: 'Discover a Mission',
-                desc: 'Browse beginner-friendly challenges mapped directly to official GitHub profile achievements.',
-                icon: <Search className="text-[#84CC16]" size={20} />,
-                chip: 'Target Identification',
-              },
-              {
-                step: '02',
-                title: 'Follow the Guided Workflow',
-                desc: 'Get exact CLI commands, branch conventions, and anti-mistake gotchas before pushing any code.',
-                icon: <Terminal className="text-[#84CC16]" size={20} />,
-                chip: 'Command Guidance',
-              },
-              {
-                step: '03',
-                title: 'Complete Real GitHub Activity',
-                desc: 'Push commits, author pull requests, and co-author branches on live, indexed repositories.',
-                icon: <GitPullRequest className="text-[#84CC16]" size={20} />,
-                chip: 'Live Git Execution',
-              },
-              {
-                step: '04',
-                title: 'Track Verified Progress',
-                desc: 'GitHub official event webhooks register your activity and award the genuine medallion to your profile.',
-                icon: <Award className="text-[#84CC16]" size={20} />,
-                chip: 'Webhook Verification',
-              },
-            ].map((card) => (
-              <div
-                key={card.step}
-                className="p-6 rounded-2xl bg-white border border-[#E5E3DA] flex flex-col justify-between space-y-5 hover:-translate-y-1 transition-all duration-200 shadow-2xs hover:shadow-[0_16px_36px_-6px_rgba(16,17,20,0.08)] hover:border-[#84CC16]/60"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-mono font-extrabold text-[#65A30D]">
-                      {card.step}
-                    </span>
-                    <div className="w-10 h-10 rounded-xl bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-center">
-                      {card.icon}
-                    </div>
-                  </div>
-                  <h3 className="text-lg font-bold text-[#101114] tracking-tight">
-                    {card.title}
-                  </h3>
-                  <p className="text-xs text-[#65666A] font-medium leading-relaxed">
-                    {card.desc}
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-[#ECEAE1] text-[10px] font-mono text-[#65666A] font-bold uppercase tracking-wider">
-                  {card.chip}
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Stageshow Bento Grid */}
+          <GitGlowStageshowBento />
         </div>
       </section>
 
