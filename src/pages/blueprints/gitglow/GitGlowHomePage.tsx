@@ -48,6 +48,7 @@ import { DURATION, EASING } from '../../../lib/motion-presets';
 import { GITHUB_BADGES, GitHubBadge } from '../../../data/gitglow/github-badges';
 import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
 import { GitGlowStageshowBento } from '../../../components/gitglow/GitGlowStageshowBento';
+import { GitGlowLogo } from '../../../components/gitglow/GitGlowLogo';
 
 // ─── Automated 5-Badge Active Set ─────────────────────────────────────────────
 const AUTOMATED_BADGE_IDS = ['quickdraw', 'pull-shark', 'yolo', 'pair-extraordinaire', 'galaxy-brain'];
@@ -2308,15 +2309,9 @@ export const GitGlowHomePage: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
               {/* Brand Column */}
               <div className="col-span-2 space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-[8px] bg-[#101114] border border-white/15 flex items-center justify-center relative">
-                    <Github size={15} className="text-white fill-current" />
-                    <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-[#D7FF36]" />
-                  </div>
-                  <span className="text-lg font-bold text-[#101114] tracking-tight">
-                    GitGlow
-                  </span>
-                </div>
+                <Link to="/blueprints/gitglow" className="inline-block" title="GitGlow Platform">
+                  <GitGlowLogo size={32} showWordmark theme="light" animated />
+                </Link>
                 <p className="text-xs text-[#65666A] leading-relaxed max-w-sm font-medium">
                   The guided mission platform for authentic GitHub developer achievements. Built to help beginners contribute meaningfully.
                 </p>

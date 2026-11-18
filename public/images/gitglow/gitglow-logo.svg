@@ -1,0 +1,129 @@
+<svg width="128" height="128" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Obsidian Onyx Gradient -->
+    <linearGradient id="gg-bg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1E2026" />
+      <stop offset="50%" stop-color="#101114" />
+      <stop offset="100%" stop-color="#08090B" />
+    </linearGradient>
+
+    <!-- Specular Neon Lime Rim -->
+    <linearGradient id="gg-rim" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D7FF36" stop-opacity="0.55" />
+      <stop offset="40%" stop-color="#ffffff" stop-opacity="0.2" />
+      <stop offset="70%" stop-color="#84CC16" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#101114" stop-opacity="0.8" />
+    </linearGradient>
+
+    <!-- Git Track Vector Gradient -->
+    <linearGradient id="gg-track" x1="12" y1="26" x2="25" y2="10" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#22C55E" />
+      <stop offset="45%" stop-color="#84CC16" />
+      <stop offset="100%" stop-color="#D7FF36" />
+    </linearGradient>
+
+    <!-- Core Achievement Glow -->
+    <radialGradient id="gg-core-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#D7FF36" />
+      <stop offset="75%" stop-color="#84CC16" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#84CC16" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Luminous Glow Filter -->
+    <filter id="gg-blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Tile Foundation -->
+  <rect
+    x="1.2"
+    y="1.2"
+    width="33.6"
+    height="33.6"
+    rx="9.5"
+    fill="url(#gg-bg)"
+    stroke="url(#gg-rim)"
+    stroke-width="1.2"
+  />
+
+  <!-- Ambient Radiant Backdrop Aura -->
+  <circle
+    cx="24"
+    cy="12"
+    r="8"
+    fill="#D7FF36"
+    fill-opacity="0.16"
+    filter="url(#gg-blur)"
+  />
+
+  <!-- Main Git Trunk Line -->
+  <line
+    x1="12"
+    y1="11"
+    x2="12"
+    y2="25"
+    stroke="url(#gg-track)"
+    stroke-width="2.4"
+    stroke-linecap="round"
+  />
+
+  <!-- Branch Fork Curve -->
+  <path
+    d="M 12 19.5 C 12 14.5, 17 12, 23.5 12"
+    stroke="url(#gg-track)"
+    stroke-width="2.4"
+    stroke-linecap="round"
+    fill="none"
+  />
+
+  <!-- Subtle 'G' Returning Loop Arc -->
+  <path
+    d="M 23.5 12 C 27 12, 28.5 14.5, 27.5 18 C 26.5 22, 22.5 25, 16.5 25"
+    stroke="#D7FF36"
+    stroke-width="1.4"
+    stroke-dasharray="2.5 2"
+    stroke-opacity="0.75"
+    stroke-linecap="round"
+    fill="none"
+  />
+
+  <!-- Bottom Root Commit Node -->
+  <circle
+    cx="12"
+    cy="25"
+    r="3.2"
+    fill="#101114"
+    stroke="#22C55E"
+    stroke-width="2.2"
+  />
+  <circle cx="12" cy="25" r="1.2" fill="#4ADE80" />
+
+  <!-- Top Trunk Commit Node -->
+  <circle
+    cx="12"
+    cy="11"
+    r="2.8"
+    fill="#101114"
+    stroke="#84CC16"
+    stroke-width="2"
+  />
+
+  <!-- Active Radiant Achievement Node -->
+  <circle
+    cx="24"
+    cy="12"
+    r="4.2"
+    fill="url(#gg-core-glow)"
+    filter="url(#gg-blur)"
+  />
+  <circle cx="24" cy="12" r="2" fill="#FFFFFF" />
+
+  <!-- 4-Point Luminous Starburst -->
+  <path
+    d="M 24 6.5 Q 24 12 29.5 12 Q 24 12 24 17.5 Q 24 12 18.5 12 Q 24 12 24 6.5 Z"
+    fill="#D7FF36"
+  />
+</svg>

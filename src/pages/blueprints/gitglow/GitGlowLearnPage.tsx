@@ -15,6 +15,7 @@ import { BADGE_CURRICULUM } from '../../../data/gitglow/badge-curriculum';
 import { BadgeCurriculumView } from './BadgeCurriculumView';
 import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
 import { cn } from '../../../lib/utils';
+import { GitGlowLogo } from '../../../components/gitglow/GitGlowLogo';
 
 export const GitGlowLearnPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -39,6 +40,14 @@ export const GitGlowLearnPage: React.FC = () => {
       {/* Sticky Reader Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E5E3DA] px-4 sm:px-8 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
+          <Link
+            to="/blueprints/gitglow"
+            className="hidden sm:inline-flex items-center mr-1 transition-transform hover:scale-[1.02]"
+            title="GitGlow Platform"
+          >
+            <GitGlowLogo size={26} showWordmark theme="light" />
+          </Link>
+          <span className="hidden sm:inline-block text-[#D5D3CA]">|</span>
           <Link
             to={`/blueprints/gitglow/engine?badge=${activeBadge.id}`}
             className="w-8 h-8 rounded-full bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-center text-[#65666A] hover:text-[#101114] hover:bg-white transition-all shadow-2xs"

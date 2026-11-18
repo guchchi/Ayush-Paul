@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
 import { Menu, X, ChevronRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles, Zap, Trophy, ArrowRight, ChevronDown, Camera, Edit3, Folder, Share2, Globe, Apple } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
+import { GitGlowLogo } from "../components/gitglow/GitGlowLogo";
 import { SupportModal } from "../components/ui/SupportButton";
 import { AuthModal } from "../components/ui/AuthModal";
 import { auth, onAuthStateChanged } from "../firebase";
@@ -392,12 +393,11 @@ export const Navbar = () => {
               {/* Brand Logo */}
               <Link
                 to="/blueprints/gitglow"
-                className="flex items-center gap-2.5 group cursor-pointer select-none shrink-0"
+                className="flex items-center gap-2 group cursor-pointer select-none shrink-0"
                 onClick={() => setIsGitGlowFeaturesOpen(false)}
+                title="GitGlow Platform"
               >
-                <div className="w-8 h-8 rounded-[10px] bg-white flex items-center justify-center text-[#191A1E] shadow-xs group-hover:scale-105 transition-transform duration-200">
-                  <Github size={18} className="fill-[#191A1E]" />
-                </div>
+                <GitGlowLogo size={28} showWordmark theme="dark" animated />
               </Link>
 
               {/* Center Navigation Links */}

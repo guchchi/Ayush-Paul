@@ -33,6 +33,7 @@ import { GalaxyBrainInteractiveSimulation } from './GalaxyBrainInteractiveSimula
 import { StarstruckInteractiveSimulation } from './StarstruckInteractiveSimulation';
 import { PublicSponsorInteractiveSimulation } from './PublicSponsorInteractiveSimulation';
 import { BadgeLearningModal } from '../../../components/gitglow/BadgeLearningModal';
+import { GitGlowLogo } from '../../../components/gitglow/GitGlowLogo';
 
 export const GitGlowEnginePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -138,10 +139,8 @@ export const GitGlowEnginePage: React.FC = () => {
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <Link to="/blueprints/gitglow" className="font-extrabold text-base tracking-tight text-[#101114] hover:text-[#4D7C0F] transition-colors flex items-center gap-1.5">
-                <span>GitGlow</span>
-                <span className="text-[#84CC16] text-xs font-mono font-bold">/</span>
-                <span className="text-[#4D7C0F]">Engine</span>
+              <Link to="/blueprints/gitglow" title="GitGlow Home" className="transition-transform hover:scale-[1.02]">
+                <GitGlowLogo size={28} showWordmark theme="light" subtitle="Engine" />
               </Link>
               <span className="px-2 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] text-[10px] font-mono font-black uppercase tracking-wider shadow-2xs">
                 {activeBadge.name}
