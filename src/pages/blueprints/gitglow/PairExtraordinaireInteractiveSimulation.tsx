@@ -320,7 +320,7 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
     }
   };
 
-  // ── Station 3: Merge PR into Default Branch via Squash and Merge (Per Discussion #20481) ──
+  // ── Station 3: Merge PR into Default Branch via Standard Merge Commit (preserves Co-authored-by trailers) ──
   const handleRealStep2MergePR = async () => {
     if (!connectedUser || !realPrResult) return;
     setIsExecutingLive(true);
@@ -339,17 +339,18 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
     const partnerName = partnerMode === 'bot' ? DEFAULT_BOT_COAUTHOR.name : (coAuthorName || 'collaborator');
     const partnerEmail = partnerMode === 'bot' ? DEFAULT_BOT_COAUTHOR.verifiedEmail : (coAuthorEmail || `${partnerName}@users.noreply.github.com`);
 
-    const squashTitle = `feat(collab): pair programming session with @${partnerName} (#${realPrResult.number})`;
-    // RFC Standard: Only include the co-author who is NOT the primary commit author
-    const squashMessage = partnerMode === 'bot'
-      ? `Co-authored-by: ${resolvedUserName} <${resolvedUserEmail}>`
-      : `Co-authored-by: ${partnerName} <${partnerEmail}>`;
+    // Standard merge commit: title is the PR title, message preserves Co-authored-by trailers
+    const mergeTitle = `Merge pull request #${realPrResult.number}: pair programming session with @${partnerName}`;
+    // Both authors get attribution via dual Co-authored-by trailers in the merge commit message
+    const mergeMessage = partnerMode === 'bot'
+      ? `Co-authored-by: ${resolvedUserName} <${resolvedUserEmail}>\nCo-authored-by: ${DEFAULT_BOT_COAUTHOR.name} <${DEFAULT_BOT_COAUTHOR.verifiedEmail}>`
+      : `Co-authored-by: ${partnerName} <${partnerEmail}>\nCo-authored-by: ${resolvedUserName} <${resolvedUserEmail}>`;
 
     setLogs((prev) => [
       ...prev,
       { text: `$ PUT https://api.github.com/repos/${connectedUser.githubUsername}/${activeRepoName}/pulls/${realPrResult.number}/merge`, type: 'cmd' },
-      { text: `Executing Squash and Merge to record co-author trailer into default branch...`, type: 'info' },
-      { text: squashMessage, type: 'cmd' },
+      { text: `Executing Standard Merge Commit to preserve Co-authored-by trailers on default branch...`, type: 'info' },
+      { text: mergeMessage, type: 'cmd' },
     ]);
 
     try {
@@ -358,22 +359,22 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
         connectedUser.githubUsername,
         activeRepoName,
         realPrResult.number,
-        squashTitle,
-        squashMessage,
-        'squash'
+        mergeTitle,
+        mergeMessage,
+        'merge'
       );
 
       setRealPrResult(mergedPr);
       setSimState('merged');
       toggleBadgeStep('pair-extraordinaire', 2);
 
-      // CRITICAL (GitHub Discussion #20481): Collaborator status MUST remain active in the repository!
-      // Do NOT call leave-repo — GitHub's achievement daemon validates active repository collaborator status.
+      // CRITICAL: Collaborator status MUST remain active in the repository!
+      // Standard merge preserves individual commit authorship — both user avatars appear on the commit.
 
       setLogs((prev) => [
         ...prev,
-        { text: `✓ PULL REQUEST #${mergedPr.number} SQUASH-MERGED SUCCESSFULLY INTO MAIN!`, type: 'success' },
-        { text: `✓ Dual Co-Author trailers permanently recorded in the squashed commit on default branch!`, type: 'success' },
+        { text: `✓ PULL REQUEST #${mergedPr.number} MERGED INTO MAIN (Standard Merge Commit)!`, type: 'success' },
+        { text: `✓ Co-authored-by trailers preserved — both GitHub profiles attributed on the commit!`, type: 'success' },
         { text: `✓ Active collaborator partnership maintained with @${partnerName}.`, type: 'success' },
         { text: `Click "Claim Reward" to record milestone completion and trigger achievement indexer.`, type: 'info' },
       ]);
@@ -918,7 +919,7 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
                 className="px-5 py-2.5 rounded-xl bg-[#84CC16] hover:bg-[#65A30D] text-[#101114] text-xs font-black flex items-center gap-2 transition-all cursor-pointer shadow-xs disabled:opacity-50 animate-pulse"
               >
                 <GitMerge size={14} />
-                <span>{isExecutingLive ? 'Squash-Merging...' : 'Squash & Merge PR into Main'}</span>
+                <span>{isExecutingLive ? 'Merging into Main...' : 'Merge PR into Main'}</span>
               </button>
             )}
 
