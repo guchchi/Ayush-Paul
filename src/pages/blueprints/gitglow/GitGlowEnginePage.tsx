@@ -938,69 +938,72 @@ export const GitGlowEnginePage: React.FC = () => {
         }}
       />
 
-      {/* ── SILICON VALLEY 24H–72H SLA INDEXING MODAL ── */}
+      {/* ── 24H–72H SLA INDEXING DIALOG (RESPONSIVE) ── */}
       {showSlaInfoModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-          <div className="relative w-full max-w-lg rounded-[32px] bg-white border border-[#E5E3DA] p-6 sm:p-8 shadow-2xl text-left space-y-6 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/70 backdrop-blur-md overflow-y-auto">
+          <div className="relative w-full max-w-lg my-auto rounded-3xl bg-white border border-slate-200 p-5 sm:p-7 shadow-2xl text-left space-y-5 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain">
             <button
+              type="button"
               onClick={() => setShowSlaInfoModal(false)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-center text-[#65666A] hover:text-[#101114] cursor-pointer"
+              className="absolute top-4 right-4 z-20 size-8 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
+              aria-label="Close dialog"
             >
-              <X size={16} />
+              <X className="size-4" />
             </button>
 
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F7F8EF] border border-[#DCE89E] text-[11px] font-bold text-[#4D7C0F]">
-                <Clock size={12} className="text-[#84CC16]" />
+            <div className="space-y-1.5 pr-8">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] font-semibold text-emerald-800">
+                <Clock size={12} className="text-emerald-600" />
                 <span>GitHub Telemetry Standard</span>
               </div>
-              <h3 className="text-2xl font-extrabold text-[#101114] tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
                 24h–72h Indexing SLA
               </h3>
-              <p className="text-xs text-[#65666A] leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 Why does GitHub take 24 to 72 hours to render certain profile badges?
               </p>
             </div>
 
-            <div className="space-y-3 text-xs text-[#101114]">
-              <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-1">
-                <div className="font-bold flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
+            <div className="space-y-2.5 text-xs text-slate-900">
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                <div className="font-bold flex items-center gap-2 text-slate-900">
+                  <span className="size-1.5 rounded-full bg-emerald-600 shrink-0" />
                   1. Git Tree Verification (Immediate)
                 </div>
-                <p className="text-[#65666A] text-[11px] pl-3.5 leading-relaxed">
-                  The moment your PR is merged, your commit trailer and author signatures are cryptographically sealed in the Git tree on GitHub.
+                <p className="text-slate-600 text-[11px] pl-3.5 leading-relaxed">
+                  The moment your action occurs, your commit trailers, discussion solutions, or webhooks are cryptographically sealed in GitHub's Git tree.
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-1">
-                <div className="font-bold flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                <div className="font-bold flex items-center gap-2 text-slate-900">
+                  <span className="size-1.5 rounded-full bg-emerald-600 shrink-0" />
                   2. Asynchronous Queue Processing (12h–48h)
                 </div>
-                <p className="text-[#65666A] text-[11px] pl-3.5 leading-relaxed">
+                <p className="text-slate-600 text-[11px] pl-3.5 leading-relaxed">
                   GitHub runs background cron workers across 100M+ accounts to prevent webhook load spikes. Attribution workers index achievements in scheduled batches.
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] space-y-1">
-                <div className="font-bold flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" />
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                <div className="font-bold flex items-center gap-2 text-slate-900">
+                  <span className="size-1.5 rounded-full bg-emerald-600 shrink-0" />
                   3. Official Profile Unfurl (24h–72h)
                 </div>
-                <p className="text-[#65666A] text-[11px] pl-3.5 leading-relaxed">
-                  Once verified, GitHub automatically displays the 3D medallion in your public profile's Achievements panel at <span className="font-mono text-[#101114]">github.com/&#123;username&#125;?tab=achievements</span>.
+                <p className="text-slate-600 text-[11px] pl-3.5 leading-relaxed">
+                  Once verified, GitHub automatically displays the 3D medallion in your public profile's Achievements panel at <span className="font-mono text-slate-900 font-semibold">github.com/&#123;username&#125;?tab=achievements</span>.
                 </p>
               </div>
             </div>
 
-            <div className="pt-2 flex items-center justify-between gap-3 border-t border-[#ECEAE1]">
-              <span className="text-[11px] text-[#65A30D] font-mono font-bold">
+            <div className="pt-2 flex items-center justify-between gap-3 border-t border-slate-200">
+              <span className="text-[11px] text-emerald-700 font-mono font-bold">
                 ✓ 100% Genuine Webhook Ingestion
               </span>
               <button
+                type="button"
                 onClick={() => setShowSlaInfoModal(false)}
-                className="px-5 py-2.5 rounded-xl bg-[#101114] text-white text-xs font-bold hover:bg-[#1C1E24] cursor-pointer transition-colors shadow-sm"
+                className="h-10 px-5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 cursor-pointer transition-colors shadow-xs"
               >
                 Understood
               </button>

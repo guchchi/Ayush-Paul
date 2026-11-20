@@ -92,11 +92,13 @@ export const BadgeLearningModal: React.FC<BadgeLearningModalProps> = ({
               </button>
 
               <button
+                type="button"
                 onClick={onClose}
-                className="w-8 h-8 rounded-full bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-center text-[#65666A] hover:text-[#101114] transition-colors cursor-pointer"
+                className="size-8 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
                 title="Close learning window"
+                aria-label="Close dialog"
               >
-                <X size={16} />
+                <X className="size-4" />
               </button>
             </div>
           </div>

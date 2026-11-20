@@ -1,16 +1,17 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Trophy,
+  X,
   ExternalLink,
   CheckCircle2,
   Share2,
   Sparkles,
   ArrowRight,
   ShieldCheck,
-  X,
   Clock,
-  Zap,
+  MessageSquare,
+  GitPullRequest,
+  AlertCircle,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { cn } from '../../lib/utils';
@@ -25,7 +26,7 @@ interface BadgeRewardModalProps {
   issueNumber?: number;
   repoFullName: string;
   issueUrl?: string;
-  itemType?: 'issue' | 'pr';
+  itemType?: 'issue' | 'pr' | 'discussion' | 'milestone';
   stat1Label?: string;
   stat1Value?: string;
   stat1Sub?: string;
@@ -62,30 +63,13 @@ export const BadgeRewardModal: React.FC<BadgeRewardModalProps> = ({
 }) => {
   React.useEffect(() => {
     if (isOpen) {
-      // Fire confetti celebration sequence
       try {
         confetti({
-          particleCount: 80,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#D7FF36', '#84CC16', '#101114', '#F7F8EF', '#38BDF8'],
+          particleCount: 70,
+          spread: 60,
+          origin: { y: 0.55 },
+          colors: ['#D7FF36', '#84CC16', '#101114', '#A855F7', '#38BDF8'],
         });
-        setTimeout(() => {
-          confetti({
-            particleCount: 50,
-            angle: 60,
-            spread: 55,
-            origin: { x: 0 },
-            colors: ['#D7FF36', '#84CC16'],
-          });
-          confetti({
-            particleCount: 50,
-            angle: 120,
-            spread: 55,
-            origin: { x: 1 },
-            colors: ['#D7FF36', '#84CC16'],
-          });
-        }, 300);
       } catch (err) {
         console.warn('Confetti error:', err);
       }
@@ -94,184 +78,311 @@ export const BadgeRewardModal: React.FC<BadgeRewardModalProps> = ({
 
   if (!isOpen) return null;
 
+  // Badge-specific theming to avoid clashy neon glows on violet/blue badges
+  const isGalaxyBrain = badgeName.toLowerCase().includes('galaxy');
+  const isPairExtraordinaire = badgeName.toLowerCase().includes('pair');
+  const isYolo = badgeName.toLowerCase().includes('yolo');
+  const isPullShark = badgeName.toLowerCase().includes('shark');
+
+  const theme = isGalaxyBrain
+    ? {
+        accentBg: 'bg-violet-50',
+        accentBorder: 'border-violet-200',
+        accentText: 'text-violet-700',
+        glowBg: 'bg-violet-500/15',
+        badgeBorder: 'border-violet-300',
+        pillBg: 'bg-violet-100 text-violet-800 border-violet-200',
+        qualifyBadge: 'bg-violet-950 text-violet-200 border-violet-700/50',
+      }
+    : isPairExtraordinaire
+    ? {
+        accentBg: 'bg-emerald-50',
+        accentBorder: 'border-emerald-200',
+        accentText: 'text-emerald-800',
+        glowBg: 'bg-emerald-500/15',
+        badgeBorder: 'border-emerald-300',
+        pillBg: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+        qualifyBadge: 'bg-emerald-950 text-emerald-200 border-emerald-700/50',
+      }
+    : isPullShark
+    ? {
+        accentBg: 'bg-sky-50',
+        accentBorder: 'border-sky-200',
+        accentText: 'text-sky-800',
+        glowBg: 'bg-sky-500/15',
+        badgeBorder: 'border-sky-300',
+        pillBg: 'bg-sky-100 text-sky-800 border-sky-200',
+        qualifyBadge: 'bg-sky-950 text-sky-200 border-sky-700/50',
+      }
+    : isYolo
+    ? {
+        accentBg: 'bg-amber-50',
+        accentBorder: 'border-amber-200',
+        accentText: 'text-amber-800',
+        glowBg: 'bg-amber-500/15',
+        badgeBorder: 'border-amber-300',
+        pillBg: 'bg-amber-100 text-amber-800 border-amber-200',
+        qualifyBadge: 'bg-amber-950 text-amber-200 border-amber-700/50',
+      }
+    : {
+        accentBg: 'bg-lime-50',
+        accentBorder: 'border-lime-200',
+        accentText: 'text-lime-800',
+        glowBg: 'bg-lime-500/15',
+        badgeBorder: 'border-lime-300',
+        pillBg: 'bg-lime-100 text-lime-800 border-lime-200',
+        qualifyBadge: 'bg-slate-900 text-lime-300 border-lime-600/50',
+      };
+
   const handleShareOnX = () => {
-    const itemLabel = itemType === 'pr' ? `PR #${issueNumber} merged` : `Issue #${issueNumber} closed in ${durationSeconds}s`;
-    const tweet = `Just unlocked the official GitHub "${badgeName}" achievement using @GitGlow! ⚡\n\n${itemLabel}. Real webhook verified!\n\nCheck it out on my profile: https://github.com/${username}`;
+    let itemLabel = `Milestone verified!`;
+    if (isGalaxyBrain) {
+      itemLabel = `2/2 Accepted Answers verified on GitHub Discussions`;
+    } else if (itemType === 'pr') {
+      itemLabel = `PR #${issueNumber} merged on default branch`;
+    } else if (itemType === 'issue') {
+      itemLabel = `Issue #${issueNumber} closed in ${durationSeconds}s`;
+    }
+    const tweet = `Just qualified for the official GitHub "${badgeName}" achievement using @GitGlow! ⚡\n\n${itemLabel}.\n\nProfile: https://github.com/${username}`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`, '_blank');
   };
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+      {/* Outer viewport wrapper with full vertical scroll support on small screens */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/70 backdrop-blur-md overflow-y-auto">
         <motion.div
-          initial={{ opacity: 0, scale: 0.92, y: 20 }}
+          initial={{ opacity: 0, scale: 0.95, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.92, y: 20 }}
-          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-lg rounded-[32px] bg-white border border-[#E5E3DA] p-6 sm:p-8 shadow-2xl text-center space-y-6 overflow-hidden"
+          exit={{ opacity: 0, scale: 0.95, y: 16 }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-lg my-auto rounded-3xl bg-white border border-slate-200 shadow-2xl flex flex-col max-h-[calc(100dvh-2rem)] overflow-hidden text-center"
         >
-          {/* Subtle Ambient Radial Glow */}
+          {/* Subtle Dynamic Ambient Radial Glow */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full bg-[#D7FF36]/30 blur-3xl"
+            className={cn(
+              'pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full blur-3xl',
+              theme.glowBg
+            )}
           />
 
-          {/* Close button */}
+          {/* Close button: Guaranteed top-right positioning */}
           <button
+            type="button"
             onClick={onClose}
-            className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-center text-[#65666A] hover:text-[#101114] transition-colors cursor-pointer"
+            className="absolute top-4 right-4 z-20 size-8 rounded-full bg-slate-100/90 hover:bg-slate-200 border border-slate-200/80 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400"
+            aria-label="Close dialog"
           >
-            <X size={16} />
+            <X className="size-4" />
           </button>
 
-          {/* Badge Showcase Card with 3D Float */}
-          <div className="relative pt-3 flex flex-col items-center">
-            <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-[#FAF9F5] border-2 border-[#DCE89E] p-4 flex items-center justify-center shadow-[0_16px_36px_rgba(215,255,54,0.35)]"
-            >
-              <img
-                src={badgeIcon}
-                alt={badgeName}
-                className="w-full h-full object-contain filter drop-shadow-md"
-              />
-              <div className="absolute -bottom-2 px-3 py-0.5 rounded-full bg-[#101114] text-[#D7FF36] border border-[#D7FF36]/40 text-[10px] font-mono font-bold tracking-wider uppercase shadow-xs">
-                Verified Qualify
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Headline & Congratulations */}
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F7F8EF] border border-[#DCE89E] text-[11px] font-bold text-[#4D7C0F]">
-              <Sparkles size={13} className="text-[#84CC16]" />
-              <span>Achievement Unlocked</span>
-            </div>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#101114] tracking-tight">
-              You Earned {badgeName}!
-            </h3>
-            <p className="text-xs sm:text-sm text-[#65666A] max-w-sm mx-auto leading-relaxed">
-              Real GitHub webhook triggered on <strong className="text-[#101114]">{repoFullName}</strong>. GitHub servers have officially queued this achievement for your profile!
-            </p>
-          </div>
-
-          {/* Proof Breakdown Stat Grid */}
-          <div className="grid grid-cols-3 gap-2.5 p-4 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] text-left">
-            <div>
-              <span className="text-[10px] font-mono text-[#65666A] uppercase block">
-                {stat1Label || (itemType === 'pr' ? 'Pipeline' : 'Triage Speed')}
-              </span>
-              <span className="text-base font-extrabold text-[#101114] flex items-center gap-1 mt-0.5">
-                <Clock size={13} className="text-[#84CC16]" />
-                {stat1Value || (itemType === 'pr' ? 'Auto-Merged' : `${durationSeconds}s`)}
-              </span>
-              <span className="text-[9.5px] text-[#65A30D] font-bold">
-                {stat1Sub || (itemType === 'pr' ? 'Default branch' : '< 300s window')}
-              </span>
-            </div>
-            <div>
-              <span className="text-[10px] font-mono text-[#65666A] uppercase block">
-                {stat2Label || (itemType === 'pr' ? 'Pull Request' : 'Real Issue')}
-              </span>
-              <span className="text-base font-extrabold text-[#101114] mt-0.5 block">
-                {stat2Value || `#${issueNumber}`}
-              </span>
-              <span className="text-[9.5px] text-[#65A30D] font-bold">
-                {stat2Sub || (itemType === 'pr' ? 'Merged into main' : 'Closed state')}
-              </span>
-            </div>
-            <div>
-              <span className="text-[10px] font-mono text-[#65666A] uppercase block">Attribution</span>
-              <span className="text-base font-extrabold text-[#101114] truncate mt-0.5 block">
-                @{username}
-              </span>
-              <span className="text-[9.5px] text-[#65A30D] font-bold">100% Verified</span>
-            </div>
-          </div>
-
-          {/* Reassuring Success & Delivery Notice */}
-          {badgeName === 'Pair Extraordinaire' || isAsyncIndexerBadge ? (
-            <div className="p-4 rounded-2xl bg-[#F7F8EF] border border-[#84CC16]/60 flex items-start gap-3.5 text-left shadow-2xs">
-              <div className="w-10 h-10 rounded-2xl bg-[#84CC16] text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
-                <CheckCircle2 size={22} />
-              </div>
-              <div className="space-y-1 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-[#101114] text-sm">All Done! 100% Completed</span>
-                  <span className="px-2 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] text-[10px] font-mono font-bold">
-                    SUCCESSFULLY MERGED
-                  </span>
+          {/* Scrollable Modal Content */}
+          <div className="overflow-y-auto overscroll-contain px-5 py-6 sm:px-8 sm:py-7 space-y-5">
+            {/* 1. Badge Showcase with Float Animation */}
+            <div className="relative pt-2 flex flex-col items-center">
+              <motion.div
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+                className={cn(
+                  'relative size-24 sm:size-28 rounded-2xl bg-white border-2 p-3 flex items-center justify-center shadow-lg',
+                  theme.badgeBorder
+                )}
+              >
+                <img
+                  src={badgeIcon}
+                  alt={badgeName}
+                  className="w-full h-full object-contain filter drop-shadow-md"
+                />
+                <div
+                  className={cn(
+                    'absolute -bottom-2 px-2.5 py-0.5 rounded-full border text-[9.5px] font-mono font-bold tracking-wider uppercase shadow-xs',
+                    theme.qualifyBadge
+                  )}
+                >
+                  Verified Qualify
                 </div>
-                <p className="text-[#4D7C0F] text-xs leading-relaxed">
-                  Aapka PR default branch me successfully merge ho gaya hai aur dono accounts GitHub par verify ho chuke hain! GitHub background me verify karke <strong>24 se 72 hours ke andar</strong> badge aapke profile par araam se display kar dega. Chill karein, aapka kaam ho chuka hai!
-                </p>
-                <div className="pt-1 text-[11px] text-[#65666A]">
-                  Check your profile later:{' '}
+              </motion.div>
+            </div>
+
+            {/* 2. Headline & Attribution */}
+            <div className="space-y-1.5">
+              <div
+                className={cn(
+                  'inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-[11px] font-semibold',
+                  theme.pillBg
+                )}
+              >
+                <Sparkles size={12} />
+                <span>Achievement Unlocked</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+                You Earned {badgeName}!
+              </h3>
+              <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
+                GitHub webhook officially triggered on{' '}
+                <strong className="text-slate-900 font-semibold">{repoFullName}</strong>.
+              </p>
+            </div>
+
+            {/* 3. Proof Breakdown Stat Grid */}
+            <div className="grid grid-cols-3 gap-2 p-3 sm:p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-left">
+              <div className="min-w-0">
+                <span className="text-[9.5px] font-mono text-slate-500 uppercase block truncate">
+                  {stat1Label || (isGalaxyBrain ? 'Solutions' : itemType === 'pr' ? 'Pipeline' : 'Triage Speed')}
+                </span>
+                <span className="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-1 mt-0.5 truncate">
+                  {isGalaxyBrain ? (
+                    <MessageSquare size={12} className="text-violet-600 shrink-0" />
+                  ) : itemType === 'pr' ? (
+                    <GitPullRequest size={12} className="text-emerald-600 shrink-0" />
+                  ) : (
+                    <Clock size={12} className="text-amber-600 shrink-0" />
+                  )}
+                  <span className="truncate">{stat1Value || (itemType === 'pr' ? 'Auto-Merged' : `${durationSeconds}s`)}</span>
+                </span>
+                <span className="text-[9px] text-emerald-700 font-semibold block truncate">
+                  {stat1Sub || (isGalaxyBrain ? 'Accepted Answers' : itemType === 'pr' ? 'Default branch' : '< 300s window')}
+                </span>
+              </div>
+
+              <div className="min-w-0">
+                <span className="text-[9.5px] font-mono text-slate-500 uppercase block truncate">
+                  {stat2Label || (isGalaxyBrain ? 'Category' : itemType === 'pr' ? 'Pull Request' : 'Target Issue')}
+                </span>
+                <span className="text-xs sm:text-sm font-extrabold text-slate-900 mt-0.5 block truncate">
+                  {stat2Value || `#${issueNumber}`}
+                </span>
+                <span className="text-[9px] text-emerald-700 font-semibold block truncate">
+                  {stat2Sub || (isGalaxyBrain ? 'GraphQL Verified' : itemType === 'pr' ? 'Merged into main' : 'Closed state')}
+                </span>
+              </div>
+
+              <div className="min-w-0">
+                <span className="text-[9.5px] font-mono text-slate-500 uppercase block truncate">Attribution</span>
+                <span className="text-xs sm:text-sm font-extrabold text-slate-900 truncate mt-0.5 block">
+                  @{username}
+                </span>
+                <span className="text-[9px] text-emerald-700 font-semibold block truncate">100% Verified</span>
+              </div>
+            </div>
+
+            {/* 4. Context-Specific Reassurance Box */}
+            {isGalaxyBrain ? (
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-violet-50/80 border border-violet-200/80 flex items-start gap-3 text-left">
+                <div className="size-9 rounded-xl bg-violet-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                  <CheckCircle2 size={18} />
+                </div>
+                <div className="space-y-1 text-xs">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-extrabold text-slate-900 text-xs sm:text-sm">
+                      All Done! 2/2 Answers Accepted
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-violet-200 text-violet-900 text-[9.5px] font-mono font-bold">
+                      GRAPHQL SEALED
+                    </span>
+                  </div>
+                  <p className="text-slate-700 text-[11.5px] leading-relaxed">
+                    Dono technical answers GitHub Discussions me officially <strong>Accepted Answers</strong> mark ho chuke hain! GitHub ka background attribution worker verify karke <strong>24 se 72 hours ke andar</strong> Galaxy Brain badge aapke profile par display kar dega.
+                  </p>
+                  <div className="pt-1 text-[11px] text-slate-500">
+                    Profile status:{' '}
+                    <a
+                      href={`https://github.com/${username}?tab=achievements`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline font-semibold text-slate-900 hover:text-violet-700"
+                    >
+                      github.com/{username}?tab=achievements
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ) : isPairExtraordinaire ? (
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200/80 flex items-start gap-3 text-left">
+                <div className="size-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                  <CheckCircle2 size={18} />
+                </div>
+                <div className="space-y-1 text-xs">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-extrabold text-slate-900 text-xs sm:text-sm">
+                      All Done! Collaborative PR Merged
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 text-[9.5px] font-mono font-bold">
+                      STANDARD MERGE
+                    </span>
+                  </div>
+                  <p className="text-slate-700 text-[11.5px] leading-relaxed">
+                    Co-authored PR default branch me successfully merge ho gaya hai aur dono accounts GitHub commit tree me cryptographically seal ho chuke hain! GitHub background worker verify karke <strong>24 se 72 hours ke andar</strong> badge display karega.
+                  </p>
+                  <div className="pt-1 text-[11px] text-slate-500">
+                    Profile status:{' '}
+                    <a
+                      href={`https://github.com/${username}?tab=achievements`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline font-semibold text-slate-900 hover:text-emerald-700"
+                    >
+                      github.com/{username}?tab=achievements
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-2.5 text-left text-xs text-slate-800">
+                <ShieldCheck size={16} className="text-emerald-600 shrink-0 mt-0.5" />
+                <div className="leading-relaxed text-[11.5px]">
+                  <strong>GitHub Ingestion Window:</strong> Webhook received and verified. Your badge will appear in your Achievements panel at{' '}
                   <a
                     href={`https://github.com/${username}?tab=achievements`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="underline font-bold text-[#101114] hover:text-[#84CC16]"
+                    className="underline font-semibold hover:text-emerald-700"
                   >
-                    github.com/{username}?tab=achievements
-                  </a>
+                    github.com/{username}
+                  </a>{' '}
+                  in periodic batch cron!
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="p-3.5 rounded-2xl bg-[#F7F8EF] border border-[#DCE89E] flex items-start gap-2.5 text-left text-xs text-[#101114]">
-              <ShieldCheck size={16} className="text-[#65A30D] shrink-0 mt-0.5" />
-              <div className="leading-relaxed">
-                <strong>GitHub Ingestion ETA:</strong> GitHub cron runs in periodic batches. Your new shiny badge will appear in the Achievements section on{' '}
+            )}
+
+            {/* 5. Responsive CTA Actions */}
+            <div className="flex flex-col sm:flex-row items-center gap-2 pt-1">
+              <button
+                type="button"
+                onClick={handleShareOnX}
+                className="w-full sm:flex-1 h-10 sm:h-11 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold inline-flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.99]"
+              >
+                <Share2 size={13} />
+                <span>Share on X / Twitter</span>
+              </button>
+
+              {issueUrl && (
                 <a
-                  href={`https://github.com/${username}?tab=achievements`}
+                  href={issueUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline font-bold hover:text-[#84CC16]"
+                  className="w-full sm:w-auto h-10 sm:h-11 px-4 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition-all shadow-xs"
                 >
-                  github.com/{username}
-                </a>{' '}
-                within 10 to 30 minutes!
-              </div>
+                  <span>{itemType === 'discussion' ? 'View Discussion' : itemType === 'pr' ? `PR #${issueNumber}` : `Issue #${issueNumber}`}</span>
+                  <ExternalLink size={12} />
+                </a>
+              )}
+
+              {onContinueToNext && (
+                <button
+                  type="button"
+                  onClick={onContinueToNext}
+                  className="w-full sm:w-auto h-10 sm:h-11 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-[0.99]"
+                >
+                  <span>Next Badge</span>
+                  <ArrowRight size={13} />
+                </button>
+              )}
             </div>
-          )}
-
-          {/* Primary Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-2">
-            <button
-              onClick={handleShareOnX}
-              className="w-full sm:flex-1 h-11 rounded-2xl bg-[#101114] hover:bg-[#1C1E24] text-white text-xs font-bold inline-flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md border border-[#D7FF36]/40"
-            >
-              <Share2 size={13} />
-              <span>Share on X / Twitter</span>
-            </button>
-
-            {issueUrl && (
-              <a
-                href={issueUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto h-11 px-5 rounded-2xl bg-white border border-[#E5E3DA] hover:border-[#84CC16] text-[#101114] text-xs font-bold inline-flex items-center justify-center gap-1.5 transition-all shadow-xs"
-              >
-                <span>View Issue #{issueNumber}</span>
-                <ExternalLink size={12} />
-              </a>
-            )}
-
-            {onContinueToNext && (
-              <button
-                onClick={onContinueToNext}
-                className="w-full sm:w-auto h-11 px-5 rounded-2xl bg-[#84CC16] hover:bg-[#65A30D] text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md"
-              >
-                <span>Next Badge</span>
-                <ArrowRight size={13} />
-              </button>
-            )}
           </div>
         </motion.div>
       </div>
     </AnimatePresence>
   );
 };
-

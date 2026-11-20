@@ -618,19 +618,19 @@ export const GalaxyBrainInteractiveSimulation: React.FC<GalaxyBrainInteractiveSi
 
       {/* ── 5. CLEAN REASSURING DELIVERY NOTICE (When Verified) ── */}
       {simState === 'verified' && (
-        <div className="p-5 rounded-2xl bg-[#F7F8EF] border border-[#84CC16]/60 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="p-4 sm:p-5 rounded-2xl bg-violet-50/90 border border-violet-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-2xl bg-[#84CC16] text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
-              <CheckCircle2 size={22} />
+            <div className="size-10 rounded-2xl bg-violet-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+              <CheckCircle2 size={20} />
             </div>
             <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <h4 className="text-sm font-extrabold text-[#101114]">All Done! 2/2 Solutions Accepted</h4>
-                <span className="px-2 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] text-[10px] font-mono font-bold uppercase">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h4 className="text-sm font-extrabold text-slate-900">All Done! 2/2 Solutions Accepted</h4>
+                <span className="px-2 py-0.5 rounded-full bg-violet-200 text-violet-900 text-[10px] font-mono font-bold uppercase">
                   Galaxy Brain Qualified
                 </span>
               </div>
-              <p className="text-xs text-[#4D7C0F] leading-relaxed max-w-xl">
+              <p className="text-xs text-slate-700 leading-relaxed max-w-xl">
                 Aapke dono technical answers GitHub Discussions me officially <strong>Accepted Answers</strong> mark ho chuke hain! GitHub ka background worker verify karke <strong>24 se 72 hours ke andar</strong> Galaxy Brain badge aapke profile par araam se display kar dega.
               </p>
             </div>
@@ -701,9 +701,10 @@ export const GalaxyBrainInteractiveSimulation: React.FC<GalaxyBrainInteractiveSi
         badgeIcon="/images/badges/galaxy-brain.png"
         username={connectedUser?.githubUsername || targetUsername}
         durationSeconds={45}
-        issueNumber={1}
-        itemType="pr"
+        issueNumber={activeDiscussion?.discussionNumber || 1}
+        itemType="discussion"
         repoFullName="gitglow-agent/gitglow-community-hub"
+        issueUrl={activeDiscussion?.discussionUrl}
         stat1Label="Accepted Solutions"
         stat1Value="2 Answers"
         stat1Sub="100% Qualified"

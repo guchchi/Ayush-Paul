@@ -839,20 +839,20 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
 
       {/* ── 4B. CLEAN REASSURING SUCCESS CARD ── */}
       {['merged', 'verified'].includes(simState) && (
-        <div className="p-5 rounded-2xl bg-[#F7F8EF] border border-[#84CC16]/60 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50/90 border border-emerald-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-2xl bg-[#84CC16] text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
-              <CheckCircle2 size={22} />
+            <div className="size-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+              <CheckCircle2 size={20} />
             </div>
             <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <h4 className="text-sm font-extrabold text-[#101114]">All Done! PR Successfully Merged</h4>
-                <span className="px-2 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] text-[10px] font-mono font-bold uppercase">
-                  24–72h Delivery
+              <div className="flex items-center gap-2 flex-wrap">
+                <h4 className="text-sm font-extrabold text-slate-900">All Done! PR Successfully Merged</h4>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 text-[10px] font-mono font-bold uppercase">
+                  24–72h Indexing Window
                 </span>
               </div>
-              <p className="text-xs text-[#4D7C0F] leading-relaxed max-w-xl">
-                Aapka kaam 100% complete ho chuka hai! PR default branch me successfully merge ho gayi hai aur dono accounts GitHub par verify ho chuke hain. GitHub background me verify karke <strong>24 se 72 hours ke andar</strong> badge aapke profile par araam se display kar dega. Chill karein!
+              <p className="text-xs text-slate-700 leading-relaxed max-w-xl">
+                Aapka kaam 100% complete ho chuka hai! PR default branch me successfully merge ho gayi hai aur dono accounts GitHub par verify ho chuke hain. GitHub background me verify karke <strong>24 se 72 hours ke andar</strong> badge aapke profile par araam se display kar dega.
               </p>
             </div>
           </div>
