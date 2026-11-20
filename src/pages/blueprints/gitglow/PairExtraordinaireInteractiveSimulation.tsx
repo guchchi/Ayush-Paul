@@ -339,12 +339,11 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
     const partnerName = partnerMode === 'bot' ? DEFAULT_BOT_COAUTHOR.name : (coAuthorName || 'collaborator');
     const partnerEmail = partnerMode === 'bot' ? DEFAULT_BOT_COAUTHOR.verifiedEmail : (coAuthorEmail || `${partnerName}@users.noreply.github.com`);
 
-    // Standard merge commit: title is the PR title, message preserves Co-authored-by trailers
-    const mergeTitle = `Merge pull request #${realPrResult.number}: pair programming session with @${partnerName}`;
-    // Both authors get attribution via dual Co-authored-by trailers in the merge commit message
-    const mergeMessage = partnerMode === 'bot'
-      ? `Co-authored-by: ${resolvedUserName} <${resolvedUserEmail}>\nCo-authored-by: ${DEFAULT_BOT_COAUTHOR.name} <${DEFAULT_BOT_COAUTHOR.verifiedEmail}>`
-      : `Co-authored-by: ${partnerName} <${partnerEmail}>\nCo-authored-by: ${resolvedUserName} <${resolvedUserEmail}>`;
+    // Standard merge commit: title is the PR title, message preserves RFC-standard Co-authored-by trailer
+    const mergeTitle = `Merge pull request #${realPrResult.number} from ${realPrResult.headBranch || 'pair-collab'}`;
+    // RFC Standard: Only include the co-author who is NOT the primary commit author (no self-coauthoring)
+    // Blank line separating description and trailer is required by GitHub parser
+    const mergeMessage = `Pair programming collaboration session with @${partnerName}\n\nCo-authored-by: ${partnerName} <${partnerEmail}>`;
 
     setLogs((prev) => [
       ...prev,
