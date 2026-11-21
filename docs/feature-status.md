@@ -130,6 +130,19 @@
 | Duplicate purchase block | ✅ |
 | Vault auto-unlock | ✅ |
 
+## 11. GitGlow Achievement Engine — ⚠️ PARTIAL
+| Requirement | Status |
+|---|---|
+| Quickdraw Badge (5-min solo close) | ✅ |
+| Pull Shark Badge (2+ merged PRs) | ✅ |
+| YOLO Badge (merge without review) | ✅ |
+| Galaxy Brain Badge (2 accepted discussions) | ✅ |
+| **Pair Extraordinaire Badge (co-authored commit)** | 🔧 |
+| Account reputation warming for bot partner | 🔧 |
+| Peer-to-peer pairing flow | ✅ |
+| Real-time profile scanner | ✅ |
+| Badge reward modal & celebratory cards | ✅ |
+
 ---
 
 ## Legend

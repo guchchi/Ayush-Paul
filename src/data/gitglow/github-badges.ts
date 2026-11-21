@@ -112,8 +112,8 @@ export const GITHUB_BADGES: GitHubBadge[] = [
     tagline: 'Coauthored a commit on a merged pull request.',
     difficulty: 'Medium',
     category: 'collaborative',
-    status: 'obtainable',
-    statusLabel: 'Obtainable · Collaborative',
+    status: 'testing',
+    statusLabel: 'In Progress · Under Active R&D',
     isObtainable: true,
     isRecommendedStarter: false,
     howToGet: 'Co-author at least one commit on a merged pull request using the Git Co-authored-by trailer.',
@@ -131,7 +131,8 @@ export const GITHUB_BADGES: GitHubBadge[] = [
     ],
     gotchas: [
       'The co-author email must match a verified GitHub account email address.',
-      'Formatting error in the trailer will cause GitHub to ignore the co-authorship.'
+      'Formatting error in the trailer will cause GitHub to ignore the co-authorship.',
+      'Active R&D Notice: Quickdraw, Pull Shark, YOLO, and Galaxy Brain are 100% verified live. Pair Extraordinaire requires account reputation validation on GitHub backend; Custom Peer mode with an established account is currently recommended while automated bot reputation is being warmed.'
     ],
   },
   {

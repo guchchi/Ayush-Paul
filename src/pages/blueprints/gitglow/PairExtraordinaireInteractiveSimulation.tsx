@@ -514,6 +514,22 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
             </span>
           </div>
         )}
+
+        {/* Active R&D Engineering Status Notice */}
+        <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-start gap-3 text-xs text-amber-900 shadow-2xs">
+          <AlertTriangle className="size-4 text-amber-600 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <strong className="font-bold text-amber-950">Active R&D Notice:</strong>
+              <span className="px-2 py-0.5 rounded-full bg-amber-200/70 text-amber-900 text-[10px] font-mono font-bold uppercase tracking-wider">
+                Under Active Optimization
+              </span>
+            </div>
+            <p className="text-[11.5px] text-amber-800 leading-relaxed">
+              All other 4 badges (<strong>Quickdraw</strong>, <strong>Pull Shark</strong>, <strong>YOLO</strong>, <strong>Galaxy Brain</strong>) are 100% verified and operating smoothly. <strong>Pair Extraordinaire</strong> is currently undergoing active engineering to bypass GitHub's newest anti-bot account heuristics. If you are using the <strong>1-Click Autonomous Partner</strong>, GitHub may delay indexing. Using <strong>Custom Peer mode</strong> with an established GitHub friend account is currently the most reliable path.
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* ── 2. CO-AUTHOR CONFIGURATION PANEL ── */}
