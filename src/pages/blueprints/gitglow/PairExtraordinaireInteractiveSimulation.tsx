@@ -71,8 +71,8 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
   };
 
   // Co-author configuration
-  const [partnerMode, setPartnerMode] = useState<'custom' | 'bot'>('custom');
-  const [coAuthorHandle, setCoAuthorHandle] = useState<string>('');
+  const [partnerMode, setPartnerMode] = useState<'bot' | 'custom'>('bot');
+  const [coAuthorHandle, setCoAuthorHandle] = useState<string>('gitglow-agent');
   const [isResolvingCoAuthor, setIsResolvingCoAuthor] = useState<boolean>(false);
   const [resolvedCoAuthor, setResolvedCoAuthor] = useState<{
     login: string;
@@ -80,10 +80,10 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
     name: string;
     avatar_url: string;
     verifiedEmail: string;
-  } | null>(null);
+  } | null>(DEFAULT_BOT_COAUTHOR);
 
-  const [coAuthorName, setCoAuthorName] = useState<string>('');
-  const [coAuthorEmail, setCoAuthorEmail] = useState<string>('');
+  const [coAuthorName, setCoAuthorName] = useState<string>('gitglow-agent');
+  const [coAuthorEmail, setCoAuthorEmail] = useState<string>('356865526+gitglow-agent@users.noreply.github.com');
 
   const handleSelectBotPartner = () => {
     setPartnerMode('bot');
@@ -93,7 +93,7 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
     setCoAuthorHandle('gitglow-agent');
     setLogs((prev) => [
       ...prev,
-      { text: `[Partner Switched] Autonomous GitGlow Partner @gitglow-agent selected. Note: Subject to GitHub bot-account indexing holds.`, type: 'info' },
+      { text: `[Partner Switched] Autonomous GitGlow Partner @gitglow-agent selected. Turnkey mode ready.`, type: 'info' },
     ]);
   };
 
@@ -105,7 +105,7 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
     setCoAuthorHandle('');
     setLogs((prev) => [
       ...prev,
-      { text: `[Partner Switched] Custom peer mode active. Recommended: Enter any real friend or secondary GitHub handle to bypass bot filters.`, type: 'info' },
+      { text: `[Partner Switched] Custom peer mode active. Optional: Enter any friend or secondary GitHub handle.`, type: 'info' },
     ]);
   };
 
@@ -519,18 +519,18 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
           </div>
         )}
 
-        {/* Active Investigation & Verified Solution Notice */}
+        {/* Autonomous Secondary Account Turnkey Notice */}
         <div className="p-4 rounded-2xl bg-[#F0FDF4] border border-[#BBF7D0] flex items-start gap-3.5 text-xs text-[#065F46] shadow-2xs">
           <CheckCircle2 className="size-4 text-[#10B981] shrink-0 mt-0.5" />
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <strong className="font-bold text-[#065F46]">Investigation Complete · Verified Solution Ready:</strong>
+              <strong className="font-bold text-[#065F46]">Autonomous Secondary Account Ready:</strong>
               <span className="px-2 py-0.5 rounded-full bg-[#10B981]/15 text-[#059669] text-[10px] font-mono font-bold uppercase tracking-wider">
-                100% Guaranteed Pass
+                Turnkey · No 2nd Account Needed
               </span>
             </div>
             <p className="text-[11.5px] text-[#047857] leading-relaxed">
-              4 of 5 badges (<strong>Quickdraw</strong>, <strong>Pull Shark</strong>, <strong>YOLO</strong>, <strong>Galaxy Brain</strong>) are already unlocked on your profile. <strong>Pair Extraordinaire</strong> failed on previous attempts because GitHub's achievement worker filters out fresh machine accounts (<code className="bg-emerald-100/70 px-1 py-0.5 rounded text-emerald-900">@gitglow-agent</code>). Using <strong>Custom Peer Mode</strong> below with an established GitHub account (a friend, teammate, or secondary account) passes GitHub's anti-bot heuristic immediately!
+              No need to find a friend or create a second GitHub account! GitGlow's autonomous partner (<code className="bg-emerald-100/70 px-1 py-0.5 rounded text-emerald-900 font-bold">@gitglow-agent</code>) serves as your official co-author. Clean RFC Git trailers and standard merge commits ensure both accounts are attributed on your default branch.
             </p>
           </div>
         </div>
@@ -550,26 +550,8 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
           </span>
         </div>
 
-        {/* Mode Selector: Custom Peer (Recommended) vs Autonomous Bot */}
+        {/* Mode Selector: 1-Click Autonomous Bot (Default) vs Custom Peer (Optional) */}
         <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-[#FAF9F5] border border-[#ECEAE1]">
-          <button
-            type="button"
-            onClick={handleSelectCustomPartner}
-            className={cn(
-              'flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer',
-              partnerMode === 'custom'
-                ? 'bg-[#101114] text-white shadow-xs'
-                : 'text-[#65666A] hover:text-[#101114]'
-            )}
-          >
-            <UserPlus size={14} className={cn(partnerMode === 'custom' ? 'text-[#84CC16]' : 'text-[#65666A]')} />
-            <div className="flex items-center gap-1.5">
-              <span>Custom Peer / Verified Account</span>
-              <span className="px-1.5 py-0.5 rounded-md bg-[#84CC16]/20 text-[#84CC16] text-[9px] font-mono font-bold uppercase tracking-wider">
-                Recommended
-              </span>
-            </div>
-          </button>
           <button
             type="button"
             onClick={handleSelectBotPartner}
@@ -581,23 +563,76 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
             )}
           >
             <Bot size={14} className={cn(partnerMode === 'bot' ? 'text-[#84CC16]' : 'text-[#65666A]')} />
-            <span>Autonomous Partner (@gitglow-agent)</span>
+            <div className="flex items-center gap-1.5">
+              <span>Autonomous Partner (@gitglow-agent)</span>
+              <span className="px-1.5 py-0.5 rounded-md bg-[#84CC16]/20 text-[#84CC16] text-[9px] font-mono font-bold uppercase tracking-wider">
+                Turnkey
+              </span>
+            </div>
+          </button>
+          <button
+            type="button"
+            onClick={handleSelectCustomPartner}
+            className={cn(
+              'flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer',
+              partnerMode === 'custom'
+                ? 'bg-[#101114] text-white shadow-xs'
+                : 'text-[#65666A] hover:text-[#101114]'
+            )}
+          >
+            <UserPlus size={14} className={cn(partnerMode === 'custom' ? 'text-[#84CC16]' : 'text-[#65666A]')} />
+            <span>Custom Peer / Friend (Optional)</span>
           </button>
         </div>
 
-        {/* Custom Peer Lookup Form (Recommended First) */}
+        {/* Autonomous Partner Card (Turnkey Default) */}
+        {partnerMode === 'bot' && (
+          <div className="p-4 rounded-2xl bg-[#F0FDF4] border border-[#BBF7D0] space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="px-2.5 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] border border-[#84CC16] text-[10px] font-black uppercase tracking-wider shadow-2xs">
+                Zero Configuration · Turnkey
+              </span>
+              <span className="text-[10px] font-mono text-[#059669] font-bold">
+                Automated Pairing Partner
+              </span>
+            </div>
+            <div className="flex items-center gap-3.5 p-3 rounded-xl bg-white border border-[#D1FAE5]">
+              <img
+                src={DEFAULT_BOT_COAUTHOR.avatar_url}
+                alt="gitglow-agent"
+                className="w-10 h-10 rounded-full border-2 border-[#10B981] shadow-2xs"
+              />
+              <div className="min-w-0 flex-1 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="font-black text-[#101114]">@{DEFAULT_BOT_COAUTHOR.login}</span>
+                  <span className="px-2 py-0.2 rounded-md bg-[#10B981]/15 text-[#059669] text-[9.5px] font-mono font-bold">
+                    Official GitGlow Partner
+                  </span>
+                </div>
+                <span className="text-[11px] font-mono text-[#059669] block truncate mt-0.5 font-bold">
+                  Verified RFC Noreply: {DEFAULT_BOT_COAUTHOR.verifiedEmail}
+                </span>
+              </div>
+            </div>
+            <p className="text-[11px] text-[#065F46] leading-relaxed">
+              No second account or friend required! When you click <strong>"1-Click Create Co-Authored PR"</strong>, GitGlow injects <code>@{DEFAULT_BOT_COAUTHOR.login}</code>'s verified RFC trailer into the patch commit. Standard merge commit preserves individual commit trailers on your default branch so GitHub officially records joint attribution.
+            </p>
+          </div>
+        )}
+
+        {/* Custom Peer Lookup Form (Optional) */}
         {partnerMode === 'custom' && (
           <div className="p-4 rounded-2xl bg-[#F0FDF4] border border-[#BBF7D0] space-y-3">
             <div className="flex items-center justify-between">
               <span className="px-2.5 py-0.5 rounded-full bg-[#10B981] text-white text-[10px] font-black uppercase tracking-wider shadow-2xs">
-                Guaranteed Qualification · Bypasses Bot Quarantine
+                Custom Peer Mode
               </span>
               <span className="text-[10px] font-mono text-[#059669] font-bold">
-                Human-to-Human Attribution
+                Optional · Bring Your Own Partner
               </span>
             </div>
             <p className="text-[11.5px] text-[#065F46] leading-relaxed">
-              GitHub evaluates account age and reputation for the <strong>Pair Extraordinaire</strong> achievement to prevent bot farming. Pairing with an established GitHub account (a friend, teammate, or secondary account) passes GitHub's anti-bot heuristic immediately!
+              Have a friend, colleague, or secondary GitHub account? Enter their handle below and GitGlow will auto-resolve their verified noreply email for the co-author trailer.
             </p>
 
             <div className="pt-1 space-y-2.5">
@@ -670,41 +705,6 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
                 </div>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Autonomous Partner Card (Turnkey) */}
-        {partnerMode === 'bot' && (
-          <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-900 border border-amber-300 text-[10px] font-black uppercase tracking-wider shadow-2xs">
-                Automated Bot · Subject to GitHub Delay
-              </span>
-              <span className="text-[10px] font-mono text-amber-800 font-bold">
-                Account Age: 6 Days
-              </span>
-            </div>
-            <div className="flex items-center gap-3.5 p-3 rounded-xl bg-white border border-amber-200">
-              <img
-                src={DEFAULT_BOT_COAUTHOR.avatar_url}
-                alt="gitglow-agent"
-                className="w-10 h-10 rounded-full border-2 border-amber-500 shadow-2xs"
-              />
-              <div className="min-w-0 flex-1 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="font-black text-[#101114]">@{DEFAULT_BOT_COAUTHOR.login}</span>
-                  <span className="px-2 py-0.2 rounded-md bg-amber-500/15 text-amber-800 text-[9.5px] font-mono font-bold">
-                    Official GitGlow Agent
-                  </span>
-                </div>
-                <span className="text-[11px] font-mono text-amber-800 block truncate mt-0.5 font-bold">
-                  Verified RFC Noreply: {DEFAULT_BOT_COAUTHOR.verifiedEmail}
-                </span>
-              </div>
-            </div>
-            <p className="text-[11px] text-amber-900 leading-relaxed">
-              When using <code>@{DEFAULT_BOT_COAUTHOR.login}</code>, GitGlow creates a valid RFC co-authored commit. However, because GitHub's anti-bot system evaluates account age and reputation, automated bot accounts may experience delayed indexing. For immediate qualification, switch to <strong>Custom Peer mode</strong> above.
-            </p>
           </div>
         )}
 
