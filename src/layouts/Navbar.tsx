@@ -1,8 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
-import { Menu, X, ChevronRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles, Zap, Trophy, ArrowRight, ChevronDown, Camera, Edit3, Folder, Share2, Globe, Apple } from 'lucide-react';
+import {
+  Menu,
+  X,
+  ChevronRight,
+  Github,
+  Linkedin,
+  Youtube,
+  Compass,
+  ExternalLink,
+  Sparkles,
+  Zap,
+  Trophy,
+  ArrowRight,
+  ChevronDown,
+  Terminal,
+  Activity,
+  Clock,
+  ShieldCheck,
+  CheckCheck,
+  BookOpen,
+} from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { GitGlowLogo } from "../components/gitglow/GitGlowLogo";
 import { SupportModal } from "../components/ui/SupportButton";
@@ -11,52 +31,52 @@ import { auth, onAuthStateChanged } from "../firebase";
 
 const GITGLOW_FEATURES = [
   {
-    icon: Camera,
+    icon: Zap,
     cardBg: 'bg-[#18232C] hover:bg-[#1E2B37]',
     circleBg: 'bg-[#24547E] text-[#60A5FA]',
-    title: 'Capture',
-    desc: 'Screenshots and screen recordings, ready when you are.',
-    link: '#achievements',
+    title: '1-Click Engine',
+    desc: 'Automated turn-key bots to trigger real GitHub PR & discussion webhooks in 60s.',
+    link: '/blueprints/gitglow/engine',
   },
   {
-    icon: Edit3,
+    icon: Trophy,
     cardBg: 'bg-[#251E16] hover:bg-[#30271B]',
     circleBg: 'bg-[#6B4213] text-[#FBBF24]',
-    title: 'Editor',
-    desc: 'Shape every capture with static and motion tools.',
-    link: '#first-achievement',
+    title: 'Achievement Wall',
+    desc: 'Inspect all 10 official GitHub medals, tiered multipliers, and exact qualification rules.',
+    link: '/blueprints/gitglow#achievements',
   },
   {
-    icon: Folder,
+    icon: Terminal,
     cardBg: 'bg-[#142318] hover:bg-[#1A2E20]',
     circleBg: 'bg-[#1E562A] text-[#4ADE80]',
-    title: 'Dashboard',
-    desc: 'Keep every capture searchable and easy to revisit.',
-    link: '#missions',
+    title: 'Terminal PR Recipes',
+    desc: 'Step-by-step CLI commands for GitHub CLI (gh) and RFC Git trailer headers.',
+    link: '/blueprints/gitglow#first-achievement',
+  },
+  {
+    icon: Activity,
+    cardBg: 'bg-[#22182B] hover:bg-[#2C1F37]',
+    circleBg: 'bg-[#582A79] text-[#C084FC]',
+    title: 'Telemetry Pipeline',
+    desc: 'Cryptographic commit trailers, default branch merges, and GraphQL resolution proof.',
+    link: '/blueprints/gitglow#how-it-works',
   },
   {
     icon: Sparkles,
-    cardBg: 'bg-[#22182B] hover:bg-[#2C1F37]',
-    circleBg: 'bg-[#582A79] text-[#C084FC]',
-    title: 'Local AI',
-    desc: 'Generate names, tags, and summaries privately on your Mac.',
-    link: '#how-it-works',
-  },
-  {
-    icon: Share2,
     cardBg: 'bg-[#281619] hover:bg-[#341C21]',
     circleBg: 'bg-[#6C222C] text-[#FB7185]',
-    title: 'Share',
-    desc: 'Turn any capture into a link ready to send.',
-    link: '#comparison',
+    title: 'Progress Dashboard',
+    desc: 'Track merged pull requests, verified achievements, and contribution heatmap.',
+    link: '/blueprints/gitglow#progress',
   },
   {
-    icon: Globe,
+    icon: Clock,
     cardBg: 'bg-[#192224] hover:bg-[#202C2F]',
     circleBg: 'bg-[#235359] text-[#2DD4BF]',
-    title: 'Web pages',
-    desc: 'Capture full pages, viewports, and custom breakpoints.',
-    link: '#community',
+    title: 'Batch Indexing SLA',
+    desc: 'Understand GitHub 24h–72h batch cron ingestion before official profile display.',
+    link: '/blueprints/gitglow#faq',
   },
 ];
 
@@ -71,6 +91,7 @@ export const Navbar = () => {
   const [isGitGlowFeaturesOpen, setIsGitGlowFeaturesOpen] = useState(false);
   const gitGlowNavRef = React.useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Close GitGlow features dropdown on outside click or escape
   useEffect(() => {
@@ -409,7 +430,7 @@ export const Navbar = () => {
                   className={cn(
                     "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium transition-colors cursor-pointer select-none",
                     isGitGlowFeaturesOpen
-                      ? "text-white"
+                      ? "text-[#D7FF36]"
                       : "text-white/80 hover:text-white"
                   )}
                   aria-expanded={isGitGlowFeaturesOpen}
@@ -419,21 +440,32 @@ export const Navbar = () => {
                     size={14}
                     className={cn(
                       "transition-transform duration-200 text-white/70",
-                      isGitGlowFeaturesOpen && "rotate-180 text-white"
+                      isGitGlowFeaturesOpen && "rotate-180 text-[#D7FF36]"
                     )}
                   />
                 </button>
 
                 <a
-                  href="#first-achievement"
+                  href="#achievements"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsGitGlowFeaturesOpen(false);
-                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                    document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
                   }}
                   className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none"
                 >
-                  Pricing
+                  Badges
+                </a>
+                <a
+                  href="#missions"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsGitGlowFeaturesOpen(false);
+                    document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none hidden min-[540px]:inline-flex"
+                >
+                  Missions
                 </a>
                 <a
                   href="#faq"
@@ -449,33 +481,27 @@ export const Navbar = () => {
               </nav>
 
               {/* Right Action Area */}
-              <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-                <a
-                  href="#hero"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsGitGlowFeaturesOpen(false);
-                    document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer px-1 hidden sm:inline"
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                <Link
+                  to="/blueprints/gitglow/learn"
+                  onClick={() => setIsGitGlowFeaturesOpen(false)}
+                  className="text-xs sm:text-[13.5px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer px-2 hidden md:inline-flex items-center gap-1.5"
                 >
-                  Log in
-                </a>
+                  <BookOpen size={13} className="text-white/60" />
+                  <span>Docs</span>
+                </Link>
 
-                {/*  Download Pill Button */}
-                <a
-                  href="#hero"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsGitGlowFeaturesOpen(false);
-                    document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="h-8 sm:h-9 px-3.5 sm:px-4 rounded-full bg-[#0090FF] hover:bg-[#0081E8] text-white text-xs sm:text-[13.5px] font-semibold tracking-tight inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-[0_2px_12px_rgba(0,144,255,0.45)] cursor-pointer select-none"
-                  aria-label="Download"
+                {/* 1-Click Sandbox Engine CTA */}
+                <Link
+                  to="/blueprints/gitglow/engine"
+                  onClick={() => setIsGitGlowFeaturesOpen(false)}
+                  className="h-8 sm:h-9 px-3.5 sm:px-4 rounded-full bg-[#D7FF36] hover:bg-[#c8f722] text-[#101114] text-xs sm:text-[13px] font-extrabold tracking-tight inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_16px_rgba(215,255,54,0.35)] cursor-pointer select-none"
+                  aria-label="Launch 1-Click Engine"
                 >
-                  <Apple size={14} className="fill-white shrink-0" />
-                  <span>Download</span>
-                </a>
+                  <Zap size={13} className="fill-[#101114] text-[#101114] shrink-0" />
+                  <span className="hidden sm:inline">1-Click Engine</span>
+                  <span className="sm:hidden">Engine</span>
+                </Link>
               </div>
             </div>
 
@@ -499,8 +525,17 @@ export const Navbar = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             setIsGitGlowFeaturesOpen(false);
-                            const el = document.querySelector(item.link);
-                            el?.scrollIntoView({ behavior: 'smooth' });
+                            if (item.link.startsWith('/')) {
+                              const [path, hash] = item.link.split('#');
+                              if (hash && location.pathname === path) {
+                                document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+                              } else {
+                                navigate(item.link);
+                              }
+                            } else if (item.link.startsWith('#')) {
+                              const id = item.link.substring(1);
+                              document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+                            }
                           }}
                           className={cn(
                             "p-4 sm:p-4.5 rounded-2xl transition-all duration-200 cursor-pointer group flex flex-col justify-between border border-white/5 hover:border-white/20 shadow-xs",
