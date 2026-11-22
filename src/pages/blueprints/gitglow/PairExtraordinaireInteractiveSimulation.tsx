@@ -21,6 +21,7 @@ import {
   Users,
   UserPlus,
   Bot,
+  RefreshCw,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { useGitGlowStore } from '../../../lib/gitglow/gitglow-store';
@@ -54,13 +55,18 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
     toggleBadgeStep,
     markMissionCompleted,
     completedMissionIds,
-    setBadgeOwnership,
+    markBadgeIndexingQueued,
+    getBadgeLifecycle,
     runScan,
+    refreshLiveAchievements,
     isBadgeOwned,
   } = useGitGlowStore();
 
-  const isMissionCompleted = completedMissionIds.includes('m3-pair-collab');
-  const isAlreadyEarned = isBadgeOwned('pair-extraordinaire');
+  const lifecycle = getBadgeLifecycle('pair-extraordinaire');
+  const isLiveOnGitHub = lifecycle.state === 'live_verified';
+  const isQueuedOnGitHub = lifecycle.state === 'indexing_queued';
+  const isMissionCompleted = completedMissionIds.includes('m3-pair-collab') || isLiveOnGitHub;
+  const isAlreadyEarned = isLiveOnGitHub;
 
   const DEFAULT_BOT_COAUTHOR = {
     login: 'gitglow-agent',
@@ -396,14 +402,19 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
   const triggerStep3Verify = async () => {
     setSimState('verified');
     markMissionCompleted('m3-pair-collab');
-    setBadgeOwnership('pair-extraordinaire', true);
+    markBadgeIndexingQueued('pair-extraordinaire', {
+      prNumber: realPrResult?.number || prNumber,
+      prUrl: realPrResult?.html_url,
+      detail: 'Co-authored PR merged into default branch with RFC headers.',
+      badgeName: 'Pair Extraordinaire',
+    });
     toggleBadgeStep('pair-extraordinaire', 0);
     toggleBadgeStep('pair-extraordinaire', 1);
     toggleBadgeStep('pair-extraordinaire', 2);
     setShowRewardModal(true);
 
-    if (connectedUser?.githubUsername) {
-      runScan(connectedUser.githubUsername);
+    if (connectedUser?.githubUsername || targetUsername) {
+      await runScan(connectedUser?.githubUsername || targetUsername);
     }
 
     setLogs((prev) => [
@@ -411,7 +422,7 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
       { text: `🎉 QUALIFIED & CLAIMED! Commit merged into main with dual author attribution.`, type: 'success' },
       { text: `✓ Co-Authored PR #${realPrResult?.number || prNumber} recorded into default branch.`, type: 'success' },
       { text: `Dual achievement indexed for @${connectedUser?.githubUsername || targetUsername} & ${coAuthorName}!`, type: 'info' },
-      { text: `✓ GitGlow Status: Unlocked & Ingested. GitHub profile tab updates asynchronously (15-60m).`, type: 'cmd' },
+      { text: `✓ GitGlow Status: Unlocked & Ingested. GitHub profile tab updates asynchronously (24–72h).`, type: 'cmd' },
     ]);
 
     if (onCompleted) onCompleted();
@@ -473,10 +484,15 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-black text-[#101114]">Pair Extraordinaire</h3>
-                {isAlreadyEarned ? (
+                {isLiveOnGitHub ? (
                   <span className="px-2.5 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] border border-[#84CC16] text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-2xs">
                     <Check size={11} strokeWidth={3} />
-                    YOU HAVE THIS
+                    LIVE ON PROFILE
+                  </span>
+                ) : isQueuedOnGitHub ? (
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1 shadow-2xs">
+                    <Clock size={11} className="text-amber-600" />
+                    INDEXING QUEUED (24–72H)
                   </span>
                 ) : (
                   <span className="px-2.5 py-0.5 rounded-full bg-[#10B981]/10 text-[#059669] text-[10px] font-mono font-bold uppercase tracking-wider">
@@ -500,22 +516,63 @@ export const PairExtraordinaireInteractiveSimulation: React.FC<PairExtraordinair
               </button>
             )}
             <span className="px-3 py-1 rounded-full bg-[#FAF9F5] border border-[#ECEAE1] text-[11px] font-mono text-[#65666A]">
-              SLA: 10–30 Mins Indexing
+              SLA: 24h–72h Batch Ingestion
             </span>
           </div>
         </div>
 
-        {isAlreadyEarned && simState === 'idle' && (
-          <div className="p-3.5 rounded-2xl bg-[#F7F8EF] border border-[#DCE89E] flex items-center justify-between gap-3 text-xs">
+        {/* Banner if already live on GitHub profile */}
+        {isLiveOnGitHub && simState === 'idle' && (
+          <div className="p-3.5 rounded-2xl bg-[#F7F8EF] border border-[#DCE89E] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2 text-[#4D7C0F]">
               <CheckCircle2 size={16} className="text-[#84CC16] shrink-0" />
               <span>
-                <strong>Profile Status:</strong> You already have the Pair Extraordinaire achievement on your GitHub profile! You can still practice crafting RFC Git trailers below.
+                <strong>Profile Status:</strong> Pair Extraordinaire is verified live on your GitHub profile! You can still practice crafting RFC Git trailers below.
               </span>
             </div>
-            <span className="px-2.5 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] text-[9.5px] font-mono font-black shrink-0 shadow-2xs">
-              YOU HAVE THIS
-            </span>
+            <a
+              href={`https://github.com/${connectedUser?.githubUsername || targetUsername}?tab=achievements`}
+              target="_blank"
+              rel="noreferrer"
+              className="px-2.5 py-1 rounded-xl bg-[#D7FF36] text-[#101114] border border-[#84CC16] text-[10px] font-mono font-black shrink-0 shadow-2xs flex items-center gap-1 self-start sm:self-auto hover:bg-[#cbf425]"
+            >
+              <span>View Profile</span>
+              <ExternalLink size={10} />
+            </a>
+          </div>
+        )}
+
+        {/* Banner if queued for GitHub batch indexing */}
+        {isQueuedOnGitHub && !isLiveOnGitHub && simState === 'idle' && (
+          <div className="p-3.5 rounded-2xl bg-amber-50/90 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-2xs">
+            <div className="flex items-start gap-2.5 text-amber-900">
+              <Clock size={16} className="text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <strong className="block font-bold">GitHub Batch Indexing in Progress (24h–72h SLA):</strong>
+                <span className="text-[11.5px] text-amber-800 leading-relaxed">
+                  Aapka co-authored PR default branch me successfully merge ho chuka hai! GitHub background worker periodic batch cron me profile update karega. Aapka kaam ho chuka hai.
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+              <button
+                type="button"
+                onClick={() => refreshLiveAchievements(connectedUser?.githubUsername || targetUsername)}
+                className="px-2.5 py-1 rounded-xl bg-white border border-amber-300 text-amber-900 hover:bg-amber-100 text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-2xs"
+              >
+                <RefreshCw size={11} />
+                <span>Check Live Status</span>
+              </button>
+              <a
+                href={`https://github.com/${connectedUser?.githubUsername || targetUsername}?tab=achievements`}
+                target="_blank"
+                rel="noreferrer"
+                className="px-2.5 py-1 rounded-xl bg-amber-900 text-amber-100 text-[10px] font-mono font-bold flex items-center gap-1 hover:bg-amber-950"
+              >
+                <span>Profile Tab</span>
+                <ExternalLink size={10} />
+              </a>
+            </div>
           </div>
         )}
 

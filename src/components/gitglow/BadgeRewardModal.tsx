@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X,
@@ -12,9 +12,11 @@ import {
   MessageSquare,
   GitPullRequest,
   AlertCircle,
+  RefreshCw,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { cn } from '../../lib/utils';
+import { useGitGlowStore } from '../../lib/gitglow/gitglow-store';
 
 interface BadgeRewardModalProps {
   isOpen: boolean;
@@ -36,6 +38,7 @@ interface BadgeRewardModalProps {
   slaTime?: string;
   isAsyncIndexerBadge?: boolean;
   commitSha?: string;
+  isLiveOnProfile?: boolean;
   onContinueToNext?: () => void;
 }
 
@@ -59,8 +62,45 @@ export const BadgeRewardModal: React.FC<BadgeRewardModalProps> = ({
   slaTime,
   isAsyncIndexerBadge,
   commitSha,
+  isLiveOnProfile,
   onContinueToNext,
 }) => {
+  const { scanAnalysis, refreshLiveAchievements } = useGitGlowStore();
+  const [isCheckingLive, setIsCheckingLive] = useState(false);
+  const [liveCheckFeedback, setLiveCheckFeedback] = useState<string | null>(null);
+
+  const badgeSlug = badgeName.toLowerCase().replace(/\s+/g, '-');
+  const isGalaxyBrain = badgeName.toLowerCase().includes('galaxy');
+  const isPairExtraordinaire = badgeName.toLowerCase().includes('pair');
+  const isYolo = badgeName.toLowerCase().includes('yolo');
+  const isPullShark = badgeName.toLowerCase().includes('shark');
+
+  const isLiveConfirmed =
+    Boolean(isLiveOnProfile) ||
+    Boolean(scanAnalysis?.liveEarnedAchievements?.includes(badgeSlug)) ||
+    (isPullShark && (scanAnalysis?.totalMergedPrs ?? 0) >= 2) ||
+    (badgeSlug === 'quickdraw' && Boolean(scanAnalysis?.quickdrawQualified));
+
+  const handleCheckLive = async () => {
+    setIsCheckingLive(true);
+    setLiveCheckFeedback(null);
+    try {
+      const live = await refreshLiveAchievements(username);
+      if (live.includes(badgeSlug)) {
+        setLiveCheckFeedback('✓ Confirmed live on your GitHub profile!');
+        try {
+          confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+        } catch {}
+      } else {
+        setLiveCheckFeedback('Still indexing in GitHub batch queue (24–72h SLA).');
+      }
+    } catch {
+      setLiveCheckFeedback('Could not check GitHub right now. Please retry in a moment.');
+    } finally {
+      setIsCheckingLive(false);
+    }
+  };
+
   React.useEffect(() => {
     if (isOpen) {
       try {
@@ -77,12 +117,6 @@ export const BadgeRewardModal: React.FC<BadgeRewardModalProps> = ({
   }, [isOpen]);
 
   if (!isOpen) return null;
-
-  // Badge-specific theming to avoid clashy neon glows on violet/blue badges
-  const isGalaxyBrain = badgeName.toLowerCase().includes('galaxy');
-  const isPairExtraordinaire = badgeName.toLowerCase().includes('pair');
-  const isYolo = badgeName.toLowerCase().includes('yolo');
-  const isPullShark = badgeName.toLowerCase().includes('shark');
 
   const theme = isGalaxyBrain
     ? {
@@ -196,11 +230,23 @@ export const BadgeRewardModal: React.FC<BadgeRewardModalProps> = ({
                 />
                 <div
                   className={cn(
-                    'absolute -bottom-2 px-2.5 py-0.5 rounded-full border text-[9.5px] font-mono font-bold tracking-wider uppercase shadow-xs',
-                    theme.qualifyBadge
+                    'absolute -bottom-2 px-2.5 py-0.5 rounded-full border text-[9.5px] font-mono font-bold tracking-wider uppercase shadow-xs flex items-center gap-1',
+                    isLiveConfirmed
+                      ? 'bg-emerald-950 text-emerald-300 border-emerald-600/50'
+                      : theme.qualifyBadge
                   )}
                 >
-                  Verified Qualify
+                  {isLiveConfirmed ? (
+                    <>
+                      <CheckCircle2 size={10} className="text-emerald-400" />
+                      <span>Live on Profile</span>
+                    </>
+                  ) : (
+                    <>
+                      <Clock size={10} className="text-amber-400" />
+                      <span>Queued Indexing (24–72h)</span>
+                    </>
+                  )}
                 </div>
               </motion.div>
             </div>
@@ -210,18 +256,26 @@ export const BadgeRewardModal: React.FC<BadgeRewardModalProps> = ({
               <div
                 className={cn(
                   'inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-[11px] font-semibold',
-                  theme.pillBg
+                  isLiveConfirmed ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : theme.pillBg
                 )}
               >
-                <Sparkles size={12} />
-                <span>Achievement Unlocked</span>
+                {isLiveConfirmed ? <CheckCircle2 size={12} /> : <Sparkles size={12} />}
+                <span>{isLiveConfirmed ? 'Verified on GitHub Profile' : 'Achievement Action Complete'}</span>
               </div>
               <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                You Earned {badgeName}!
+                {isLiveConfirmed ? `You Have ${badgeName}!` : `${badgeName} Merged & Queued!`}
               </h3>
               <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-                GitHub webhook officially triggered on{' '}
-                <strong className="text-slate-900 font-semibold">{repoFullName}</strong>.
+                {isLiveConfirmed ? (
+                  <>
+                    Confirmed live on your official GitHub profile achievements tab.
+                  </>
+                ) : (
+                  <>
+                    GitHub webhook officially delivered on{' '}
+                    <strong className="text-slate-900 font-semibold">{repoFullName}</strong>.
+                  </>
+                )}
               </p>
             </div>
 
@@ -268,7 +322,37 @@ export const BadgeRewardModal: React.FC<BadgeRewardModalProps> = ({
             </div>
 
             {/* 4. Context-Specific Reassurance Box */}
-            {isGalaxyBrain ? (
+            {isLiveConfirmed ? (
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-emerald-50/90 border border-emerald-200/80 flex items-start gap-3 text-left">
+                <div className="size-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                  <CheckCircle2 size={18} />
+                </div>
+                <div className="space-y-1 text-xs">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-extrabold text-slate-900 text-xs sm:text-sm">
+                      Live on Your GitHub Profile!
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 text-[9.5px] font-mono font-bold">
+                      VERIFIED GROUND TRUTH
+                    </span>
+                  </div>
+                  <p className="text-slate-700 text-[11.5px] leading-relaxed">
+                    Yeh badge aapke official GitHub profile ke achievements tab par actively display ho chuka hai! Aapka milestone 100% complete aur verified hai.
+                  </p>
+                  <div className="pt-1 text-[11px] text-slate-500">
+                    View on GitHub:{' '}
+                    <a
+                      href={`https://github.com/${username}?tab=achievements`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline font-semibold text-emerald-800 hover:text-emerald-950"
+                    >
+                      github.com/{username}?tab=achievements
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ) : isGalaxyBrain ? (
               <div className="p-3.5 sm:p-4 rounded-2xl bg-violet-50/80 border border-violet-200/80 flex items-start gap-3 text-left">
                 <div className="size-9 rounded-xl bg-violet-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
                   <CheckCircle2 size={18} />
@@ -341,10 +425,27 @@ export const BadgeRewardModal: React.FC<BadgeRewardModalProps> = ({
                   >
                     github.com/{username}
                   </a>{' '}
-                  in periodic batch cron!
+                  in periodic batch cron (24h–72h SLA)!
                 </div>
               </div>
             )}
+
+            {/* 4.5 Live Check Status Action Bar */}
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+              <span className="text-[11px] text-slate-600 flex items-center gap-1.5 truncate pr-2">
+                <Clock size={12} className="text-slate-400 shrink-0" />
+                <span className="truncate">{liveCheckFeedback || 'GitHub Attribution SLA: 24h–72h batch cron'}</span>
+              </span>
+              <button
+                type="button"
+                onClick={handleCheckLive}
+                disabled={isCheckingLive}
+                className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-slate-300 text-slate-800 text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-2xs shrink-0 active:scale-95 disabled:opacity-50"
+              >
+                <RefreshCw size={11} className={cn(isCheckingLive && 'animate-spin text-emerald-600')} />
+                <span>{isCheckingLive ? 'Checking...' : 'Check GitHub Live'}</span>
+              </button>
+            </div>
 
             {/* 5. Responsive CTA Actions */}
             <div className="flex flex-col sm:flex-row items-center gap-2 pt-1">

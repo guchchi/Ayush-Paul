@@ -45,6 +45,7 @@ export const GitGlowEnginePage: React.FC = () => {
     testRepoName,
     setTestRepoName,
     runScan,
+    refreshLiveAchievements,
     isScanning,
     scanAnalysis,
     badgeStepStatus,
@@ -55,6 +56,8 @@ export const GitGlowEnginePage: React.FC = () => {
     appendLog,
     clearLogs,
     isBadgeOwned,
+    isBadgeIndexingQueued,
+    getBadgeLifecycle,
     toggleBadgeOwnership,
     connectedUser,
   } = useGitGlowStore();
@@ -213,7 +216,7 @@ export const GitGlowEnginePage: React.FC = () => {
               Badge Catalog
             </span>
             <span className="text-xs font-bold text-[#84CC16]">
-              {GITHUB_BADGES.filter((b) => isBadgeOwned(b.id)).length} / {GITHUB_BADGES.length} Owned
+              {GITHUB_BADGES.filter((b) => getBadgeLifecycle(b.id).state === 'live_verified').length} / {GITHUB_BADGES.length} Live
             </span>
           </div>
 
@@ -225,13 +228,15 @@ export const GitGlowEnginePage: React.FC = () => {
                 5 Automated Bots
               </span>
               <span className="text-[#65A30D]">
-                {GITHUB_BADGES.filter((b) => AUTOMATED_BADGE_IDS.includes(b.id) && isBadgeOwned(b.id)).length}/5 Ready
+                {GITHUB_BADGES.filter((b) => AUTOMATED_BADGE_IDS.includes(b.id) && getBadgeLifecycle(b.id).state === 'live_verified').length}/5 Live
               </span>
             </div>
             {GITHUB_BADGES.filter((b) => AUTOMATED_BADGE_IDS.includes(b.id)).map((badge) => {
               const isSelected = badge.id === activeBadge.id;
               const evalData = scanAnalysis?.badgeEvaluations[badge.id];
-              const isOwned = isBadgeOwned(badge.id);
+              const lifecycle = getBadgeLifecycle(badge.id);
+              const isOwned = lifecycle.state === 'live_verified';
+              const isQueued = lifecycle.state === 'indexing_queued';
 
               return (
                 <button
@@ -243,6 +248,8 @@ export const GitGlowEnginePage: React.FC = () => {
                       ? 'bg-[#101114] text-white border-[#101114] shadow-md ring-2 ring-[#D7FF36]/30'
                       : isOwned
                       ? 'bg-[#F7F8EF]/80 border-[#DCE89E] hover:bg-white text-[#101114]'
+                      : isQueued
+                      ? 'bg-amber-50/70 border-amber-200 hover:bg-white text-[#101114]'
                       : 'bg-[#FAF9F5] border-[#E5E3DA] hover:bg-white hover:border-[#DCE89E] text-[#101114]'
                   )}
                 >
@@ -266,13 +273,22 @@ export const GitGlowEnginePage: React.FC = () => {
                           ✓
                         </span>
                       )}
+                      {isQueued && !isOwned && (
+                        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-500 text-white flex items-center justify-center text-[7px] font-bold shadow-2xs">
+                          ⏳
+                        </span>
+                      )}
                     </div>
                     <div className="min-w-0">
                       <div className="text-xs font-bold truncate flex items-center gap-1.5">
                         <span className={isSelected ? "text-white" : "text-[#101114]"}>{badge.name}</span>
                         {isOwned ? (
                           <span className="px-1.5 py-0.2 rounded-md bg-[#D7FF36] text-[#101114] text-[8px] font-mono font-black uppercase">
-                            OWNED
+                            LIVE
+                          </span>
+                        ) : isQueued ? (
+                          <span className="px-1.5 py-0.2 rounded-md bg-amber-400 text-amber-950 text-[8px] font-mono font-black uppercase flex items-center gap-0.5">
+                            QUEUED
                           </span>
                         ) : (
                           <span className={cn(
@@ -284,7 +300,13 @@ export const GitGlowEnginePage: React.FC = () => {
                         )}
                       </div>
                       <div className={cn("text-[10px] truncate", isSelected ? "text-slate-400" : "text-[#65666A]")}>
-                        {isOwned ? 'Active on Profile' : evalData ? evalData.statusLabel : badge.difficulty}
+                        {isOwned
+                          ? 'Active on Profile'
+                          : isQueued
+                          ? 'Merged (24–72h SLA)'
+                          : evalData
+                          ? evalData.statusLabel
+                          : badge.difficulty}
                       </div>
                     </div>
                   </div>
@@ -295,7 +317,15 @@ export const GitGlowEnginePage: React.FC = () => {
                       isSelected ? "bg-white/15 text-[#D7FF36]" : "bg-[#84CC16]/15 text-[#4D7C0F]"
                     )}>
                       <Check size={11} strokeWidth={3} />
-                      <span className="hidden sm:inline">DONE</span>
+                      <span className="hidden sm:inline">LIVE</span>
+                    </span>
+                  ) : isQueued ? (
+                    <span className={cn(
+                      "px-2 py-0.5 rounded-full text-[10px] font-mono font-bold flex items-center gap-1",
+                      isSelected ? "bg-amber-400/20 text-amber-300" : "bg-amber-100 text-amber-900 border border-amber-300/80"
+                    )}>
+                      <Clock size={10} />
+                      <span className="hidden sm:inline">QUEUED</span>
                     </span>
                   ) : (
                     <span className={cn(
@@ -318,7 +348,8 @@ export const GitGlowEnginePage: React.FC = () => {
             </div>
             {GITHUB_BADGES.filter((b) => !AUTOMATED_BADGE_IDS.includes(b.id)).map((badge) => {
               const isSelected = badge.id === activeBadge.id;
-              const isOwned = isBadgeOwned(badge.id);
+              const lifecycle = getBadgeLifecycle(badge.id);
+              const isOwned = lifecycle.state === 'live_verified';
               return (
                 <button
                   key={badge.id}
@@ -415,13 +446,18 @@ export const GitGlowEnginePage: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-xl font-extrabold text-[#101114]">{activeBadge.name}</h2>
-                    {isBadgeOwned(activeBadge.id) ? (
+                    {getBadgeLifecycle(activeBadge.id).state === 'live_verified' ? (
                       <span className="px-2.5 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] border border-[#84CC16] text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-2xs">
                         <Check size={11} strokeWidth={3} />
-                        YOU HAVE THIS
+                        LIVE ON PROFILE
+                      </span>
+                    ) : getBadgeLifecycle(activeBadge.id).state === 'indexing_queued' ? (
+                      <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1 shadow-2xs">
+                        <Clock size={11} className="text-amber-600" />
+                        INDEXING QUEUED (24–72H)
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 rounded-full bg-[#F7F8EF] text-[#65A30D] border border-[#DCE89E] text-[10px] font-bold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#F7F8EF] text-[#65A30D] border border-[#DCE89E] text-[10px] font-bold">
                         {activeBadge.statusLabel}
                       </span>
                     )}
@@ -433,23 +469,40 @@ export const GitGlowEnginePage: React.FC = () => {
               {/* Progress pill */}
               <div className="text-right">
                 <span className="text-xs font-mono font-bold text-[#84CC16]">
-                  {isBadgeOwned(activeBadge.id)
-                    ? '100% Unlocked'
+                  {getBadgeLifecycle(activeBadge.id).state === 'live_verified'
+                    ? '100% Verified Live'
+                    : getBadgeLifecycle(activeBadge.id).state === 'indexing_queued'
+                    ? 'Merged · Ingesting'
                     : currentEval
                     ? `${currentEval.progressPercent}% Qualification`
                     : 'Ready to Run'}
                 </span>
                 <div className="w-24 h-1.5 rounded-full bg-[#FAF9F5] mt-1.5 overflow-hidden border border-[#E5E3DA]">
                   <div
-                    className="h-full bg-[#84CC16] rounded-full transition-all duration-500"
-                    style={{ width: `${isBadgeOwned(activeBadge.id) ? 100 : currentEval?.progressPercent || 20}%` }}
+                    className={cn(
+                      "h-full rounded-full transition-all duration-500",
+                      getBadgeLifecycle(activeBadge.id).state === 'live_verified'
+                        ? "bg-[#84CC16]"
+                        : getBadgeLifecycle(activeBadge.id).state === 'indexing_queued'
+                        ? "bg-amber-400"
+                        : "bg-[#84CC16]"
+                    )}
+                    style={{
+                      width: `${
+                        getBadgeLifecycle(activeBadge.id).state === 'live_verified'
+                          ? 100
+                          : getBadgeLifecycle(activeBadge.id).state === 'indexing_queued'
+                          ? 85
+                          : currentEval?.progressPercent || 20
+                      }%`,
+                    }}
                   />
                 </div>
               </div>
             </div>
 
-            {/* YOU HAVE THIS BADGE BANNER & MANUAL TOGGLE OPTION */}
-            {isBadgeOwned(activeBadge.id) ? (
+            {/* 3-Tier Status Banner: Live Verified vs Indexing Queued vs Unclaimed */}
+            {getBadgeLifecycle(activeBadge.id).state === 'live_verified' ? (
               <div className="p-4 rounded-2xl bg-[#F7F8EF] border border-[#84CC16]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-[#84CC16] text-white flex items-center justify-center shrink-0 shadow-xs">
@@ -458,37 +511,78 @@ export const GitGlowEnginePage: React.FC = () => {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-black uppercase tracking-wider text-[#101114]">
-                        {scanAnalysis?.liveEarnedAchievements?.includes(activeBadge.id)
-                          ? '🎉 You Already Own This Badge!'
-                          : '🎉 Milestone Qualified & Claimed!'}
+                        🎉 Live on Your GitHub Profile!
                       </span>
                       <span className="px-2 py-0.5 rounded-full bg-[#D7FF36] text-[#101114] text-[9.5px] font-mono font-black uppercase">
-                        {scanAnalysis?.liveEarnedAchievements?.includes(activeBadge.id)
-                          ? 'ON YOUR GITHUB PROFILE'
-                          : ['pair-extraordinaire', 'galaxy-brain'].includes(activeBadge.id)
-                          ? 'GITHUB QUEUE (24–72H SLA)'
-                          : 'GITHUB INDEXING ACTIVE'}
+                        VERIFIED ON GITHUB
                       </span>
                     </div>
                     <p className="text-[11px] text-[#4D7C0F] mt-0.5">
-                      {scanAnalysis?.liveEarnedAchievements?.includes(activeBadge.id)
-                        ? `Verified for @${connectedUser?.githubUsername || targetUsername}. You already achieved this milestone! You can still test in the sandbox below.`
-                        : activeBadge.id === 'galaxy-brain'
-                        ? `2/2 Accepted answers verified on GitHub Discussions for @${connectedUser?.githubUsername || targetUsername}! GitHub's background indexer is processing your Galaxy Brain badge (typically reflects within 24–72 hours).`
-                        : activeBadge.id === 'pair-extraordinaire'
-                        ? `Qualifying co-authored commit merged into main for @${connectedUser?.githubUsername || targetUsername}! GitHub's asynchronous commit attribution worker is processing your badge (typically renders on your profile within 24–72 hours).`
-                        : `Qualifying action verified for @${connectedUser?.githubUsername || targetUsername}! GitHub's background indexer is processing your commit.`}
+                      Verified for @{connectedUser?.githubUsername || targetUsername}. You already achieved this milestone on your profile achievements tab! You can still test in the sandbox below.
                     </p>
                   </div>
                 </div>
 
-                <button
-                  onClick={() => toggleBadgeOwnership(activeBadge.id)}
-                  title="Click to toggle ownership status"
-                  className="text-[11px] font-bold text-[#65666A] hover:text-[#101114] underline cursor-pointer whitespace-nowrap self-start sm:self-auto"
-                >
-                  Mark as unearned
-                </button>
+                <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                  <a
+                    href={`https://github.com/${connectedUser?.githubUsername || targetUsername}?tab=achievements`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1 rounded-xl bg-[#D7FF36] text-[#101114] border border-[#84CC16] text-[11px] font-mono font-black flex items-center gap-1 hover:bg-[#cbf425] shadow-2xs"
+                  >
+                    <span>View on GitHub</span>
+                    <ExternalLink size={10} />
+                  </a>
+                  <button
+                    onClick={() => toggleBadgeOwnership(activeBadge.id)}
+                    title="Click to toggle ownership status"
+                    className="text-[11px] font-bold text-[#65666A] hover:text-[#101114] underline cursor-pointer whitespace-nowrap ml-2"
+                  >
+                    Toggle
+                  </button>
+                </div>
+              </div>
+            ) : getBadgeLifecycle(activeBadge.id).state === 'indexing_queued' ? (
+              <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <Clock size={22} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black uppercase tracking-wider text-amber-950">
+                        ⏳ Action Merged & Queued for Indexing!
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 text-[9.5px] font-mono font-black uppercase">
+                        24H–72H BATCH SLA
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-amber-800 mt-0.5 leading-relaxed">
+                      {activeBadge.id === 'galaxy-brain'
+                        ? `2/2 Accepted answers verified on GitHub Discussions for @${connectedUser?.githubUsername || targetUsername}! GitHub's background indexer is processing your Galaxy Brain badge.`
+                        : activeBadge.id === 'pair-extraordinaire'
+                        ? `Qualifying co-authored commit merged into main for @${connectedUser?.githubUsername || targetUsername}! GitHub's asynchronous commit attribution worker processes in periodic batch crons.`
+                        : `Qualifying action verified for @${connectedUser?.githubUsername || targetUsername}! Webhook delivered to GitHub.`}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                  <button
+                    onClick={() => refreshLiveAchievements(connectedUser?.githubUsername || targetUsername)}
+                    className="px-3 py-1.5 rounded-xl bg-white border border-amber-300 hover:bg-amber-100 text-amber-950 font-bold text-xs inline-flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                  >
+                    <RefreshCw size={12} className={cn(isScanning && 'animate-spin')} />
+                    <span>Check Live Status</span>
+                  </button>
+                  <button
+                    onClick={() => toggleBadgeOwnership(activeBadge.id)}
+                    title="Click to toggle ownership status"
+                    className="text-[11px] font-bold text-amber-700 hover:text-amber-950 underline cursor-pointer whitespace-nowrap ml-1"
+                  >
+                    Toggle
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="p-3 rounded-2xl bg-[#FAF9F5] border border-[#E5E3DA] flex items-center justify-between gap-3 text-xs">

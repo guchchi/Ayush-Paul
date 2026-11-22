@@ -49,13 +49,16 @@ export const GalaxyBrainInteractiveSimulation: React.FC<GalaxyBrainInteractiveSi
     isBadgeOwned,
     completedMissionIds,
     markMissionCompleted,
-    setBadgeOwnership,
+    markBadgeIndexingQueued,
+    getBadgeLifecycle,
     toggleBadgeStep,
     runScan,
+    refreshLiveAchievements,
   } = useGitGlowStore();
 
-  const isAlreadyEarned = isBadgeOwned('galaxy-brain');
-  const isMissionCompleted = completedMissionIds.includes('m6-discussion-mastery');
+  const lifecycle = getBadgeLifecycle('galaxy-brain');
+  const isAlreadyEarned = lifecycle.state === 'live_verified';
+  const isMissionCompleted = completedMissionIds.includes('m6-discussion-mastery') || isAlreadyEarned;
 
   // Interactive Pipeline State
   const [acceptedCount, setAcceptedCount] = useState<number>(isAlreadyEarned || isMissionCompleted ? 2 : 0);
@@ -197,9 +200,18 @@ export const GalaxyBrainInteractiveSimulation: React.FC<GalaxyBrainInteractiveSi
       if (newCount >= 2) {
         setSimState('verified');
         markMissionCompleted('m6-discussion-mastery');
-        setBadgeOwnership('galaxy-brain', true);
+        markBadgeIndexingQueued('galaxy-brain', {
+          prNumber: activeDiscussion?.discussionNumber,
+          prUrl: activeDiscussion?.discussionUrl,
+          detail: '2/2 Accepted answers verified in GitHub Discussions via GraphQL.',
+          badgeName: 'Galaxy Brain',
+        });
         toggleBadgeStep('galaxy-brain', 2);
         setShowRewardModal(true);
+
+        if (connectedUser?.githubUsername || targetUsername) {
+          await runScan(connectedUser?.githubUsername || targetUsername);
+        }
 
         setLogs((prev) => [
           ...prev,

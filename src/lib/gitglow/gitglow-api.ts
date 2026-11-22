@@ -47,6 +47,27 @@ export interface UserScanAnalysis {
 }
 
 /**
+ * Check live GitHub profile achievements tab directly (Ground Truth)
+ */
+export async function checkLiveGitHubAchievements(username: string): Promise<string[]> {
+  const cleanHandle = username.trim().replace(/^@/, '');
+  try {
+    const liveRes = await fetch(`/api/gitglow/achievements/${encodeURIComponent(cleanHandle)}`, {
+      signal: AbortSignal.timeout(6000),
+    });
+    if (liveRes.ok) {
+      const data = await liveRes.json();
+      if (Array.isArray(data.achievements)) {
+        return data.achievements;
+      }
+    }
+  } catch (err) {
+    console.warn('Live achievements ground truth check failed:', err);
+  }
+  return [];
+}
+
+/**
  * Fetch GitHub user public profile
  */
 export async function fetchGitHubProfile(username: string): Promise<GitHubUserProfile> {

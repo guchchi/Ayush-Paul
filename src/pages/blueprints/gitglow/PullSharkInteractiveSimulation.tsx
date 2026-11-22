@@ -46,12 +46,14 @@ export const PullSharkInteractiveSimulation: React.FC<PullSharkInteractiveSimula
     scanAnalysis,
     toggleBadgeStep,
     markMissionCompleted,
+    markBadgeIndexingQueued,
+    getBadgeLifecycle,
     runScan,
     isBadgeOwned,
-    setBadgeOwnership,
   } = useGitGlowStore();
 
-  const isAlreadyEarned = isBadgeOwned('pull-shark');
+  const lifecycle = getBadgeLifecycle('pull-shark');
+  const isAlreadyEarned = lifecycle.state === 'live_verified';
 
   // Auth State
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
@@ -200,11 +202,16 @@ export const PullSharkInteractiveSimulation: React.FC<PullSharkInteractiveSimula
   const triggerStep3Verify = async () => {
     setSimState('verified');
     markMissionCompleted('m2-pullshark');
-    setBadgeOwnership('pull-shark', true);
+    markBadgeIndexingQueued('pull-shark', {
+      prNumber: realPrResult?.number || prNumber,
+      prUrl: realPrResult?.html_url,
+      detail: 'Pull request merged into default branch.',
+      badgeName: 'Pull Shark',
+    });
     setShowRewardModal(true);
 
-    if (connectedUser?.githubUsername) {
-      runScan(connectedUser.githubUsername);
+    if (connectedUser?.githubUsername || targetUsername) {
+      await runScan(connectedUser?.githubUsername || targetUsername);
     }
 
     setLogs((prev) => [

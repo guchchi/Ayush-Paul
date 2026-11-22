@@ -1088,11 +1088,14 @@ export const GitGlowHomePage: React.FC = () => {
     targetUsername,
     setTargetUsername,
     runScan,
+    refreshLiveAchievements,
     isScanning,
     scanAnalysis,
     completedMissionIds,
     toggleMission,
     isBadgeOwned,
+    isBadgeIndexingQueued,
+    getBadgeLifecycle,
     toggleBadgeOwnership,
   } = useGitGlowStore();
 
@@ -1520,7 +1523,10 @@ export const GitGlowHomePage: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {filteredBadges.map((badge) => {
               const isSelected = badge.id === selectedBadgeId;
-              const isOwned = isBadgeOwned(badge.id);
+              const lifecycle = getBadgeLifecycle(badge.id);
+              const isOwned = lifecycle.state === 'live_verified';
+              const isQueued = lifecycle.state === 'indexing_queued';
+
               return (
                 <div
                   key={badge.id}
@@ -1530,6 +1536,8 @@ export const GitGlowHomePage: React.FC = () => {
                       ? 'border-[#84CC16] ring-2 ring-[#D7FF36]/40 shadow-sm'
                       : isOwned
                       ? 'border-[#84CC16]/70 bg-[#F7F8EF]/20'
+                      : isQueued
+                      ? 'border-amber-300 bg-amber-50/20'
                       : 'border-[#E5E3DA]'
                   )}
                   onClick={() => {
@@ -1544,6 +1552,12 @@ export const GitGlowHomePage: React.FC = () => {
                         <span className="absolute top-2.5 left-2.5 text-[9px] font-mono font-black bg-[#D7FF36] text-[#101114] border border-[#84CC16] px-2 py-0.5 rounded-full shadow-xs flex items-center gap-1 z-10">
                           <Check size={9} strokeWidth={3} />
                           YOU HAVE THIS
+                        </span>
+                      )}
+                      {isQueued && !isOwned && (
+                        <span className="absolute top-2.5 left-2.5 text-[9px] font-mono font-bold bg-amber-400 text-amber-950 border border-amber-500 px-2 py-0.5 rounded-full shadow-xs flex items-center gap-1 z-10">
+                          <Clock size={9} />
+                          INDEXING (24–72H)
                         </span>
                       )}
                       <img
@@ -1568,6 +1582,10 @@ export const GitGlowHomePage: React.FC = () => {
                         {isOwned ? (
                           <span className="text-[10px] font-mono font-bold text-[#4D7C0F] bg-[#D7FF36]/40 border border-[#84CC16] px-2 py-0.5 rounded-full">
                             Earned ✓
+                          </span>
+                        ) : isQueued ? (
+                          <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full">
+                            Queued ⏳
                           </span>
                         ) : AUTOMATED_BADGE_IDS.includes(badge.id) ? (
                           <span className="text-[10px] font-mono font-bold text-[#101114] bg-[#D7FF36] border border-[#84CC16] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
@@ -2122,7 +2140,10 @@ export const GitGlowHomePage: React.FC = () => {
                 {AUTOMATED_BADGE_IDS.map((badgeId) => {
                   const badge = GITHUB_BADGES.find((b) => b.id === badgeId);
                   if (!badge) return null;
-                  const isOwned = isBadgeOwned(badge.id);
+                  const lifecycle = getBadgeLifecycle(badge.id);
+                  const isOwned = lifecycle.state === 'live_verified';
+                  const isQueued = lifecycle.state === 'indexing_queued';
+
                   return (
                     <Link
                       key={badge.id}
@@ -2134,6 +2155,10 @@ export const GitGlowHomePage: React.FC = () => {
                         {isOwned ? (
                           <span className="text-[9px] font-mono font-bold bg-[#D7FF36] text-[#101114] border border-[#84CC16] px-1.5 py-0.5 rounded-full">
                             Earned ✓
+                          </span>
+                        ) : isQueued ? (
+                          <span className="text-[9px] font-mono font-bold bg-amber-400 text-amber-950 border border-amber-500 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                            Queued ⏳
                           </span>
                         ) : (
                           <span className="text-[9px] font-mono font-bold bg-[#101114] text-[#D7FF36] px-1.5 py-0.5 rounded-full flex items-center gap-1">

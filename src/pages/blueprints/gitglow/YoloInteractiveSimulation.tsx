@@ -54,12 +54,14 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
     setTestRepoName,
     toggleBadgeStep,
     markMissionCompleted,
+    markBadgeIndexingQueued,
+    getBadgeLifecycle,
     runScan,
     isBadgeOwned,
-    setBadgeOwnership,
   } = useGitGlowStore();
 
-  const isAlreadyEarned = isBadgeOwned('yolo');
+  const lifecycle = getBadgeLifecycle('yolo');
+  const isAlreadyEarned = lifecycle.state === 'live_verified';
 
   // Auth State
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
@@ -389,11 +391,16 @@ export const YoloInteractiveSimulation: React.FC<YoloInteractiveSimulationProps>
   const triggerStep3Verify = async () => {
     setSimState('verified');
     markMissionCompleted('m4-yolo-merge');
-    setBadgeOwnership('yolo', true);
+    markBadgeIndexingQueued('yolo', {
+      prNumber: realPrResult?.number || prNumber,
+      prUrl: realPrResult?.html_url,
+      detail: 'Pull request merged directly into default branch without review.',
+      badgeName: 'YOLO',
+    });
     setShowRewardModal(true);
 
-    if (connectedUser?.githubUsername) {
-      runScan(connectedUser.githubUsername);
+    if (connectedUser?.githubUsername || targetUsername) {
+      await runScan(connectedUser?.githubUsername || targetUsername);
     }
 
     setLogs((prev) => [

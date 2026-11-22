@@ -51,12 +51,14 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
     toggleBadgeStep,
     setAllStepsForBadge,
     markMissionCompleted,
+    markBadgeIndexingQueued,
+    getBadgeLifecycle,
     runScan,
     isBadgeOwned,
-    setBadgeOwnership,
   } = useGitGlowStore();
 
-  const isAlreadyEarned = isBadgeOwned('quickdraw');
+  const lifecycle = getBadgeLifecycle('quickdraw');
+  const isAlreadyEarned = lifecycle.state === 'live_verified';
 
   // Auth & Connection State
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
@@ -262,11 +264,14 @@ export const QuickdrawInteractiveSimulation: React.FC<QuickdrawInteractiveSimula
     setSimState('verified');
     toggleBadgeStep('quickdraw', 2);
     markMissionCompleted('m1-quickdraw');
-    setBadgeOwnership('quickdraw', true);
+    markBadgeIndexingQueued('quickdraw', {
+      detail: `Issue closed within ${realIssueResult?.durationSeconds || elapsedSeconds || 120}s window.`,
+      badgeName: 'Quickdraw',
+    });
     setShowRewardModal(true);
 
-    if (connectedUser?.githubUsername) {
-      runScan(connectedUser.githubUsername);
+    if (connectedUser?.githubUsername || targetUsername) {
+      await runScan(connectedUser?.githubUsername || targetUsername);
     }
 
     setLogs((prev) => [

@@ -1,7 +1,29 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { UserScanAnalysis, analyzeGitHubProfile } from './gitglow-api';
+import { UserScanAnalysis, analyzeGitHubProfile, checkLiveGitHubAchievements } from './gitglow-api';
 import { GitGlowConnectedUser, getSavedGitGlowSession, disconnectGitGlowSession } from './gitglow-auth';
+
+export type BadgeLifecycleState = 'unclaimed' | 'indexing_queued' | 'live_verified';
+
+export interface BadgeLifecycleInfo {
+  state: BadgeLifecycleState;
+  label: string;
+  badgeId: string;
+  isLive: boolean;
+  isQueued: boolean;
+  queuedAt?: string;
+  prNumber?: number;
+  prUrl?: string;
+  detail: string;
+}
+
+export interface IndexingQueuedBadge {
+  queuedAt: string;
+  prNumber?: number;
+  prUrl?: string;
+  detail?: string;
+  badgeName?: string;
+}
 
 export interface CommandStationStep {
   id: string;
@@ -31,11 +53,22 @@ export interface GitGlowStoreState {
   scanError: string | null;
   scanAnalysis: UserScanAnalysis | null;
   runScan: (username: string) => Promise<UserScanAnalysis | null>;
+  refreshLiveAchievements: (username?: string) => Promise<string[]>;
 
   // Completed badge missions (persisted locally)
   completedMissionIds: string[];
   markMissionCompleted: (missionId: string) => void;
   toggleMission: (missionId: string) => void;
+
+  // 3-Tier Badge Lifecycle State (Silicon Valley Async Model)
+  indexingQueuedBadges: Record<string, IndexingQueuedBadge>;
+  markBadgeIndexingQueued: (
+    badgeId: string,
+    metadata?: { prNumber?: number; prUrl?: string; detail?: string; badgeName?: string }
+  ) => void;
+  clearBadgeIndexingQueued: (badgeId: string) => void;
+  getBadgeLifecycle: (badgeId: string) => BadgeLifecycleInfo;
+  isBadgeIndexingQueued: (badgeId: string) => boolean;
 
   // Owned Badges on GitHub Profile (auto-detected via scan or manually toggled)
   manualOwnershipOverrides: Record<string, boolean>;
@@ -141,11 +174,24 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         try {
           const rawAnalysis = await analyzeGitHubProfile(clean);
           const analysis = sanitizeScanAnalysis(rawAnalysis);
+          
+          // Clear any queued badges that are now live on GitHub
+          const queued = { ...get().indexingQueuedBadges };
+          const live = Array.isArray(analysis?.liveEarnedAchievements) ? analysis!.liveEarnedAchievements : [];
+          let changed = false;
+          live.forEach((badgeId) => {
+            if (queued[badgeId]) {
+              delete queued[badgeId];
+              changed = true;
+            }
+          });
+
           set({
             isScanning: false,
             scanAnalysis: analysis,
             scanError: null,
             manualOwnershipOverrides: {},
+            ...(changed ? { indexingQueuedBadges: queued } : {}),
           });
           return analysis;
         } catch (err: any) {
@@ -154,6 +200,37 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
             scanError: err.message || 'Failed to scan profile',
           });
           return null;
+        }
+      },
+
+      refreshLiveAchievements: async (username?: string) => {
+        const clean = (username || get().connectedUser?.githubUsername || get().targetUsername || 'developer').trim().replace(/^@/, '');
+        try {
+          const liveAchievements = await checkLiveGitHubAchievements(clean);
+          const currentAnalysis = get().scanAnalysis;
+          if (currentAnalysis) {
+            const updatedAnalysis = sanitizeScanAnalysis({
+              ...currentAnalysis,
+              liveEarnedAchievements: liveAchievements,
+            });
+            set({ scanAnalysis: updatedAnalysis });
+          }
+          // Clear any queued badges that are now live on GitHub
+          const queued = { ...get().indexingQueuedBadges };
+          let changed = false;
+          liveAchievements.forEach((badgeId) => {
+            if (queued[badgeId]) {
+              delete queued[badgeId];
+              changed = true;
+            }
+          });
+          if (changed) {
+            set({ indexingQueuedBadges: queued });
+          }
+          return liveAchievements;
+        } catch (err) {
+          console.warn('refreshLiveAchievements error:', err);
+          return get().scanAnalysis?.liveEarnedAchievements || [];
         }
       },
 
@@ -173,6 +250,120 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         }
       },
 
+      // 3-Tier Lifecycle State Machine (Silicon Valley Async Upstream Model)
+      indexingQueuedBadges: {},
+      markBadgeIndexingQueued: (badgeId: string, metadata?: { prNumber?: number; prUrl?: string; detail?: string; badgeName?: string }) => {
+        const current = { ...get().indexingQueuedBadges };
+        current[badgeId] = {
+          queuedAt: new Date().toISOString(),
+          prNumber: metadata?.prNumber,
+          prUrl: metadata?.prUrl,
+          detail: metadata?.detail,
+          badgeName: metadata?.badgeName,
+        };
+        set({ indexingQueuedBadges: current });
+      },
+      clearBadgeIndexingQueued: (badgeId: string) => {
+        const current = { ...get().indexingQueuedBadges };
+        delete current[badgeId];
+        set({ indexingQueuedBadges: current });
+      },
+      isBadgeIndexingQueued: (badgeId: string) => {
+        return get().getBadgeLifecycle(badgeId).state === 'indexing_queued';
+      },
+      getBadgeLifecycle: (badgeId: string): BadgeLifecycleInfo => {
+        const state = get();
+        const analysis = state.scanAnalysis;
+        const live = Array.isArray(analysis?.liveEarnedAchievements)
+          ? analysis!.liveEarnedAchievements
+          : [];
+
+        // 1. Manual user override check (if explicitly set)
+        if (state.manualOwnershipOverrides[badgeId] !== undefined) {
+          if (state.manualOwnershipOverrides[badgeId]) {
+            return {
+              state: 'live_verified',
+              label: 'Live on GitHub Profile',
+              badgeId,
+              isLive: true,
+              isQueued: false,
+              detail: 'Manually marked as owned on GitHub profile.',
+            };
+          }
+          return {
+            state: 'unclaimed',
+            label: 'Not Yet Earned',
+            badgeId,
+            isLive: false,
+            isQueued: false,
+            detail: 'Manually marked as unearned.',
+          };
+        }
+
+        // 2. Strict Live GitHub Profile Ground Truth
+        let isLiveOnGitHub = live.includes(badgeId);
+        if (!isLiveOnGitHub && badgeId === 'arctic-code-vault' && live.includes('arctic-code-vault-contributor')) {
+          isLiveOnGitHub = true;
+        }
+        if (!isLiveOnGitHub && badgeId === 'pull-shark' && (analysis?.totalMergedPrs ?? 0) >= 2) {
+          isLiveOnGitHub = true;
+        }
+        if (!isLiveOnGitHub && badgeId === 'quickdraw' && Boolean(analysis?.quickdrawQualified)) {
+          isLiveOnGitHub = true;
+        }
+
+        if (isLiveOnGitHub) {
+          return {
+            state: 'live_verified',
+            label: 'Live on GitHub Profile',
+            badgeId,
+            isLive: true,
+            isQueued: false,
+            detail: 'Confirmed on your official GitHub profile achievements tab.',
+          };
+        }
+
+        // 3. Indexing Queued (In-app action executed, PR merged, waiting for GitHub batch cron)
+        const missionMapping: Record<string, string> = {
+          quickdraw: 'm1-quickdraw-speed',
+          'pull-shark': 'm2-pr-powerhouse',
+          'pair-extraordinaire': 'm3-pair-collab',
+          yolo: 'm4-yolo-merge',
+          starstruck: 'm5-star-velocity',
+          'galaxy-brain': 'm6-discussion-mastery',
+          'public-sponsor': 'm7-sponsor-economy',
+        };
+        const targetMission = missionMapping[badgeId];
+        const isMissionDone = targetMission && state.completedMissionIds.includes(targetMission);
+        const queuedData = state.indexingQueuedBadges[badgeId];
+
+        if (queuedData || isMissionDone) {
+          return {
+            state: 'indexing_queued',
+            label: 'Queued for Indexing (24–72h SLA)',
+            badgeId,
+            isLive: false,
+            isQueued: true,
+            queuedAt: queuedData?.queuedAt,
+            prNumber: queuedData?.prNumber,
+            prUrl: queuedData?.prUrl,
+            detail:
+              queuedData?.detail ||
+              'Work merged into default branch. GitHub attribution worker processing in background.',
+          };
+        }
+
+        // 4. Default: Unclaimed
+        return {
+          state: 'unclaimed',
+          label: 'Not Yet Earned',
+          badgeId,
+          isLive: false,
+          isQueued: false,
+          detail: 'Action not yet executed.',
+        };
+      },
+
       manualOwnershipOverrides: {},
       toggleBadgeOwnership: (badgeId: string) => {
         const current = { ...get().manualOwnershipOverrides };
@@ -186,70 +377,7 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         set({ manualOwnershipOverrides: current });
       },
       isBadgeOwned: (badgeId: string) => {
-        const state = get();
-        // 1. Check manual user override / explicitly claimed
-        if (state.manualOwnershipOverrides[badgeId] !== undefined) {
-          return state.manualOwnershipOverrides[badgeId];
-        }
-
-        // 2. Check completed verified in-app qualification mission
-        const missionMapping: Record<string, string> = {
-          quickdraw: 'm1-quickdraw-speed',
-          'pull-shark': 'm2-pr-powerhouse',
-          'pair-extraordinaire': 'm3-pair-collab',
-          yolo: 'm4-yolo-merge',
-          starstruck: 'm5-star-velocity',
-          'galaxy-brain': 'm6-discussion-mastery',
-          'public-sponsor': 'm7-sponsor-economy',
-        };
-        const targetMission = missionMapping[badgeId];
-        if (targetMission && state.completedMissionIds.includes(targetMission)) {
-          return true;
-        }
-
-        // 3. Check precise live GitHub achievements & verified metrics
-        const analysis = state.scanAnalysis;
-        if (analysis) {
-          const live = Array.isArray(analysis.liveEarnedAchievements)
-            ? analysis.liveEarnedAchievements
-            : [];
-
-          // Direct match against live GitHub achievements tab
-          if (live.includes(badgeId)) {
-            return true;
-          }
-          if (badgeId === 'arctic-code-vault' && live.includes('arctic-code-vault-contributor')) {
-            return true;
-          }
-
-          // Strict ground-truth badges: if not on GitHub achievements tab, they are NOT owned
-          const strictBadges = [
-            'yolo',
-            'starstruck',
-            'galaxy-brain',
-            'pair-extraordinaire',
-            'public-sponsor',
-            'heart-on-your-sleeve',
-            'open-sourcerer',
-            'arctic-code-vault',
-          ];
-          if (strictBadges.includes(badgeId)) {
-            return false;
-          }
-
-          // For Quickdraw and Pull Shark: allow verified metrics fallback if present
-          if (badgeId === 'pull-shark') {
-            return analysis.totalMergedPrs >= 2 || live.includes('pull-shark');
-          }
-          if (badgeId === 'quickdraw') {
-            return Boolean(analysis.quickdrawQualified) || live.includes('quickdraw');
-          }
-
-          // Otherwise consult sanitized evaluation
-          return Boolean(analysis.badgeEvaluations?.[badgeId]?.isUnlocked);
-        }
-
-        return false;
+        return get().getBadgeLifecycle(badgeId).state === 'live_verified';
       },
 
       badgeStepStatus: {
@@ -324,6 +452,7 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
           scanError: null,
           scanAnalysis: null,
           completedMissionIds: [],
+          indexingQueuedBadges: {},
           manualOwnershipOverrides: {},
           badgeStepStatus: {},
           executionLogs: {},
@@ -333,14 +462,15 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
     }),
     {
       name: 'gitglow-user-progress',
-      version: 5,
+      version: 6,
       migrate: (persistedState: any, version: number) => {
         // Invalidate stale/legacy scanAnalysis and manual overrides
-        if (!version || version < 5) {
+        if (!version || version < 6) {
           return {
             ...persistedState,
             scanAnalysis: null,
             manualOwnershipOverrides: {},
+            indexingQueuedBadges: persistedState?.indexingQueuedBadges || {},
           };
         }
         return persistedState;
@@ -350,6 +480,7 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         testRepoName: state.testRepoName,
         completedMissionIds: state.completedMissionIds,
         manualOwnershipOverrides: state.manualOwnershipOverrides,
+        indexingQueuedBadges: state.indexingQueuedBadges,
         badgeStepStatus: state.badgeStepStatus,
         scanAnalysis: sanitizeScanAnalysis(state.scanAnalysis),
         quizAnswers: state.quizAnswers,
