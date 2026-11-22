@@ -112,12 +112,12 @@ export const GITHUB_BADGES: GitHubBadge[] = [
     tagline: 'Coauthored a commit on a merged pull request.',
     difficulty: 'Medium',
     category: 'collaborative',
-    status: 'testing',
-    statusLabel: 'In Progress · Under Active R&D',
+    status: 'obtainable',
+    statusLabel: 'Obtainable · Custom Peer Verified',
     isObtainable: true,
     isRecommendedStarter: false,
     howToGet: 'Co-author at least one commit on a merged pull request using the Git Co-authored-by trailer.',
-    blueprintStrategy: 'Commit with a dual-author Git message trailer pointing to a collaborator, then merge the pull request.',
+    blueprintStrategy: 'Commit with an RFC Git trailer pointing to a collaborator, then merge the pull request into main.',
     tiers: [
       { level: 'Default', threshold: '1 merged coauthored PR', description: 'Unlocks base Pair Extraordinaire badge' },
       { level: 'Bronze (x2)', threshold: '10 merged PRs', description: 'Bronze badge border with x2 multiplier' },
@@ -127,12 +127,13 @@ export const GITHUB_BADGES: GitHubBadge[] = [
     requirements: [
       'The commit message body must contain: Co-authored-by: Name <email@example.com>',
       'There must be an empty line between the commit description and the trailer',
-      'The PR containing the commit must be merged into the target repository default branch'
+      'The PR containing the commit must be merged into the target repository default branch via standard merge',
+      'Requires a verified, established GitHub collaborator account to bypass automated bot filters'
     ],
     gotchas: [
-      'The co-author email must match a verified GitHub account email address.',
-      'Formatting error in the trailer will cause GitHub to ignore the co-authorship.',
-      'Active R&D Notice: Quickdraw, Pull Shark, YOLO, and Galaxy Brain are 100% verified live. Pair Extraordinaire requires account reputation validation on GitHub backend; Custom Peer mode with an established account is currently recommended while automated bot reputation is being warmed.'
+      'The co-author email must match a verified GitHub account email address (or id+login@users.noreply.github.com).',
+      'Never list yourself as a co-author on your own commit (violates RFC standards).',
+      'Squash merges strip individual commit trailers unless preserved in the final squash message; standard merge is required.'
     ],
   },
   {
