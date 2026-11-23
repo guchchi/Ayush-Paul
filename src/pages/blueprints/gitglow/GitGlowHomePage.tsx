@@ -1098,8 +1098,8 @@ const HeroMonument3D: React.FC<{ onSelectBadge?: (id: string) => void }> = ({ on
         ))}
       </div>
 
-      {/* Compact 3-Card Row on Small Mobile Viewports */}
-      <div className="grid sm:hidden grid-cols-3 gap-2 mt-4 w-full max-w-[390px]">
+      {/* Compact Responsive Row on Small Mobile Viewports */}
+      <div className="flex sm:hidden overflow-x-auto no-scrollbar gap-2 mt-4 w-full px-1 pb-1 snap-x">
         {dynamicCards.map((card) => (
           <div
             key={card.id}
@@ -1108,22 +1108,22 @@ const HeroMonument3D: React.FC<{ onSelectBadge?: (id: string) => void }> = ({ on
               document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
             }}
             className={cn(
-              "rounded-xl bg-white/95 border p-2 shadow-[0_6px_16px_rgba(16,17,20,0.05)] cursor-pointer active:scale-95 transition-all text-left",
+              "w-[145px] shrink-0 snap-start rounded-xl bg-white/95 border p-2.5 shadow-[0_4px_12px_rgba(16,17,20,0.04)] cursor-pointer active:scale-95 transition-all text-left",
               card.isVerified ? "border-[#84CC16]/80 bg-[#F7F8EF]/40" : card.isQueued ? "border-amber-300" : "border-[#E5E3DA]"
             )}
           >
             <div className="flex items-center gap-1.5 mb-1.5">
               <img src={card.badgeImage} alt={card.badgeAlt} className="w-6 h-6 object-contain shrink-0" />
               <div className="min-w-0">
-                <div className="text-[10.5px] font-bold text-[#101114] truncate">{card.title}</div>
-                <div className={cn("text-[9px] truncate", card.isVerified ? "text-[#4D7C0F] font-bold" : "text-[#65666A]")}>
+                <div className="text-[11px] font-bold text-[#101114] truncate">{card.title}</div>
+                <div className={cn("text-[9.5px] truncate font-medium", card.isVerified ? "text-[#4D7C0F] font-bold" : "text-[#65666A]")}>
                   {card.statusText}
                 </div>
               </div>
             </div>
             <div className="w-full h-1 rounded-full bg-[#ECEAE0] overflow-hidden">
               <div
-                className={cn("h-full rounded-full", card.isVerified ? "bg-[#84CC16]" : card.isQueued ? "bg-amber-400" : "bg-[#A8E62E]")}
+                className={cn("h-full rounded-full transition-all duration-500", card.isVerified ? "bg-[#84CC16]" : card.isQueued ? "bg-amber-400" : "bg-[#A8E62E]")}
                 style={{ width: `${card.progress}%` }}
               />
             </div>
@@ -1162,6 +1162,22 @@ export const GitGlowHomePage: React.FC = () => {
   const [isRefreshingLive, setIsRefreshingLive] = useState(false);
 
   const liveVerifiedCount = scanAnalysis?.liveEarnedAchievements?.length || 0;
+
+  const nextBadgeToEarn = useMemo(() => {
+    for (const id of AUTOMATED_BADGE_IDS) {
+      const life = getBadgeLifecycle(id);
+      if (life.state === 'unclaimed') {
+        return GITHUB_BADGES.find((b) => b.id === id) || null;
+      }
+    }
+    for (const id of AUTOMATED_BADGE_IDS) {
+      const life = getBadgeLifecycle(id);
+      if (life.state === 'indexing_queued') {
+        return GITHUB_BADGES.find((b) => b.id === id) || null;
+      }
+    }
+    return null;
+  }, [getBadgeLifecycle]);
 
   const executeRealProfileScan = async (handle: string) => {
     const cleanHandle = handle.trim().replace(/^@/, '') || 'developer';
@@ -1351,12 +1367,12 @@ export const GitGlowHomePage: React.FC = () => {
                 transition={{ duration: 0.5, ease: EASING.PREMIUM, delay: 0.06 }}
                 className="mb-5 lg:mb-[clamp(14px,2vh,24px)]"
               >
-                <h1 className="text-[clamp(40px,min(5.38vw,9.4vh),90px)] font-extrabold text-[#101114] tracking-[-0.04em] leading-[0.95] select-none">
+                <h1 className="text-[clamp(34px,min(5.38vw,9.4vh),90px)] font-extrabold text-[#101114] tracking-[-0.04em] leading-[0.98] sm:leading-[0.95] select-none">
                   Unlock official <br />
                   GitHub badges <br />
                   <span className="relative inline-flex items-center mt-1.5 align-middle">
                     <span className="relative inline-block bg-[#DDF748] rounded-[5px] px-2.5 sm:px-3.5 py-0.5 shadow-[0_2px_8px_rgba(215,255,54,0.18)]">
-                      <span className="relative font-editorial-serif italic font-bold text-[#101114] text-[clamp(42px,min(5.5vw,9.6vh),92px)] leading-[0.9] tracking-[-0.02em]">
+                      <span className="relative font-editorial-serif italic font-bold text-[#101114] text-[clamp(36px,min(5.5vw,9.6vh),92px)] leading-[0.9] tracking-[-0.02em]">
                         in minutes.
                       </span>
                     </span>
@@ -1373,9 +1389,9 @@ export const GitGlowHomePage: React.FC = () => {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: EASING.PREMIUM, delay: 0.12 }}
-                className="text-[clamp(15px,1.2vw,20px)] text-[#65666A] font-normal leading-[1.45] max-w-[660px] mb-6 lg:mb-[clamp(18px,3vh,32px)]"
+                className="text-[clamp(14px,1.2vw,20px)] sm:text-[clamp(15px,1.2vw,20px)] text-[#65666A] font-normal leading-[1.5] sm:leading-[1.45] max-w-[660px] mb-6 lg:mb-[clamp(18px,3vh,32px)]"
               >
-                GitHub hides the rules behind every profile badge. Scan your username for 60-second PR &amp; merge missions that earn Pull Shark, Quickdraw, and YOLO—on your real profile.
+                GitHub hides the qualification rules behind every profile achievement. Scan any developer or student profile to uncover missing badges, then run verified 60-second PR &amp; collaboration missions to claim Quickdraw, Pull Shark, and YOLO on your live profile.
               </motion.p>
 
               {/* Profile Scanner (~712x73px at 1672x941) */}
@@ -1524,7 +1540,7 @@ export const GitGlowHomePage: React.FC = () => {
                     </div>
 
                     {/* 5-Badge Interactive Status Chips */}
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-1">
+                    <div className="flex flex-wrap sm:grid sm:grid-cols-5 gap-1.5 pt-1">
                       {AUTOMATED_BADGE_IDS.map((id) => {
                         const badge = GITHUB_BADGES.find((b) => b.id === id);
                         if (!badge) return null;
@@ -1541,7 +1557,7 @@ export const GitGlowHomePage: React.FC = () => {
                               document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
                             }}
                             className={cn(
-                              "p-2 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2 group hover:scale-[1.02]",
+                              "p-2 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2 group hover:scale-[1.02] flex-1 min-w-[130px] sm:min-w-0",
                               isVerified
                                 ? "bg-[#F7F8EF]/60 border-[#84CC16]/70 shadow-2xs"
                                 : isQueued
@@ -1569,6 +1585,27 @@ export const GitGlowHomePage: React.FC = () => {
                       })}
                     </div>
 
+                    {/* Recommended Next Action Banner */}
+                    {nextBadgeToEarn && (
+                      <div className="p-2.5 sm:p-3 rounded-xl bg-[#F7F8EF]/80 border border-[#DCE89E] flex items-center justify-between gap-2.5 flex-wrap">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-base sm:text-lg shrink-0">🎯</span>
+                          <div className="text-xs text-[#101114] truncate">
+                            <span className="text-[#65666A]">Recommended Next: </span>
+                            <strong>{nextBadgeToEarn.name}</strong>
+                            <span className="hidden sm:inline text-[#65666A]"> ({nextBadgeToEarn.statusLabel})</span>
+                          </div>
+                        </div>
+                        <Link
+                          to={`/blueprints/gitglow/engine?badge=${nextBadgeToEarn.id}`}
+                          className="h-7 px-3 rounded-full bg-[#101114] hover:bg-[#1C1E24] text-[#D7FF36] text-[11px] font-bold inline-flex items-center gap-1 transition-transform active:scale-95 shadow-2xs ml-auto shrink-0"
+                        >
+                          <span>Claim in 1-Click</span>
+                          <ArrowRight size={11} />
+                        </Link>
+                      </div>
+                    )}
+
                     {/* Bottom CTA Actions */}
                     <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#ECEAE1] text-xs">
                       <a
@@ -1582,7 +1619,7 @@ export const GitGlowHomePage: React.FC = () => {
                       </a>
 
                       <Link
-                        to="/blueprints/gitglow/engine"
+                        to={`/blueprints/gitglow/engine?badge=${selectedBadgeId || nextBadgeToEarn?.id || 'quickdraw'}`}
                         className="h-8 px-3.5 rounded-full bg-[#101114] hover:bg-[#1C1E24] text-[#D7FF36] text-[11px] font-bold inline-flex items-center gap-1.5 transition-all shadow-xs"
                       >
                         <span>Open 1-Click Sandbox</span>
