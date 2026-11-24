@@ -195,11 +195,32 @@ export async function getRoutesConfig() {
   routes.push({ 
     url: '/blueprints/gitglow', 
     seoData: { 
-      title: "GitGlow | Glow Up Your GitHub From Zero to Pro", 
-      description: "A 13-step interactive engine that transforms your blank GitHub profile into a recruiter-ready portfolio with real achievements, green squares, and official GitHub badges.",
-      schema: new SchemaFactory().addWebPage({ name: "GitGlow", description: "Glow up your GitHub from zero to pro.", url: "/blueprints/gitglow" }).build()
+      title: "GitGlow — Grow Your GitHub Profile Credibility & Unlock Badges", 
+      description: "Scan your GitHub profile, uncover missing achievements, and claim official badges legally with 1-click sandbox automation.",
+      schema: new SchemaFactory().addWebPage({ name: "GitGlow", description: "Grow your GitHub profile credibility.", url: "/blueprints/gitglow" }).build()
     }
   });
+
+  routes.push({
+    url: '/blueprints/gitglow/how-it-works',
+    seoData: {
+      title: "How GitGlow Works — Zero-BS Security & Transparency",
+      description: "Everything you need to know about what GitGlow does, OAuth permissions, and why your GitHub account remains 100% secure.",
+      schema: new SchemaFactory().addWebPage({ name: "How GitGlow Works", description: "GitGlow security and architecture guide.", url: "/blueprints/gitglow/how-it-works" }).build()
+    }
+  });
+
+  const gitglowBadgeIds = ['pull-shark', 'quickdraw', 'yolo', 'pair-extraordinaire', 'galaxy-brain'];
+  for (const bId of gitglowBadgeIds) {
+    routes.push({
+      url: `/blueprints/gitglow/badges/${bId}`,
+      seoData: {
+        title: `How to Get the ${bId.replace('-', ' ').toUpperCase()} Badge on GitHub (2026 Guide)`,
+        description: `Exact qualification requirements, common gotchas, and 1-click verified automation for the ${bId} GitHub achievement.`,
+        schema: new SchemaFactory().addWebPage({ name: `${bId} Guide`, description: `How to unlock the ${bId} badge on GitHub.`, url: `/blueprints/gitglow/badges/${bId}` }).build()
+      }
+    });
+  }
 
   // 2. Dynamic Routes
   try {

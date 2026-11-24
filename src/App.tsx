@@ -50,6 +50,8 @@ const BCyberPreparationPlannerPage = lazy(() => import("./pages/blueprints/b-cyb
 const GitGlowHomePage = lazy(() => import("./pages/blueprints/gitglow/GitGlowHomePage").then(m => ({ default: m.GitGlowHomePage })));
 const GitGlowEnginePage = lazy(() => import("./pages/blueprints/gitglow/GitGlowEnginePage").then(m => ({ default: m.GitGlowEnginePage })));
 const GitGlowLearnPage = lazy(() => import("./pages/blueprints/gitglow/GitGlowLearnPage").then(m => ({ default: m.GitGlowLearnPage })));
+const GitGlowBadgeGuidePage = lazy(() => import("./pages/blueprints/gitglow/GitGlowBadgeGuidePage").then(m => ({ default: m.GitGlowBadgeGuidePage })));
+const GitGlowHowItWorksPage = lazy(() => import("./pages/blueprints/gitglow/GitGlowHowItWorksPage").then(m => ({ default: m.GitGlowHowItWorksPage })));
 
 
 
@@ -176,6 +178,8 @@ export default function App() {
               <Route path="/blueprints/b-cyber/evidence-of-work" element={wrapInLayout(<BCyberEvidenceGuidePage />)} />
               {/* GitGlow Routes (Declared before :slug) */}
               <Route path="/blueprints/gitglow" element={wrapInLayout(<GitGlowHomePage />)} />
+              <Route path="/blueprints/gitglow/badges/:badgeId" element={wrapInLayout(<GitGlowBadgeGuidePage />)} />
+              <Route path="/blueprints/gitglow/how-it-works" element={wrapInLayout(<GitGlowHowItWorksPage />)} />
               <Route path="/blueprints/gitglow/engine" element={<GitGlowEnginePage />} />
               <Route path="/blueprints/gitglow/learn" element={<GitGlowLearnPage />} />
               <Route path="/blueprints/:slug" element={wrapInLayout(<BlueprintDetailPage />)} />
