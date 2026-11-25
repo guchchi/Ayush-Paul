@@ -52,6 +52,7 @@ const GitGlowEnginePage = lazy(() => import("./pages/blueprints/gitglow/GitGlowE
 const GitGlowLearnPage = lazy(() => import("./pages/blueprints/gitglow/GitGlowLearnPage").then(m => ({ default: m.GitGlowLearnPage })));
 const GitGlowBadgeGuidePage = lazy(() => import("./pages/blueprints/gitglow/GitGlowBadgeGuidePage").then(m => ({ default: m.GitGlowBadgeGuidePage })));
 const GitGlowHowItWorksPage = lazy(() => import("./pages/blueprints/gitglow/GitGlowHowItWorksPage").then(m => ({ default: m.GitGlowHowItWorksPage })));
+const StyleguidePage = lazy(() => import("./pages/styleguide/StyleguidePage").then(m => ({ default: m.StyleguidePage })));
 
 
 
@@ -210,6 +211,7 @@ export default function App() {
 <Route path="/workspace/outreach-engine" element={<OutreachEnginePage />} />
 <Route path="/workspace/client-delivery" element={<DeliverySystemPage />} />
 <Route path="/dev/inspector" element={<DeveloperGraphInspector />} />
+<Route path="/styleguide" element={<StyleguidePage />} />
 <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>

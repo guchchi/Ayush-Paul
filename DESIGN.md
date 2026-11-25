@@ -1,123 +1,168 @@
-# GitGlow Design System Specification (DESIGN.md)
-> **Single Source of Truth for GitGlow UI/UX Architecture**  
-> *Target: /blueprints/gitglow and associated subcomponents*  
-> *Version: 1.0 · Last Updated: November 2026*
+# GitGlow DESIGN.md
+
+Single source of truth for UI/UX. Every prompt to the coding agent must say: **"Follow DESIGN.md."**
+If something is not covered here, ask. Do not invent styles.
 
 ---
 
-## 1. Product Identity & Purpose
-* **Core Value Proposition:** *"GitGlow helps developers and students grow their GitHub profile credibility and unlock official achievements — legally, step-by-step, with full automation."*
-* **Core Principle:** Your product is **"grow your GitHub profile"**, not only "claim badges". Badges are the initial hook; verified git discipline and profile authority are the actual product.
-* **Target Audience:** 1st/2nd-year CS students and modern working developers wanting profile credibility.
-* **Tone:** Friendly, mentor-like, concise, honest. Subtle Hinglish touches allowed in celebratory microcopy.
+## 1. Product in one line
+
+GitGlow helps students and beginners grow their GitHub profile. Users scan any public username for free, then claim GitHub achievement badges with a one-click bot that acts on their own account.
+
+**Audience:** 1st/2nd-year students, mostly on phones, many in India.  
+**Primary goal of the homepage:** get the visitor to scan a username.
 
 ---
 
-## 2. Color System & Semantic Commitments
+## 2. Design principles
 
-All colors carry strict functional meaning. Never use accent colors for decorative noise.
+1. **Value before login.** Scan works with zero login. GitHub OAuth appears only at the claim click.
+2. **Glow means progress.** Earned items glow. Everything else stays calm.
+3. **One accent, meaningful colors.** Colors carry meaning, never decoration.
+4. **Honest, never hype.** No "100% legal", no "zero ban risk". Say what is true.
+5. **Friendly dark.** Dark theme, but rounded, warm copy, and readable text.
+6. **Mobile first.** Design the phone layout first, then widen.
 
-| Token | Hex Value | Purpose / Meaning | Strict Rule |
+---
+
+## 3. Theme: softened dark-first (dark only for v1)
+
+### 3.1 Color tokens
+
+```css
+:root {
+  /* Surfaces */
+  --bg:            #0D1117; /* page */
+  --surface:       #161B22; /* cards, drawer */
+  --surface-2:     #1C2230; /* raised / hover */
+  --border:        #30363D;
+
+  /* Text */
+  --text:          #E6EDF3; /* never pure white */
+  --text-muted:    #8B949E; /* secondary only */
+
+  /* Semantic (colors carry meaning) */
+  --action:        #C6FF3D; /* LIME: do this (buttons, links) */
+  --on-action:     #0D1117; /* text on lime */
+  --earned:        #F5C451; /* GOLD: earned */
+  --processing:    #4DA3FF; /* BLUE: waiting for GitHub */
+  --danger:        #FF6B6B; /* errors / failed */
+}
+```
+
+### 3.2 Color rules
+
+- **Lime = action only** (primary buttons, key links, focus ring).
+- **Gold = earned only** (earned badges, earned state label). Never decorative.
+- **Blue = processing only.** Amber is NOT used (it looks like gold).
+- **Red = failure only.**
+- Never use pure `#000` or pure `#FFF`.
+- Meaning must never rely on color alone. Always add a text label and an icon.
+- Do not copy GitHub's look wholesale. GitGlow needs its own accent, logo, badge art and motion style.
+
+---
+
+## 4. Typography
+
+| Use | Font | Notes |
+|---|---|---|
+| Headings | Space Grotesk | 700 |
+| Body / UI | Inter | 400, 500 |
+| Terminal / code | JetBrains Mono | 400 |
+
+- Max 3 families. Weights only 400, 500, 700.
+- Self-host, subset to Latin, `font-display: swap`, preload heading + body only.
+- Fallbacks: `system-ui`, `ui-monospace`.
+
+| Style | Desktop | Mobile | Line Height |
 |---|---|---|---|
-| **Canvas Background** | `#0D1117` | Page background | Soft charcoal. Never use harsh pure `#000`. |
-| **Surface / Card** | `#161B22` | Cards, shelf, drawer, modals | Deep muted surface layer. |
-| **Surface Elevate** | `#21262D` | Hover states, secondary buttons | 1-step lighter surface. |
-| **Border / Boundary** | `#30363D` | 1px boundary lines | Subtle architecture separation. |
-| **Text Primary** | `#E6EDF3` | Headings and body copy | High-contrast off-white. Zero eye glare. |
-| **Text Muted** | `#8B949E` | Secondary metadata and labels | Used only for secondary information. |
-| **🟢 Action Accent** | `#D7FF36` | Primary CTAs, active links | **Electric Lime.** Meaning: *"Do this / Click here"*. |
-| **🥇 Earned Glow** | `#F1E05A` | Earned achievements only | **Gold.** Meaning: *"You earned this trophy"*. |
-| **🔵 Processing Pulse** | `#388BFD` | Pending background jobs | **Cool Blue.** Meaning: *"Waiting for GitHub indexing"*. |
-| **Error / Alert** | `#F85149` | Error messages, rate limit | Soft coral red. Never neon. |
-| **Gotcha / Warning** | `#E3B341` | Edge-case gotchas, tips | Warm amber warning. |
+| Hero headline | 56-64px | 36-40px | 1.1 |
+| Section title | 36-40px | 28px | 1.15 |
+| Card title | 20-24px | 18-20px | 1.25 |
+| Body | 16-18px | 16px | 1.6 |
+| Small / labels | 14px | 14px | 1.4 |
+| Terminal | 14px | 13px | 1.5 |
+
+- Line height: 1.1 headings, 1.6 body. Paragraph width about 60-70 characters.
+- All inputs: **16px or larger** (prevents iOS zoom).
+- Score number uses tabular numerals (`font-variant-numeric: tabular-nums`).
+- No gradient text on body copy. At most one gradient word in the hero.
+- No long all-caps text.
 
 ---
 
-## 3. Typography & Typesetting Hierarchy
+## 5. Spacing, shape, motion
 
-### Font Families (Strict 3-Family Rule)
-* **🦸 Headings:** `Space Grotesk`, fallback `system-ui, sans-serif` — Distinctive geometric personality without looking childish.
-* **📖 Body:** `Inter`, fallback `system-ui, -apple-system, sans-serif` — Maximum clarity on budget Android and mobile viewports.
-* **💻 Terminal & Code:** `JetBrains Mono`, fallback `ui-monospace, monospace` — Authentic CLI environment, zero confusion between `0` vs `O` and `1` vs `l`.
-
-### Type Scale & Vertical Rhythm
-| Style | Desktop Size | Mobile Size | Line Height | Allowed Weights |
-|---|---|---|---|---|
-| **Hero Headline** | `56px–64px` | `36px–40px` | `1.1` | `700` (Bold) |
-| **Section Title** | `36px–40px` | `28px` | `1.15` | `700` |
-| **Card / Drawer Title** | `20px–24px` | `18px–20px` | `1.25` | `700` |
-| **Body Copy** | `16px–18px` | `16px` | `1.6` | `400` (Regular) / `500` (Medium) |
-| **Labels & Pills** | `14px` | `14px` | `1.4` | `500` |
-| **Terminal & Code** | `14px` | `13px` | `1.5` | `400` / `500` |
-
-### Strict Typography Rules
-1. **Weights:** Strictly `400`, `500`, `700` only. Never load 600, 800, 900 to keep network payload minimal.
-2. **Tabular Numbers:** All scores (`/100`), timers, and counters must use `font-variant-numeric: tabular-nums` (`tabular-nums` class) to eliminate layout jitter during number count-ups.
-3. **Reading Measure:** Body copy bounded to `60–70ch` line length (`max-w-prose`) for comfortable reading.
-4. **Input Size:** All form input font sizes must be $\ge$ `16px` to prevent iOS mobile auto-zooming.
+- **Grid:** 8px base unit (8px, 16px, 24px, 32px, 48px, 64px). Max content width about 1200px. Generous section gaps.
+- **Radius:** 12px (controls), 16px (cards, drawer), 9999px (pills).
+- **Shadows:** minimal. Soft glow only for earned/active items (`0 0 24px rgba(245, 196, 81, 0.25)`).
+- **Icons:** one set only (Lucide), consistent stroke (1.75px–2.0px).
+- **Motion:** 150-300ms, one easing curve `cubic-bezier(0.2, 0.8, 0.2, 1)`.
+- **Reduced motion:** disable glow pulses, tilt, and slide animations; use simple fades.
 
 ---
 
-## 4. Spacing, Elevation & Foundations
-* **Spatial Grid:** Strict `8px` grid system (`8px`, `16px`, `24px`, `32px`, `48px`, `64px`).
-* **Container Max-Width:** `1200px` for standard content, `1000px` for documentation pages.
-* **Border Radii:** `12px` (standard cards/inputs) to `16px` (drawers/featured cards), `full` for pills and buttons.
-* **Iconography:** Lucide Icons only with uniform `1.75px` or `2.0px` stroke width.
-* **Motion Curves:** Fast, responsive `150ms–300ms` with `cubic-bezier(0.16, 1, 0.3, 1)`. Full support for `prefers-reduced-motion: reduce`.
-* **Brand Wordmark:** Obsidian onyx squircle (`#101114`) + Electric lime specular dot + Space Grotesk wordmark.
+## 6. Page structure (homepage)
+
+0. Navbar: Badges, How it works, Connect GitHub (max 4 items; not sticky on mobile)
+1. Hero: headline, subtitle, scan box, example usernames, trust pills, 3D medallion (static image on mobile)
+2. Score + Trophy cabinet (Glass Shelf). Shows a sample profile labelled "Example" before any scan
+3. How it works + trust: Scan, Claim, GitHub awards it; "what the bot does / never does"; exact permissions; revoke link
+4. Coming soon: only badges that can truly be earned; "Notify me"
+5. FAQ (honest answers, including "Is this allowed by GitHub?")
+6. Final CTA (scan box again) + footer
+
+**Hero copy:**
+- Headline: "Make Your GitHub Profile Stand Out in Minutes."
+- Subtitle: "See missing achievements. Claim in 1 click."
+- Trust pills: "Real GitHub activity", "No password", "1-click"
+- Example usernames: `@octocat` and the founder's own.
 
 ---
 
-## 5. Component Primitives Specification
+## 7. Components
 
-### 5.1 Buttons
-* **Primary CTA:** Background `#D7FF36`, text `#0D1117`, font-bold, rounded-xl, 150ms scale-98 active state. Reserved for the primary conversion path.
-* **Secondary Action:** Background `#21262D`, text `#E6EDF3`, border `#30363D`, hover `#30363D`.
-* **Ghost Link:** Text `#8B949E`, hover text `#E6EDF3`, underline on hover with Lucide arrow.
+### 7.1 Scan box
+- Input: `github.com/username` or `@username`. Accept pasted URLs and clean them up.
+- Button: "Audit Free".
+- Zero login required. Scanning any public username is allowed.
 
-### 5.2 Inputs
-* **Scan Box:** Background `#161B22`, border `#30363D`, focus border `#D7FF36` with 1px ring.
-* **Ergonomic Rule:** Placed in the upper-middle of the viewport so the mobile virtual keyboard cannot obscure it upon tap.
+### 7.2 Trophy cabinet: Glass Shelf (5 slots)
+Badges in scope: **Pull Shark, Quickdraw, YOLO, Pair Extraordinaire, Galaxy Brain.**
 
-### 5.3 Status Pills (Dual State: Color + Explicit Text)
-* 🥇 **Earned:** Background `#F1E05A`/10, border `#F1E05A`/30, text `#F1E05A`, label: `"On your profile ✓"`.
-* 🔵 **Processing:** Background `#388BFD`/10, border `#388BFD`/30, text `#388BFD`, rhythmic pulse dot, label: `"Waiting for GitHub (hours)"`.
-* 🔒 **Available:** Background `#0D1117`, border `#30363D`, text `#8B949E`, label: `"Claim in ~2m"`.
+Each slot shows: badge art, name, time tag (e.g. "~2 min"), difficulty pill (Easy / Medium), text status.
 
-### 5.4 Glass Shelf (Trophy Cabinet)
-* 5 active slots: Pull Shark 🦈, Quickdraw ⚡, YOLO 🚀, Pair Extraordinaire 👥, Galaxy Brain 🧠.
-* Each slot contains: Badge Art, Title, Time estimate tag (`~2 min`), Difficulty pill, Dual State indicator.
-* **Desktop:** 5-column horizontal grid shelf.
-* **Mobile:** Clean vertical stacked list with minimum `48px` tap targets (carousels are strictly rejected).
+| State | Look | Label |
+|---|---|---|
+| Earned | Full color, gold glow | "On your profile" + check icon |
+| Processing | Soft blue pulse | "Waiting for GitHub" |
+| Available | Dark silhouette + lock | "Claim in ~2 min" |
 
-### 5.5 Slide-Over Mission Drawer
-* Desktop: `460px` right slide-over with backdrop blur (`#000000`/60).
-* Mobile: Bottom-sheet sliding up to `85%` screen height with drag handle and swipe-to-close.
-* Non-blocking background execution; URL synchronizes to `?badge=<id>`.
+- Hover (desktop): slight lift and subtle glow; light tilt only.
+- Click or tap: opens the drawer.
+- Unlock moment: lock cracks, glow fades in, score counts up. Sound muted by default.
+- Badge art: **own illustrations**, not GitHub's official images.
+- The other 5 badges appear in a separate "Coming soon" area, never in the "X of 5" count.
 
----
+### 7.3 Score
+- Label: "GitGlow Score" (unofficial). Include a "How is it calculated?" dropdown.
+- Breakdown must add up to exactly 100.
 
-## 6. Strict "DON'T" Rules (Anti-Patterns)
-* ❌ **No Pure Black (`#000000`) or Pure White (`#FFFFFF`).** Always use `#0D1117` and `#E6EDF3`.
-* ❌ **No Side-Stripe Borders.** Never use `border-l-4` or thick colored borders on cards.
-* ❌ **No Gradient Body Text.** Gradients are restricted to at most one single accent word in the hero headline.
-* ❌ **No Decorative Glass Overload.** Glass is reserved for subtle backdrop blur; cards must remain legible `#161B22`.
-* ❌ **No Fake Social Proof.** Never display synthetic counters (e.g. *"1,247 claimed today"*).
-* ❌ **No False Guarantees.** Never claim *"100% Legal"* or *"Zero Ban Risk"*. Use *"Real GitHub activity"*, *"No password needed"*, *"1-click sandbox"*.
-* ❌ **No Extra Fonts or Libraries.** Strictly stick to the 3 approved Google Fonts and native Tailwind CSS.
-
----
-
-## 7. Multi-Width Responsive Audit Checkpoints
-Every layout must be audited at three explicit widths before declaring complete:
-1. **Phone (375px–414px):** Single column stack, vertical trophy list, input remains visible above keyboard, max 2 sticky elements.
-2. **Tablet (768px–1024px):** 2–3 column balanced grid, accessible drawer with thumb navigation.
-3. **Desktop (1200px–1440px):** Split hero (left text/input, right 3D card), 5-column glass shelf, 460px right drawer.
+### 7.4 Slide-over drawer
+- Desktop: right panel about 450px, light blur and dim behind.
+- Mobile: bottom sheet about 85% height, drag handle, swipe down to close.
+- Slide-in 250-300ms. `Esc` and outside click close it. Focus is trapped inside and returns to the badge on close.
+- URL updates (e.g. `/?badge=pull-shark`) so it is shareable; Back closes it.
+- **Non-blocking:** closing the drawer does not stop a running bot job. The shelf slot shows a spinner/pulse while it runs.
+- **Trigger action:** single primary button "Claim Badge".
+- First click: triggers GitHub OAuth (one-time).
+- Next clicks: run immediately.
+- Terminal log: shows real-time steps with timestamps. Collapsible.
 
 ---
 
 ## 8. Development State Switcher Spec
-For rapid visual testing without live GitHub API throttling, GitGlow includes a hidden dev state switcher to toggle:
+For rapid visual testing without live GitHub API throttling:
 - `pre-scan` (Sample profile cabinet)
 - `post-scan-clean` (All 5 badges available)
 - `post-scan-partial` (2 earned, 1 processing, 2 available)
