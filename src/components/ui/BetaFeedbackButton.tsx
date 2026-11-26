@@ -13,7 +13,7 @@ export function BetaFeedbackButton() {
   }, []);
 
   if (!isVisible) return null;
-  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/styleguide')) {
+  if (typeof window !== 'undefined' && (window.location.pathname.startsWith('/styleguide') || window.location.pathname === '/' || window.location.pathname.startsWith('/blueprints/gitglow'))) {
     return null;
   }
 

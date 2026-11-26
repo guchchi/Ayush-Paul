@@ -144,7 +144,8 @@ export default function App() {
           
           <Suspense fallback={<PageLoading />}>
             <Routes>
-              <Route path="/" element={wrapInLayout(<HomePage />)} />
+              <Route path="/" element={<GitGlowHomePage />} />
+              <Route path="/portfolio-home" element={wrapInLayout(<HomePage />)} />
               <Route path="/now" element={<Navigate to="/building" replace />} />
               <Route path="/about" element={wrapInLayout(<AboutPage />)} />
               <Route path="/projects" element={<Navigate to="/blueprints" replace />} />
@@ -178,7 +179,7 @@ export default function App() {
               <Route path="/blueprints/b-cyber/updates" element={wrapInLayout(<BCyberOfficialUpdatesPage />)} />
               <Route path="/blueprints/b-cyber/evidence-of-work" element={wrapInLayout(<BCyberEvidenceGuidePage />)} />
               {/* GitGlow Routes (Declared before :slug) */}
-              <Route path="/blueprints/gitglow" element={wrapInLayout(<GitGlowHomePage />)} />
+              <Route path="/blueprints/gitglow" element={<GitGlowHomePage />} />
               <Route path="/blueprints/gitglow/badges/:badgeId" element={wrapInLayout(<GitGlowBadgeGuidePage />)} />
               <Route path="/blueprints/gitglow/how-it-works" element={wrapInLayout(<GitGlowHowItWorksPage />)} />
               <Route path="/blueprints/gitglow/engine" element={<GitGlowEnginePage />} />

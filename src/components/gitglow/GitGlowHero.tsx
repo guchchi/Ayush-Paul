@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { ShieldCheck, Lock, Zap, Search, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
-import { GitGlowLogo } from './GitGlowLogo';
+import { ShieldCheck, GitCommit, Zap, AlertCircle, CheckCircle2, RotateCcw } from 'lucide-react';
 
-interface GitGlowHeroProps {
-  onScan: (username: string) => void;
-  isScanning: boolean;
-  initialUsername?: string;
+interface MockScanResult {
+  username: string;
+  score: number;
+  unlockedBadges: string[];
+  claimableBadges: string[];
 }
 
-export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
-  onScan,
-  isScanning,
-  initialUsername = '',
-}) => {
-  const [usernameInput, setUsernameInput] = useState(initialUsername);
+export const GitGlowHero: React.FC = () => {
+  const [usernameInput, setUsernameInput] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanResult, setScanResult] = useState<MockScanResult | null>(null);
 
   const cleanUsername = (raw: string): string => {
     let cleaned = raw.trim();
@@ -25,197 +22,292 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
     return cleaned;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleScanSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const cleaned = cleanUsername(usernameInput);
     if (!cleaned) {
-      setErrorMsg('Please enter a valid GitHub username.');
+      setErrorMsg('Check the username spelling');
       return;
     }
+
     setErrorMsg('');
-    onScan(cleaned);
+    setIsScanning(true);
+    setScanResult(null);
+
+    // Mock scan simulation: shows skeleton shimmer, then delivers fake result message (no real GitHub calls yet)
+    setTimeout(() => {
+      setIsScanning(false);
+      setScanResult({
+        username: cleaned,
+        score: 84,
+        unlockedBadges: ['Pull Shark', 'Quickdraw'],
+        claimableBadges: ['YOLO', 'Pair Extraordinaire', 'Galaxy Brain'],
+      });
+    }, 1600);
   };
 
-  const handleQuickTry = (handle: string) => {
+  const handleSelectExample = (handle: string) => {
     setUsernameInput(handle);
     setErrorMsg('');
-    onScan(handle);
+    setScanResult(null);
+  };
+
+  const handleResetScan = () => {
+    setScanResult(null);
+    setUsernameInput('');
+    setErrorMsg('');
   };
 
   return (
-    <section className="relative pt-12 pb-16 md:pt-20 md:pb-24 overflow-hidden bg-[#0D1117] text-[#E6EDF3]">
-      {/* Background Ambient Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-[#D7FF36]/10 via-[#388BFD]/10 to-transparent blur-[120px] pointer-events-none rounded-full" />
+    <section className="relative pt-8 pb-16 md:pt-16 md:pb-24 overflow-hidden bg-[var(--bg)] text-[var(--text)]">
+      {/* Background Soft Glow Ambient (Glow means progress - DESIGN.md §2.2) */}
+      <div 
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-[radial-gradient(ellipse_at_center,rgba(198,255,61,0.08),rgba(77,163,255,0.04),transparent_70%)] pointer-events-none blur-3xl -z-10" 
+        aria-hidden="true"
+      />
 
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
-          {/* Left Column: Core Headline & Upper-Middle Scan Box */}
+          {/* Left Column: Hero Copy + Scan Box + Trust Pills */}
           <div className="lg:col-span-7 space-y-6 text-left">
-            {/* Student & Dev Tag */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#161B22] border border-[#30363D] text-xs font-medium text-[#D7FF36]">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Built for CS Students & Modern Developers</span>
+            
+            {/* Student Tag */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--surface)] border border-[var(--border)] text-xs font-mono text-[var(--action)]">
+              <span>GitHub Achievement Accelerator</span>
             </div>
 
-            {/* Headline with Space Grotesk */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-heading tracking-tight text-[#E6EDF3] leading-[1.1]">
-              Grow Your GitHub Profile Credibility. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D7FF36] via-[#B8F320] to-[#E6EDF3]">
-                Unlock Official Badges.
-              </span>
+            {/* Headline (Space Grotesk 700 with full stop - DESIGN.md §4, §6) */}
+            <h1 className="type-hero-headline text-[var(--text)] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-heading tracking-tight leading-[1.1]">
+              Make Your GitHub Profile Stand Out in Minutes.
             </h1>
 
-            {/* Subtitle */}
-            <p className="text-base sm:text-lg text-[#8B949E] leading-relaxed max-w-xl">
-              90% of developers have an empty achievements tab. Scan your profile in 3 seconds, see exactly which badges you qualify for, and claim them with 1-click legal automation.
+            {/* Subtitle (Inter 400/500 - DESIGN.md §4, §6) */}
+            <p className="type-body text-[var(--text-muted)] text-base sm:text-lg leading-relaxed max-w-xl">
+              See missing achievements. Claim in 1 click.
             </p>
 
-            {/* Upper-Middle Scan Box (Keyboard Safe on Mobile, Font >= 16px) */}
-            <div className="pt-2">
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch gap-2.5 max-w-xl">
-                <div className="relative flex-1">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8B949E]">
-                    <Search className="w-5 h-5" />
+            {/* Scan Box (Same component as /styleguide, with stacking < 480px - DESIGN.md §7.1, §9) */}
+            <div className="pt-1">
+              <div className="scan-input-card p-4 sm:p-5 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3 max-w-xl">
+                <form onSubmit={handleScanSubmit}>
+                  <div className="space-y-2">
+                    <div className="scan-input-group flex flex-col xl:flex-row items-stretch gap-2.5">
+                      <input
+                        type="text"
+                        value={usernameInput}
+                        onChange={(e) => {
+                          setUsernameInput(e.target.value);
+                          if (errorMsg) setErrorMsg('');
+                        }}
+                        placeholder="github.com/username or @username"
+                        disabled={isScanning}
+                        className={`scan-input-field w-full xl:flex-1 min-w-0 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] text-[var(--text)] placeholder-[var(--text-muted)] text-base transition-colors focus-visible:outline-2 focus-visible:outline-[var(--action)] focus-visible:outline-offset-2 ${
+                          errorMsg 
+                            ? 'border-2 border-[var(--danger)]' 
+                            : 'border border-[var(--border)]'
+                        } ${isScanning ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck="false"
+                      />
+                      <button
+                        type="submit"
+                        disabled={isScanning}
+                        className="scan-input-btn w-full xl:w-auto shrink-0 py-3 px-6 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all whitespace-nowrap flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {isScanning ? (
+                          <div className="flex items-center gap-2">
+                            <span className="w-4 h-4 border-2 border-[var(--on-action)] border-t-transparent rounded-full animate-spin" />
+                            <span>Auditing...</span>
+                          </div>
+                        ) : (
+                          <span>Audit Free</span>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Inline Error Helper */}
+                    {errorMsg && (
+                      <div className="flex items-center gap-1.5 text-xs text-[var(--danger)] font-medium pt-1">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        <span>{errorMsg}</span>
+                      </div>
+                    )}
                   </div>
-                  <input
-                    type="text"
-                    value={usernameInput}
-                    onChange={(e) => {
-                      setUsernameInput(e.target.value);
-                      if (errorMsg) setErrorMsg('');
-                    }}
-                    placeholder="github.com/your-username"
-                    className="w-full pl-10 pr-4 py-3.5 bg-[#161B22] border border-[#30363D] focus:border-[#D7FF36] focus:ring-1 focus:ring-[#D7FF36] text-[#E6EDF3] placeholder-[#8B949E] rounded-xl text-base transition-all duration-200 outline-none"
-                    autoCapitalize="none"
-                    autoCorrect="off"
-                    spellCheck="false"
-                  />
+                </form>
+
+                {/* Example Usernames (DESIGN.md §6) */}
+                <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-[var(--text-muted)]">
+                  <span>Try examples:</span>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectExample('@octocat')}
+                    className="px-2.5 py-1 rounded-full bg-[var(--surface-2)] hover:bg-[var(--border)] border border-[var(--border)] text-[var(--text)] hover:text-[var(--action)] transition-colors font-mono cursor-pointer"
+                  >
+                    @octocat
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectExample('@your-own')}
+                    className="px-2.5 py-1 rounded-full bg-[var(--surface-2)] hover:bg-[var(--border)] border border-[var(--border)] text-[var(--text)] hover:text-[var(--action)] transition-colors font-mono cursor-pointer"
+                  >
+                    @your-own
+                  </button>
                 </div>
-                <button
-                  type="submit"
-                  disabled={isScanning}
-                  className="px-6 py-3.5 bg-[#D7FF36] hover:bg-[#cbf42e] text-[#0D1117] font-bold rounded-xl text-sm transition-all duration-150 flex items-center justify-center gap-2 shrink-0 active:scale-[0.98] disabled:opacity-50 cursor-pointer shadow-[0_0_20px_rgba(215,255,54,0.25)]"
-                >
-                  {isScanning ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-[#0D1117] border-t-transparent rounded-full animate-spin" />
-                      <span>Scanning...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Audit Profile Free</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-              </form>
-
-              {/* Error Message */}
-              {errorMsg && (
-                <p className="mt-2 text-xs text-rose-400 font-medium">{errorMsg}</p>
-              )}
-
-              {/* Quick Try Chips */}
-              <div className="mt-3 flex items-center gap-2 text-xs text-[#8B949E]">
-                <span>Quick try:</span>
-                <button
-                  type="button"
-                  onClick={() => handleQuickTry('octocat')}
-                  className="px-2 py-0.5 rounded-md bg-[#161B22] hover:bg-[#21262D] border border-[#30363D] text-[#E6EDF3] transition-colors cursor-pointer"
-                >
-                  @octocat
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickTry('guchchi')}
-                  className="px-2 py-0.5 rounded-md bg-[#161B22] hover:bg-[#21262D] border border-[#30363D] text-[#E6EDF3] transition-colors cursor-pointer"
-                >
-                  @guchchi
-                </button>
               </div>
             </div>
 
-            {/* Anti-BS Trust Pills */}
-            <div className="pt-3 flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-[#8B949E]">
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-[#D7FF36]" />
-                <span>Real GitHub git activity</span>
+            {/* Mock Loading Skeleton (Shimmer, not a spinner - DESIGN.md §8) */}
+            {isScanning && (
+              <div className="p-4 rounded-[var(--radius-card)] bg-[var(--surface)] border border-[var(--border)] space-y-3 max-w-xl animate-pulse">
+                <div className="flex items-center justify-between">
+                  <div className="h-4 w-40 bg-[var(--surface-2)] rounded" />
+                  <div className="h-4 w-16 bg-[var(--surface-2)] rounded" />
+                </div>
+                <div className="h-2.5 w-full bg-[var(--surface-2)] rounded-full overflow-hidden">
+                  <div className="h-full bg-[var(--action)] rounded-full w-3/5 animate-pulse" />
+                </div>
+                <p className="text-xs font-mono text-[var(--action)]">
+                  Analyzing public GitHub repositories & achievements...
+                </p>
               </div>
-              <div className="flex items-center gap-1.5">
-                <Lock className="w-4 h-4 text-[#D7FF36]" />
-                <span>No password required</span>
+            )}
+
+            {/* Mock Fake Result Message (DESIGN.md §7.2, §7.3) */}
+            {scanResult && !isScanning && (
+              <div className="p-4 rounded-[var(--radius-card)] bg-[var(--surface)] border border-[rgba(245,196,81,0.3)] space-y-3 max-w-xl shadow-[var(--glow-earned)]">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] pb-2.5">
+                  <span className="text-xs font-mono text-[var(--earned)] font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>Audit complete for @{scanResult.username}</span>
+                  </span>
+                  <span className="text-xs font-mono text-[var(--action)] font-bold tabular-nums">
+                    Score: {scanResult.score} / 100
+                  </span>
+                </div>
+                <p className="text-xs text-[var(--text)] leading-relaxed">
+                  Found <strong>2 earned badges</strong> on profile. <strong>3 achievements</strong> ready to claim with 1-click bot.
+                </p>
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  {scanResult.unlockedBadges.map((badge) => (
+                    <span 
+                      key={badge} 
+                      className="type-label px-2.5 py-1 rounded-full bg-[rgba(245,196,81,0.12)] text-[var(--earned)] border border-[rgba(245,196,81,0.35)] text-xs inline-flex items-center gap-1"
+                    >
+                      <CheckCircle2 className="w-3 h-3" />
+                      <span>{badge} ✓</span>
+                    </span>
+                  ))}
+                  {scanResult.claimableBadges.map((badge) => (
+                    <span 
+                      key={badge} 
+                      className="type-label px-2.5 py-1 rounded-full bg-[var(--surface-2)] text-[var(--text-muted)] border border-[var(--border)] text-xs"
+                    >
+                      {badge} (Available)
+                    </span>
+                  ))}
+                </div>
+                <div className="pt-1 flex items-center justify-end">
+                  <button
+                    type="button"
+                    onClick={handleResetScan}
+                    className="text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text)] flex items-center gap-1 cursor-pointer"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    <span>Scan another username</span>
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <Zap className="w-4 h-4 text-[#D7FF36]" />
-                <span>1-Click sandbox merge</span>
+            )}
+
+            {/* Trust Pills: 3 Exact Pills (DESIGN.md §6 & §12) */}
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <div className="type-label px-3.5 py-1.5 rounded-full bg-[var(--surface)] text-[var(--text-muted)] border border-[var(--border)] inline-flex items-center gap-2 text-xs">
+                <GitCommit className="w-4 h-4 text-[var(--action)] shrink-0" />
+                <span className="text-[var(--text)]">Real GitHub activity</span>
+              </div>
+              <div className="type-label px-3.5 py-1.5 rounded-full bg-[var(--surface)] text-[var(--text-muted)] border border-[var(--border)] inline-flex items-center gap-2 text-xs">
+                <ShieldCheck className="w-4 h-4 text-[var(--action)] shrink-0" />
+                <span className="text-[var(--text)]">No password</span>
+              </div>
+              <div className="type-label px-3.5 py-1.5 rounded-full bg-[var(--surface)] text-[var(--text-muted)] border border-[var(--border)] inline-flex items-center gap-2 text-xs">
+                <Zap className="w-4 h-4 text-[var(--action)] shrink-0" />
+                <span className="text-[var(--text)]">1-click</span>
               </div>
             </div>
+
           </div>
 
-          {/* Right Column: Interactive 3D Showcase Card / Mini Cabinet Preview */}
-          <div className="lg:col-span-5 flex justify-center">
-            <div className="relative w-full max-w-md p-6 rounded-2xl bg-[#161B22]/90 border border-[#30363D] shadow-2xl backdrop-blur-sm group hover:border-[#D7FF36]/40 transition-all duration-300">
+          {/* Right Column: Static 3D Medallion Placeholder (DESIGN.md §6, §9 - No WebGL) */}
+          <div className="lg:col-span-5 flex flex-col items-center justify-center pt-4 lg:pt-0">
+            <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center">
               
-              {/* Header inside card */}
-              <div className="flex items-center justify-between pb-4 border-b border-[#30363D]">
-                <div className="flex items-center gap-2.5">
-                  <GitGlowLogo size={28} showWordmark={false} />
-                  <div>
-                    <div className="text-xs font-bold text-[#E6EDF3] font-heading">GitGlow Live Showcase</div>
-                    <div className="text-[11px] text-[#8B949E]">Official Achievement Simulator</div>
+              {/* Outer Radiant Glow */}
+              <div 
+                className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(198,255,61,0.18),rgba(245,196,81,0.12),transparent_70%)] blur-2xl pointer-events-none" 
+                aria-hidden="true" 
+              />
+
+              {/* Static Medallion Illustration (No WebGL) */}
+              <div className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-full border border-[var(--border)] bg-gradient-to-b from-[var(--surface-2)] to-[var(--surface)] p-3 shadow-2xl flex items-center justify-center group">
+                {/* Metallic Inner Rim */}
+                <div className="w-full h-full rounded-full border-2 border-[var(--border)] bg-gradient-to-tr from-[#161B22] via-[#1C2230] to-[#252D3D] flex flex-col items-center justify-center relative overflow-hidden">
+                  
+                  {/* Subtle Shimmer Accent */}
+                  <div className="absolute -top-12 -left-12 w-32 h-32 bg-[var(--action)] opacity-10 blur-xl rounded-full" />
+                  
+                  {/* Achievement Emblem Vector */}
+                  <svg 
+                    width="88" 
+                    height="88" 
+                    viewBox="0 0 88 88" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="drop-shadow-[0_4px_16px_rgba(198,255,61,0.35)]"
+                    aria-label="Achievement Medallion Mark"
+                  >
+                    {/* Octagonal Starburst Badge */}
+                    <circle cx="44" cy="44" r="38" stroke="var(--action)" strokeWidth="2" strokeDasharray="3 3" opacity="0.6" />
+                    <circle cx="44" cy="44" r="32" fill="url(#medallion_grad)" stroke="var(--action)" strokeWidth="1.5" />
+                    
+                    {/* Trophy Star Emblem */}
+                    <path 
+                      d="M44 26L48.2 36.5L59.5 37.5L50.8 45.3L53.4 56.4L44 50.5L34.6 56.4L37.2 45.3L28.5 37.5L39.8 36.5L44 26Z" 
+                      fill="var(--action)" 
+                      stroke="#0D1117" 
+                      strokeWidth="1.5"
+                    />
+
+                    <defs>
+                      <linearGradient id="medallion_grad" x1="20" y1="20" x2="68" y2="68" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#1C2230" />
+                        <stop offset="1" stopColor="#0D1117" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+
+                  {/* Medallion Label */}
+                  <div className="mt-3 text-center">
+                    <span className="font-heading font-bold text-xs uppercase tracking-wider text-[var(--action)] block">
+                      GitGlow
+                    </span>
+                    <span className="text-[10px] font-mono text-[var(--text-muted)] block mt-0.5">
+                      Achievement Badge
+                    </span>
                   </div>
-                </div>
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#D7FF36]/10 border border-[#D7FF36]/20 text-[10px] font-bold text-[#D7FF36]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#D7FF36] animate-pulse" />
-                  <span>ONLINE</span>
                 </div>
               </div>
 
-              {/* Sample Profile HUD */}
-              <div className="py-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-[#8B949E]">Preview Score</div>
-                  <div className="text-xl font-bold font-heading text-[#D7FF36] tabular-nums">
-                    85 <span className="text-xs text-[#8B949E]">/ 100</span>
-                  </div>
-                </div>
-
-                {/* Mini Shelf Grid */}
-                <div className="grid grid-cols-3 gap-2.5 pt-1">
-                  <div className="p-2.5 rounded-xl bg-[#0D1117] border border-[#30363D] flex flex-col items-center text-center">
-                    <span className="text-xl mb-1">🦈</span>
-                    <span className="text-[11px] font-bold text-[#E6EDF3]">Pull Shark</span>
-                    <span className="text-[9px] text-[#D7FF36] mt-0.5">Earned ✓</span>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-[#0D1117] border border-[#30363D] flex flex-col items-center text-center">
-                    <span className="text-xl mb-1">⚡</span>
-                    <span className="text-[11px] font-bold text-[#E6EDF3]">Quickdraw</span>
-                    <span className="text-[9px] text-[#D7FF36] mt-0.5">Earned ✓</span>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-[#0D1117] border border-[#30363D] flex flex-col items-center text-center">
-                    <span className="text-xl mb-1">🚀</span>
-                    <span className="text-[11px] font-bold text-[#E6EDF3]">YOLO</span>
-                    <span className="text-[9px] text-[#388BFD] mt-0.5">Pending ⏱</span>
-                  </div>
-                </div>
-
-                {/* Simulated Terminal Step */}
-                <div className="p-3 rounded-lg bg-[#0D1117] border border-[#30363D] font-code text-xs text-[#8B949E] space-y-1">
-                  <div className="flex items-center gap-1.5 text-[#E6EDF3]">
-                    <span className="text-[#D7FF36]">$</span>
-                    <span>gh pr merge --auto --merge</span>
-                  </div>
-                  <div className="text-[11px] text-emerald-400">✓ Merged into main with verified co-author RFC</div>
-                </div>
-              </div>
-
-              {/* Bottom Card Footer */}
-              <div className="pt-3 border-t border-[#30363D] flex items-center justify-between text-[11px] text-[#8B949E]">
-                <span>5 Verified Automated Tracks</span>
-                <span className="text-[#E6EDF3] font-medium">Ready in ~2 min</span>
-              </div>
             </div>
+
+            {/* Static on Mobile Spec Label (DESIGN.md §6, §9) */}
+            <div className="mt-3 text-center">
+              <span className="inline-block px-3 py-1 rounded-full bg-[var(--surface)] border border-[var(--border)] text-[11px] font-mono text-[var(--text-muted)]">
+                3D Medallion (Static on Mobile)
+              </span>
+            </div>
+
           </div>
 
         </div>
