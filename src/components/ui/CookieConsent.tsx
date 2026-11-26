@@ -11,9 +11,6 @@ interface CookiePreferences {
 }
 
 export const CookieConsent = () => {
-  if (typeof window !== 'undefined' && window.location.pathname === '/styleguide') {
-    return null;
-  }
   const [isVisible, setIsVisible] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
   const [prefs, setPrefs] = useState<CookiePreferences>({

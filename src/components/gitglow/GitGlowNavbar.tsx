@@ -1,77 +1,87 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GitGlowLogo } from './GitGlowLogo';
-import { Github, Menu, X } from 'lucide-react';
+import { Github, Menu, X, ArrowRight, User } from 'lucide-react';
 
 interface GitGlowNavbarProps {
-  connectedUser?: { username: string; avatarUrl?: string } | null;
-  onConnectGitHub?: () => void;
+  connectedUser: { username: string; avatarUrl?: string } | null;
+  onConnectGitHub: () => void;
 }
 
-export const GitGlowNavbar: React.FC<GitGlowNavbarProps> = ({ connectedUser, onConnectGitHub }) => {
+export const GitGlowNavbar: React.FC<GitGlowNavbarProps> = ({
+  connectedUser,
+  onConnectGitHub,
+}) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleConnect = () => {
-    if (onConnectGitHub) {
-      onConnectGitHub();
-    } else {
-      alert('Mock Connect: GitHub OAuth flow will connect here in Phase 5.');
-    }
-  };
-
   return (
-    // Not sticky on mobile (DESIGN.md §6.0, §9)
-    <header className="w-full bg-[var(--bg)] border-b border-[var(--border)] relative md:sticky md:top-0 z-40 backdrop-blur-md">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="w-full bg-[#0D1117] border-b border-[#30363D] relative z-40">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-2" aria-label="GitGlow Home">
-          <GitGlowLogo size={28} showWordmark theme="dark" />
+        <Link to="/blueprints/gitglow" className="flex items-center gap-2">
+          <GitGlowLogo size={28} showWordmark theme="dark" animated />
         </Link>
 
-        {/* Desktop Nav Items (Max 4 items: Badges, How it works, Connect GitHub - DESIGN.md §6.0) */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[var(--text-muted)]">
-          <a
-            href="#badges"
-            className="hover:text-[var(--text)] transition-colors duration-[var(--duration-fast)]"
-          >
-            Badges
+        {/* Desktop Nav Links (Max 4 items) */}
+        <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-[#8B949E]">
+          <a href="#cabinet" className="hover:text-[#E6EDF3] transition-colors">
+            Trophies
           </a>
-          <a
-            href="#how-it-works"
-            className="hover:text-[var(--text)] transition-colors duration-[var(--duration-fast)]"
-          >
-            How it works
+          <a href="#trust" className="hover:text-[#E6EDF3] transition-colors">
+            How It Works
           </a>
+          <a href="#faq" className="hover:text-[#E6EDF3] transition-colors">
+            FAQ
+          </a>
+          <Link to="/blueprints/gitglow/engine" className="hover:text-[#D7FF36] transition-colors flex items-center gap-1">
+            <span>CLI Engine</span>
+          </Link>
         </nav>
 
-        {/* Desktop Connect Button */}
+        {/* Right CTA / Auth Status */}
         <div className="hidden md:flex items-center gap-3">
-          <button
-            type="button"
-            onClick={handleConnect}
-            className="px-4 py-2 rounded-[var(--radius-control)] bg-[var(--surface-2)] hover:bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--action)] text-[var(--text)] hover:text-[var(--action)] font-medium text-sm flex items-center gap-2 transition-all duration-[var(--duration-fast)] cursor-pointer active:scale-[0.98]"
+          {connectedUser ? (
+            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-[#161B22] border border-[#30363D] text-xs text-[#E6EDF3]">
+              {connectedUser.avatarUrl ? (
+                <img src={connectedUser.avatarUrl} alt={connectedUser.username} className="w-5 h-5 rounded-full" />
+              ) : (
+                <User className="w-4 h-4 text-[#D7FF36]" />
+              )}
+              <span className="font-bold">@{connectedUser.username}</span>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={onConnectGitHub}
+              className="px-4 py-2 rounded-xl bg-[#161B22] hover:bg-[#21262D] border border-[#30363D] hover:border-[#D7FF36]/40 text-[#E6EDF3] font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
+            >
+              <Github className="w-4 h-4 text-[#D7FF36]" />
+              <span>Connect GitHub</span>
+            </button>
+          )}
+
+          <a
+            href="#cabinet"
+            className="px-4 py-2 rounded-xl bg-[#D7FF36] hover:bg-[#cbf42e] text-[#0D1117] font-bold text-xs transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
           >
-            <Github className="w-4 h-4 text-[var(--action)]" />
-            <span>Connect GitHub</span>
-          </button>
+            <span>Audit Free</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </a>
         </div>
 
-        {/* Mobile Action & Hamburger */}
+        {/* Mobile Hamburger Button */}
         <div className="md:hidden flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleConnect}
-            className="px-3 py-1.5 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] text-xs font-medium flex items-center gap-1.5"
+          <a
+            href="#cabinet"
+            className="px-3 py-1.5 rounded-lg bg-[#D7FF36] text-[#0D1117] font-bold text-xs"
           >
-            <Github className="w-3.5 h-3.5 text-[var(--action)]" />
-            <span>Connect</span>
-          </button>
+            Scan
+          </a>
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text)]"
-            aria-label="Toggle navigation menu"
+            className="p-2 rounded-lg bg-[#161B22] border border-[#30363D] text-[#8B949E] hover:text-[#E6EDF3]"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -79,34 +89,56 @@ export const GitGlowNavbar: React.FC<GitGlowNavbarProps> = ({ connectedUser, onC
 
       </div>
 
-      {/* Mobile Drawer Menu (Not sticky) */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden px-4 py-3 bg-[var(--surface)] border-b border-[var(--border)] space-y-2 text-sm">
+        <div className="md:hidden p-4 bg-[#161B22] border-b border-[#30363D] space-y-3 text-sm text-[#8B949E]">
           <a
-            href="#badges"
+            href="#cabinet"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 px-3 rounded-[var(--radius-control)] text-[var(--text)] hover:bg-[var(--surface-2)] font-medium transition-colors"
+            className="block py-2 text-[#E6EDF3] font-medium"
           >
-            Badges
+            Trophies Cabinet
           </a>
           <a
-            href="#how-it-works"
+            href="#trust"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 px-3 rounded-[var(--radius-control)] text-[var(--text)] hover:bg-[var(--surface-2)] font-medium transition-colors"
+            className="block py-2 text-[#E6EDF3] font-medium"
           >
-            How it works
+            How It Works
           </a>
-          <button
-            type="button"
-            onClick={() => {
-              setMobileMenuOpen(false);
-              handleConnect();
-            }}
-            className="w-full py-2.5 px-3 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] text-[var(--action)] text-sm font-bold flex items-center justify-center gap-2"
+          <a
+            href="#faq"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block py-2 text-[#E6EDF3] font-medium"
           >
-            <Github className="w-4 h-4" />
-            <span>Connect GitHub</span>
-          </button>
+            FAQ
+          </a>
+          <Link
+            to="/blueprints/gitglow/engine"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block py-2 text-[#D7FF36] font-medium"
+          >
+            Interactive CLI Engine →
+          </Link>
+          <div className="pt-2 border-t border-[#30363D]">
+            {connectedUser ? (
+              <div className="text-xs text-[#E6EDF3] py-2">
+                Signed in as <span className="font-bold text-[#D7FF36]">@{connectedUser.username}</span>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onConnectGitHub();
+                }}
+                className="w-full py-2.5 rounded-xl bg-[#21262D] text-[#E6EDF3] font-bold text-xs flex items-center justify-center gap-2"
+              >
+                <Github className="w-4 h-4 text-[#D7FF36]" />
+                <span>Connect GitHub</span>
+              </button>
+            )}
+          </div>
         </div>
       )}
     </header>

@@ -52,7 +52,6 @@ const GitGlowEnginePage = lazy(() => import("./pages/blueprints/gitglow/GitGlowE
 const GitGlowLearnPage = lazy(() => import("./pages/blueprints/gitglow/GitGlowLearnPage").then(m => ({ default: m.GitGlowLearnPage })));
 const GitGlowBadgeGuidePage = lazy(() => import("./pages/blueprints/gitglow/GitGlowBadgeGuidePage").then(m => ({ default: m.GitGlowBadgeGuidePage })));
 const GitGlowHowItWorksPage = lazy(() => import("./pages/blueprints/gitglow/GitGlowHowItWorksPage").then(m => ({ default: m.GitGlowHowItWorksPage })));
-const StyleguidePage = lazy(() => import("./pages/styleguide/StyleguidePage").then(m => ({ default: m.StyleguidePage })));
 
 
 
@@ -144,8 +143,7 @@ export default function App() {
           
           <Suspense fallback={<PageLoading />}>
             <Routes>
-              <Route path="/" element={<GitGlowHomePage />} />
-              <Route path="/portfolio-home" element={wrapInLayout(<HomePage />)} />
+              <Route path="/" element={wrapInLayout(<HomePage />)} />
               <Route path="/now" element={<Navigate to="/building" replace />} />
               <Route path="/about" element={wrapInLayout(<AboutPage />)} />
               <Route path="/projects" element={<Navigate to="/blueprints" replace />} />
@@ -179,7 +177,7 @@ export default function App() {
               <Route path="/blueprints/b-cyber/updates" element={wrapInLayout(<BCyberOfficialUpdatesPage />)} />
               <Route path="/blueprints/b-cyber/evidence-of-work" element={wrapInLayout(<BCyberEvidenceGuidePage />)} />
               {/* GitGlow Routes (Declared before :slug) */}
-              <Route path="/blueprints/gitglow" element={<GitGlowHomePage />} />
+              <Route path="/blueprints/gitglow" element={wrapInLayout(<GitGlowHomePage />)} />
               <Route path="/blueprints/gitglow/badges/:badgeId" element={wrapInLayout(<GitGlowBadgeGuidePage />)} />
               <Route path="/blueprints/gitglow/how-it-works" element={wrapInLayout(<GitGlowHowItWorksPage />)} />
               <Route path="/blueprints/gitglow/engine" element={<GitGlowEnginePage />} />
@@ -212,7 +210,6 @@ export default function App() {
 <Route path="/workspace/outreach-engine" element={<OutreachEnginePage />} />
 <Route path="/workspace/client-delivery" element={<DeliverySystemPage />} />
 <Route path="/dev/inspector" element={<DeveloperGraphInspector />} />
-<Route path="/styleguide" element={<StyleguidePage />} />
 <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>

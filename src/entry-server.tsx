@@ -193,15 +193,6 @@ export async function getRoutesConfig() {
 
   // GitGlow Routes (SSG Prerendered)
   routes.push({ 
-    url: '/styleguide', 
-    seoData: { 
-      title: "GitGlow Design System Styleguide | Foundation Tokens", 
-      description: "Live styleguide for GitGlow design foundation tokens, typography scales, spacing, and radii.",
-      schema: new SchemaFactory().addWebPage({ name: "GitGlow Styleguide", description: "Design tokens and foundation.", url: "/styleguide" }).build()
-    }
-  });
-
-  routes.push({ 
     url: '/blueprints/gitglow', 
     seoData: { 
       title: "GitGlow — Grow Your GitHub Profile Credibility & Unlock Badges", 

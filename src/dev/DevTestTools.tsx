@@ -375,12 +375,6 @@ function seedJourney(s: Scenario) {
  * ─────────────────────────────────────────────── */
 
 export function DevTestTools() {
-  if (import.meta.env.PROD || process.env.NODE_ENV === 'production' || !import.meta.env.DEV) {
-    return null;
-  }
-  if (typeof window !== 'undefined' && (window.location.pathname.startsWith('/styleguide') || window.location.pathname === '/' || window.location.pathname.startsWith('/blueprints/gitglow'))) {
-    return null;
-  }
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const navigate = useNavigate();
