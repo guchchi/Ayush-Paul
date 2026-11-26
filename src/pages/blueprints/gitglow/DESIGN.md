@@ -9,10 +9,8 @@ If something is not covered here, ask. Do not invent styles.
 
 GitGlow helps students and beginners grow their GitHub profile. Users scan any public username for free, then claim GitHub achievement badges with a one-click bot that acts on their own account.
 
-**Audience:** 1st/2nd-year students, mostly on phones, many in India.  
+**Audience:** 1st/2nd-year students, mostly on phones, many in India.
 **Primary goal of the homepage:** get the visitor to scan a username.
-
----
 
 ## 2. Design principles
 
@@ -23,8 +21,6 @@ GitGlow helps students and beginners grow their GitHub profile. Users scan any p
 5. **Friendly dark.** Dark theme, but rounded, warm copy, and readable text.
 6. **Mobile first.** Design the phone layout first, then widen.
 
----
-
 ## 3. Theme: softened dark-first (dark only for v1)
 
 ### 3.1 Color tokens
@@ -34,7 +30,7 @@ GitGlow helps students and beginners grow their GitHub profile. Users scan any p
   /* Surfaces */
   --bg:            #0D1117; /* page */
   --surface:       #161B22; /* cards, drawer */
-  --surface-2:     #1C2230; /* raised / hover */
+  --surface-2:     #1C2230; /* raised / hover (proposed) */
   --border:        #30363D;
 
   /* Text */
@@ -42,11 +38,11 @@ GitGlow helps students and beginners grow their GitHub profile. Users scan any p
   --text-muted:    #8B949E; /* secondary only */
 
   /* Semantic (colors carry meaning) */
-  --action:        #C6FF3D; /* LIME: do this (buttons, links) */
+  --action:        #C6FF3D; /* LIME: do this (buttons, links) (proposed hex) */
   --on-action:     #0D1117; /* text on lime */
-  --earned:        #F5C451; /* GOLD: earned */
-  --processing:    #4DA3FF; /* BLUE: waiting for GitHub */
-  --danger:        #FF6B6B; /* errors / failed */
+  --earned:        #F5C451; /* GOLD: earned (proposed hex) */
+  --processing:    #4DA3FF; /* BLUE: waiting for GitHub (proposed hex) */
+  --danger:        #FF6B6B; /* errors / failed (proposed hex) */
 }
 ```
 
@@ -60,8 +56,6 @@ GitGlow helps students and beginners grow their GitHub profile. Users scan any p
 - Meaning must never rely on color alone. Always add a text label and an icon.
 - Do not copy GitHub's look wholesale. GitGlow needs its own accent, logo, badge art and motion style.
 
----
-
 ## 4. Typography
 
 | Use | Font | Notes |
@@ -74,33 +68,29 @@ GitGlow helps students and beginners grow their GitHub profile. Users scan any p
 - Self-host, subset to Latin, `font-display: swap`, preload heading + body only.
 - Fallbacks: `system-ui`, `ui-monospace`.
 
-| Style | Desktop | Mobile | Line Height |
-|---|---|---|---|
-| Hero headline | 56-64px | 36-40px | 1.1 |
-| Section title | 36-40px | 28px | 1.15 |
-| Card title | 20-24px | 18-20px | 1.25 |
-| Body | 16-18px | 16px | 1.6 |
-| Small / labels | 14px | 14px | 1.4 |
-| Terminal | 14px | 13px | 1.5 |
+| Style | Desktop | Mobile |
+|---|---|---|
+| Hero headline | 56-64px | 36-40px |
+| Section title | 36-40px | 28px |
+| Card title | 20-24px | 18-20px |
+| Body | 16-18px | 16px |
+| Small / labels | 14px | 14px |
+| Terminal | 14px | 13px |
 
 - Line height: 1.1 headings, 1.6 body. Paragraph width about 60-70 characters.
 - All inputs: **16px or larger** (prevents iOS zoom).
-- Score number uses tabular numerals (`font-variant-numeric: tabular-nums`).
+- Score number uses tabular numerals.
 - No gradient text on body copy. At most one gradient word in the hero.
 - No long all-caps text.
 
----
-
 ## 5. Spacing, shape, motion
 
-- **Grid:** 8px base unit (8px, 16px, 24px, 32px, 48px, 64px). Max content width about 1200px. Generous section gaps.
-- **Radius:** 12px (controls), 16px (cards, drawer), 9999px (pills).
-- **Shadows:** minimal. Soft glow only for earned/active items (`0 0 24px rgba(245, 196, 81, 0.25)`).
-- **Icons:** one set only (Lucide), consistent stroke (1.75px–2.0px).
+- **Grid:** 8px base unit. Max content width about 1200px. Generous section gaps.
+- **Radius:** 12px (controls), 16px (cards, drawer).
+- **Shadows:** minimal. Soft glow only for earned/active items.
+- **Icons:** one set only (Lucide), consistent stroke.
 - **Motion:** 150-300ms, one easing curve `cubic-bezier(0.2, 0.8, 0.2, 1)`.
 - **Reduced motion:** disable glow pulses, tilt, and slide animations; use simple fades.
-
----
 
 ## 6. Page structure (homepage)
 
@@ -117,8 +107,6 @@ GitGlow helps students and beginners grow their GitHub profile. Users scan any p
 - Subtitle: "See missing achievements. Claim in 1 click."
 - Trust pills: "Real GitHub activity", "No password", "1-click"
 - Example usernames: `@octocat` and the founder's own.
-
----
 
 ## 7. Components
 
@@ -153,19 +141,103 @@ Each slot shows: badge art, name, time tag (e.g. "~2 min"), difficulty pill (Eas
 - Mobile: bottom sheet about 85% height, drag handle, swipe down to close.
 - Slide-in 250-300ms. `Esc` and outside click close it. Focus is trapped inside and returns to the badge on close.
 - URL updates (e.g. `/?badge=pull-shark`) so it is shareable; Back closes it.
-- **Non-blocking:** closing the drawer does not stop a running bot job. The shelf slot shows a spinner/pulse while it runs.
-- **Trigger action:** single primary button "Claim Badge".
-- First click: triggers GitHub OAuth (one-time).
-- Next clicks: run immediately.
-- Terminal log: shows real-time steps with timestamps. Collapsible.
+- **Non-blocking:** closing the drawer does not stop a running bot job. The shelf slot shows status.
 
----
+**Content (top to bottom):** badge art + name + state; quick facts (time, difficulty, what it proves); requirements (2-3 lines); gotchas; "What the bot will do" (3 plain steps); primary button (sticky at bottom); "Do it manually" link; "Read full guide" link.
 
-## 8. Development State Switcher Spec
-For rapid visual testing without live GitHub API throttling:
-- `pre-scan` (Sample profile cabinet)
-- `post-scan-clean` (All 5 badges available)
-- `post-scan-partial` (2 earned, 1 processing, 2 available)
-- `post-scan-all-earned` (5 of 5 unlocked)
-- `state-rate-limited` (GitHub 429 response)
-- `state-user-not-found` (404 friendly recovery)
+**Six button states:**
+
+| State | Button / content |
+|---|---|
+| Available | `Claim with 1-Click Bot` |
+| Not logged in | `Connect GitHub to claim` (shows permission summary first) |
+| Running | Live step log |
+| Processing | "Done on your side. Waiting for GitHub (hours to days)." |
+| Earned | "On your profile" + share button |
+| Failed | Plain reason + `Try again` |
+
+### 7.4.1 Claim rule
+The claim button works **only** when the logged-in GitHub user equals the scanned username. For anyone else, show: "Scan only. Log in as this user to claim."
+
+### 7.5 Practice mode
+If a practice/simulation exists, label it **"Practice (no badge)"**. It never earns a badge.
+
+## 8. States to design (not just the happy path)
+
+| Situation | Show |
+|---|---|
+| Scanning | Skeleton shimmer, not a spinner |
+| Username not found | Friendly message, "check spelling" |
+| Private or empty profile | Encouraging copy, never shaming |
+| GitHub rate-limited | "Busy, retrying in 30s" |
+| Bot failed | Plain reason and Try again |
+| Zero activity | "Great, you're starting fresh. Easiest badge first." |
+| Pending too long (days) | "Not showing yet. Here's why." |
+
+## 9. Mobile rules
+
+- Scan input sits in the **upper-middle** (keyboard must not cover it).
+- Sticky bottom pill `Audit My Profile`. It becomes the submit button once text is typed.
+- Cabinet is a **vertical stacked list**, not a carousel. Rows at least 48px tall.
+- Progress bar ("2 of 5 earned") pinned at top while scrolling.
+- **Max 2 sticky elements** at once.
+- No hover-only interactions. Tap targets 44px or larger.
+- Log text wraps; no sideways scrolling.
+- 3D medallion is a static image on mobile.
+- One-tap WhatsApp share of the score card.
+- Handle in-app browsers (Instagram, WhatsApp, LinkedIn): detect and show "Open in browser" if GitHub login fails.
+- Test on a cheap Android phone, on mobile data, opened from a WhatsApp link.
+
+## 10. Accessibility
+
+- Drawer: focus trap, `Esc`, focus returns to trigger.
+- Announce status changes with `aria-live`.
+- Visible focus ring (lime) on all interactive elements.
+- Text labels for every state (not color only).
+- Check contrast: dark text on lime, gold and blue on charcoal, muted text on bg.
+- Keyboard navigation through the shelf.
+- Respect `prefers-reduced-motion`.
+
+## 11. Performance budget
+
+- Usable in about 2.5s on a mid-range Android over mobile data.
+- Lazy-load everything below the fold. Load the 3D hero only on capable desktop.
+- Self-hosted, subset fonts.
+- Measure on real devices.
+
+## 12. Copy and tone
+
+- Friendly, short, honest. Light Hinglish touches only in small places (hints, errors). Main SEO pages in English.
+- **Banned phrases:** "100% legal", "zero ban risk", "hack", "cheat", "fake".
+- Pills: "Real GitHub activity", "No password", "1-click".
+- After claim: "Action completed. GitHub usually shows the badge within a few hours to days." (no "SLA" jargon)
+- Always explain permissions in plain words and show the revoke link.
+
+## 13. Trust UI
+
+- Before GitHub login: mini summary, e.g. "Creates a repo in your account. Collaboration is done by the GitGlow agent account."
+- After a claim: "What the bot did" with links to the real PR or repo.
+- Permission text must match the **exact** OAuth scopes requested.
+
+## 14. SEO notes that affect UI
+
+- Badge pages `/badges/<slug>` are server-rendered. Drawer content and badge page content come from the same template.
+- Scan-result URLs and `/engine` are `noindex`.
+- Each badge page: question H1, 40-60 word direct answer, numbered steps, small table, FAQ, "Last updated" date.
+
+## 15. Build rules for the coding agent
+
+- Use design tokens only (CSS variables or Tailwind theme). **No new colors, fonts, or libraries** without approval.
+- One component or section per task.
+- Use mock data from `/mocks` first. A hidden dev state switcher flips between earned, processing, failed, and empty states.
+- Every component must handle all states in this file.
+- Verify at 375px, 768px, and 1280px, with a screenshot, before saying "done".
+- Commit after each section.
+
+## 16. Still open (decide later)
+
+- Final accent hex values (lime, gold, blue, red are proposed above).
+- Logo and wordmark.
+- Badge artwork style.
+- Pricing and paid tiers.
+- Light theme (phase 2).

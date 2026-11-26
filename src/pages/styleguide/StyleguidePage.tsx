@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Sparkles, Terminal, CheckCircle2, AlertCircle, Clock, ShieldCheck, Box, MoveRight } from 'lucide-react';
+import { Sparkles, Terminal, CheckCircle2, AlertCircle, Clock, ShieldCheck, Box, MoveRight, ArrowRight, RefreshCw, Lock } from 'lucide-react';
 
 export function StyleguidePage() {
-  const [activeTab, setActiveTab] = useState<'all' | 'colors' | 'typography' | 'spacing' | 'motion'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'colors' | 'typography' | 'spacing' | 'buttons' | 'motion'>('all');
 
   const surfaceTokens = [
     { name: '--bg', hex: '#0D1117', desc: 'Canvas background (soft charcoal, never pure black)', border: '#30363D' },
@@ -22,7 +22,7 @@ export function StyleguidePage() {
       hex: '#C6FF3D',
       label: 'Lime (Action)',
       meaning: 'Do this / Click here',
-      rules: 'Primary CTAs, key links, focus ring only. Never decorative.',
+      rules: 'Primary buttons, key links, focus ring only. Never decorative.',
       textColor: '#0D1117',
     },
     {
@@ -88,7 +88,7 @@ export function StyleguidePage() {
               Design Foundation Styleguide
             </h1>
             <p className="type-body text-[var(--text-muted)] mt-2 max-w-[70ch]">
-              Single source of truth for color tokens, typography scales, 8px grid spacing, border radii, and motion curves.
+              Single source of truth for color tokens, typography scales, 8px grid spacing, border radii, and button samples.
             </p>
           </div>
 
@@ -101,7 +101,7 @@ export function StyleguidePage() {
 
         {/* Filter Navigation */}
         <div className="flex flex-wrap gap-2 mt-6">
-          {(['all', 'colors', 'typography', 'spacing', 'motion'] as const).map(tab => (
+          {(['all', 'colors', 'typography', 'spacing', 'buttons', 'motion'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -223,7 +223,7 @@ export function StyleguidePage() {
             <div className="border-b border-[var(--border)] pb-3">
               <h2 className="type-section-title text-[var(--text)]">2. Typography Hierarchy (DESIGN.md §4)</h2>
               <p className="type-body text-[var(--text-muted)] mt-1">
-                Strict 3 families (Space Grotesk, Inter, JetBrains Mono). Weights strictly 400, 500, 700.
+                Strict 3 families (Space Grotesk, Inter, JetBrains Mono). Weights strictly 400, 500, 700. Self-hosted Latin subsets with font-display: swap.
               </p>
             </div>
 
@@ -414,11 +414,172 @@ export function StyleguidePage() {
           </section>
         )}
 
-        {/* SECTION 4: INTERACTIVE CONTROLS, FOCUS RING & MOTION */}
+        {/* SECTION 4: BUTTON SAMPLES */}
+        {(activeTab === 'all' || activeTab === 'buttons') && (
+          <section id="buttons" className="space-y-6">
+            <div className="border-b border-[var(--border)] pb-3">
+              <h2 className="type-section-title text-[var(--text)]">4. Button Samples (DESIGN.md §3, §5, §7.4)</h2>
+              <p className="type-body text-[var(--text-muted)] mt-1">
+                Lime is action only. Buttons follow 12px radius, active scale-down, explicit state copy, and WCAG AAA contrast.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Primary Action Button */}
+              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-[var(--action)] font-bold">PRIMARY CTA</span>
+                  <span className="text-xs font-mono text-[var(--text-muted)]">--action (Lime)</span>
+                </div>
+                <h3 className="text-base font-bold text-[var(--text)]">Primary Claim & Scan Action</h3>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Electric lime background (`#C6FF3D`) with charcoal text (`#0D1117`). Reserved for primary conversion steps.
+                </p>
+                <div className="space-y-2 pt-2">
+                  <button className="w-full py-3 px-4 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all duration-[var(--duration-fast)] flex items-center justify-center gap-2">
+                    <span>Claim with 1-Click Bot</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                  <button className="w-full py-2.5 px-4 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all duration-[var(--duration-fast)]">
+                    Audit Free
+                  </button>
+                </div>
+              </div>
+
+              {/* Secondary Action */}
+              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-[var(--text-muted)] font-bold">SECONDARY ACTION</span>
+                  <span className="text-xs font-mono text-[var(--text-muted)]">--surface-2</span>
+                </div>
+                <h3 className="text-base font-bold text-[var(--text)]">Secondary Navigation & Manual</h3>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Deep charcoal background (`#1C2230`) with border (`#30363D`) and light text (`#E6EDF3`).
+                </p>
+                <div className="space-y-2 pt-2">
+                  <button className="w-full py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] text-[var(--text)] border border-[var(--border)] hover:bg-[var(--border)] active:scale-[0.98] transition-all duration-[var(--duration-fast)] text-sm font-medium">
+                    Do it manually
+                  </button>
+                  <button className="w-full py-2.5 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] text-[var(--text)] border border-[var(--border)] hover:bg-[var(--border)] active:scale-[0.98] transition-all duration-[var(--duration-fast)] text-sm font-medium">
+                    Read full badge guide
+                  </button>
+                </div>
+              </div>
+
+              {/* Ghost Link Button */}
+              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-[var(--text-muted)] font-bold">GHOST / LINK</span>
+                  <span className="text-xs font-mono text-[var(--text-muted)]">--text-muted</span>
+                </div>
+                <h3 className="text-base font-bold text-[var(--text)]">Subtle In-Context Links</h3>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Muted text (`#8B949E`) with hover reveal to primary text (`#E6EDF3`) and smooth underline.
+                </p>
+                <div className="space-y-3 pt-2">
+                  <a href="#rules" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text)] transition-colors duration-[var(--duration-fast)] group">
+                    <span>How is score calculated?</span>
+                    <MoveRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                  </a>
+                  <div>
+                    <button className="px-3 py-1.5 rounded-[var(--radius-control)] border border-[var(--border)] bg-transparent text-xs text-[var(--text-muted)] hover:text-[var(--text)] hover:border-[var(--text-muted)] transition-all">
+                      Revoke OAuth access
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Drawer Six Button States Showcase */}
+              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-4 md:col-span-2 lg:col-span-3">
+                <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+                  <div>
+                    <span className="text-xs font-mono text-[var(--action)] font-bold">DRAWER BUTTON STATES (DESIGN.md §7.4)</span>
+                    <h3 className="text-lg font-bold text-[var(--text)] mt-0.5">The 6 Drawer Execution States</h3>
+                  </div>
+                  <span className="text-xs font-mono text-[var(--text-muted)]">Section 7.4 Spec</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* 1. Available */}
+                  <div className="p-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
+                      <span>1. Available</span>
+                      <span className="text-[var(--action)]">Ready</span>
+                    </div>
+                    <button className="w-full py-2 px-3 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-xs shadow-[var(--glow-action)] flex items-center justify-center gap-1.5">
+                      <span>Claim with 1-Click Bot</span>
+                    </button>
+                  </div>
+
+                  {/* 2. Not Logged In */}
+                  <div className="p-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
+                      <span>2. Not Logged In</span>
+                      <span>Auth required</span>
+                    </div>
+                    <button className="w-full py-2 px-3 rounded-[var(--radius-control)] bg-[var(--surface)] text-[var(--text)] border border-[var(--border)] hover:border-[var(--action)] font-medium text-xs flex items-center justify-center gap-1.5">
+                      <Lock className="w-3.5 h-3.5 text-[var(--action)]" />
+                      <span>Connect GitHub to claim</span>
+                    </button>
+                  </div>
+
+                  {/* 3. Running */}
+                  <div className="p-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
+                      <span>3. Running</span>
+                      <span className="text-[var(--processing)]">Active</span>
+                    </div>
+                    <button className="w-full py-2 px-3 rounded-[var(--radius-control)] bg-[rgba(77,163,255,0.15)] text-[var(--processing)] border border-[rgba(77,163,255,0.4)] font-medium text-xs flex items-center justify-center gap-1.5 cursor-wait">
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Executing step 2/3...</span>
+                    </button>
+                  </div>
+
+                  {/* 4. Processing */}
+                  <div className="p-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
+                      <span>4. Processing</span>
+                      <span className="text-[var(--processing)]">Waiting</span>
+                    </div>
+                    <div className="py-2 px-3 rounded-[var(--radius-control)] bg-[var(--surface)] text-[var(--processing)] border border-[rgba(77,163,255,0.3)] text-xs text-center leading-tight">
+                      Done on your side. Waiting for GitHub (hours to days).
+                    </div>
+                  </div>
+
+                  {/* 5. Earned */}
+                  <div className="p-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
+                      <span>5. Earned</span>
+                      <span className="text-[var(--earned)]">Unlocked</span>
+                    </div>
+                    <button className="w-full py-2 px-3 rounded-[var(--radius-control)] bg-[rgba(245,196,81,0.15)] text-[var(--earned)] border border-[rgba(245,196,81,0.4)] font-medium text-xs flex items-center justify-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>On your profile (Share)</span>
+                    </button>
+                  </div>
+
+                  {/* 6. Failed */}
+                  <div className="p-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
+                      <span>6. Failed</span>
+                      <span className="text-[var(--danger)]">Error</span>
+                    </div>
+                    <button className="w-full py-2 px-3 rounded-[var(--radius-control)] bg-[rgba(255,107,107,0.15)] text-[var(--danger)] border border-[rgba(255,107,107,0.4)] font-bold text-xs flex items-center justify-center gap-1.5">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      <span>Rate limit reached · Try again</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* SECTION 5: FOCUS RING, SHADOWS & MOTION */}
         {(activeTab === 'all' || activeTab === 'motion') && (
           <section id="motion" className="space-y-6">
             <div className="border-b border-[var(--border)] pb-3">
-              <h2 className="type-section-title text-[var(--text)]">4. Focus Ring, Shadows & Motion (DESIGN.md §3, §5)</h2>
+              <h2 className="type-section-title text-[var(--text)]">5. Focus Ring, Shadows & Motion (DESIGN.md §3, §5)</h2>
               <p className="type-body text-[var(--text-muted)] mt-1">
                 Lime focus ring, soft glow for earned and action items, 150-300ms transitions with cubic-bezier(0.2, 0.8, 0.2, 1).
               </p>
