@@ -22,12 +22,15 @@ import {
   ShieldCheck,
   CheckCheck,
   BookOpen,
+  User,
 } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { GitGlowLogo } from "../components/gitglow/GitGlowLogo";
 import { SupportModal } from "../components/ui/SupportButton";
 import { AuthModal } from "../components/ui/AuthModal";
 import { auth, onAuthStateChanged } from "../firebase";
+import { useGitGlowStore } from '../lib/gitglow/gitglow-store';
+import { connectGitHubForGitGlow } from '../lib/gitglow/gitglow-auth';
 
 const GITGLOW_FEATURES = [
   {
@@ -88,6 +91,19 @@ export const Navbar = () => {
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const gitGlowStore = useGitGlowStore();
+  const gitGlowUser = gitGlowStore.connectedUser;
+
+  const handleGitGlowConnect = async () => {
+    try {
+      const u = await connectGitHubForGitGlow();
+      gitGlowStore.setConnectedUser(u);
+    } catch (err: any) {
+      console.error('[GitGlow Auth Error]', err);
+      alert(err.message || 'Failed to authenticate with GitHub.');
+    }
+  };
+
   const [isGitGlowFeaturesOpen, setIsGitGlowFeaturesOpen] = useState(false);
   const gitGlowNavRef = React.useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -399,169 +415,81 @@ export const Navbar = () => {
             </div>
           </div>
         ) : isGitGlow ? (
-          /* Floating Dynamic Island Capsule Navbar matching CleanShot X structure */
+          /* Floating Dynamic Island Capsule Navbar */
           <div
             ref={gitGlowNavRef}
-            className={cn(
-              "pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] select-none",
-              isGitGlowFeaturesOpen
-                ? "w-[min(96vw,670px)] bg-[#191A1E] border border-white/12 rounded-[28px] shadow-[0_28px_64px_rgba(0,0,0,0.65),0_4px_20px_rgba(0,0,0,0.3)] p-4 sm:p-5 max-h-[85vh] overflow-y-auto"
-                : "w-auto max-w-[min(96vw,760px)] bg-[#191A1E]/95 backdrop-blur-xl border border-white/12 rounded-full shadow-[0_16px_40px_rgba(0,0,0,0.45),0_2px_8px_rgba(0,0,0,0.25)] px-2.5 py-1.5 sm:px-4 sm:py-2.5"
-            )}
+            className="pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] select-none w-auto max-w-[min(96vw,840px)] bg-[#191A1E]/95 backdrop-blur-xl border border-white/12 rounded-full shadow-[0_16px_40px_rgba(0,0,0,0.45),0_2px_8px_rgba(0,0,0,0.25)] px-3 py-1.5 sm:px-4 sm:py-2"
           >
             {/* Top Bar Row */}
-            <div className="flex items-center justify-between gap-1.5 sm:gap-6 w-full">
-              {/* Brand Logo */}
+            <div className="flex items-center justify-between gap-1 sm:gap-6 w-full">
+              {/* 1. Brand Logo: [GitGlow] */}
               <Link
                 to="/blueprints/gitglow"
-                className="flex items-center gap-1.5 sm:gap-2 group cursor-pointer select-none shrink-0"
-                onClick={() => setIsGitGlowFeaturesOpen(false)}
+                className="flex items-center gap-1 sm:gap-2 group cursor-pointer select-none shrink-0"
                 title="GitGlow Platform"
               >
-                <GitGlowLogo size={24} showWordmark theme="dark" animated className="gap-1.5 sm:gap-2.5" />
+                <GitGlowLogo size={20} showWordmark theme="dark" animated className="gap-1 sm:gap-2" />
               </Link>
 
-              {/* Center Navigation Links */}
-              <nav aria-label="Navigation" className="flex items-center gap-1 sm:gap-2">
-                {/* Features dropdown toggle */}
-                <button
-                  type="button"
-                  onClick={() => setIsGitGlowFeaturesOpen(prev => !prev)}
-                  className={cn(
-                    "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-[14px] font-medium transition-colors cursor-pointer select-none shrink-0",
-                    isGitGlowFeaturesOpen
-                      ? "text-[#D7FF36]"
-                      : "text-white/80 hover:text-white"
-                  )}
-                  aria-expanded={isGitGlowFeaturesOpen}
-                >
-                  <span>Features</span>
-                  <ChevronDown
-                    size={12}
-                    className={cn(
-                      "transition-transform duration-200 text-white/70",
-                      isGitGlowFeaturesOpen && "rotate-180 text-[#D7FF36]"
-                    )}
-                  />
-                </button>
-
+              {/* 2, 3, 4. Center Navigation Links: Badges | How it works | Docs */}
+              <nav aria-label="GitGlow Navigation" className="flex items-center gap-0.5 sm:gap-2 shrink-0">
                 <a
-                  href="#achievements"
+                  href="#cabinet"
                   onClick={(e) => {
                     e.preventDefault();
-                    setIsGitGlowFeaturesOpen(false);
                     const el = document.getElementById('cabinet') || document.getElementById('achievements');
                     el?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none hidden min-[440px]:inline-flex shrink-0"
+                  className="px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10.5px] sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none shrink-0"
                 >
                   Badges
                 </a>
+
                 <a
-                  href="#missions"
+                  href="#trust"
                   onClick={(e) => {
                     e.preventDefault();
-                    setIsGitGlowFeaturesOpen(false);
-                    const el = document.getElementById('missions') || document.getElementById('cabinet');
+                    const el = document.getElementById('trust') || document.getElementById('how-it-works');
                     el?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none hidden min-[540px]:inline-flex shrink-0"
+                  className="px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10.5px] sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none shrink-0"
                 >
-                  Missions
+                  How it works
                 </a>
-                <a
-                  href="#faq"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsGitGlowFeaturesOpen(false);
-                    document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none hidden min-[480px]:inline-flex shrink-0"
-                >
-                  FAQ
-                </a>
-              </nav>
 
-              {/* Right Action Area */}
-              <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
                 <Link
                   to="/blueprints/gitglow/learn"
-                  onClick={() => setIsGitGlowFeaturesOpen(false)}
-                  className="text-xs sm:text-[13.5px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer px-2 hidden md:inline-flex items-center gap-1.5 shrink-0"
+                  className="px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10.5px] sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none shrink-0"
                 >
-                  <BookOpen size={13} className="text-white/60" />
-                  <span>Docs</span>
+                  Docs
                 </Link>
+              </nav>
 
-                {/* 1-Click Sandbox Engine CTA */}
-                <Link
-                  to="/blueprints/gitglow/engine"
-                  onClick={() => setIsGitGlowFeaturesOpen(false)}
-                  className="h-7 sm:h-9 px-2.5 sm:px-4 rounded-full bg-[#D7FF36] hover:bg-[#c8f722] text-[#101114] text-xs sm:text-[13px] font-extrabold tracking-tight inline-flex items-center gap-1 sm:gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_16px_rgba(215,255,54,0.35)] cursor-pointer select-none shrink-0"
-                  aria-label="Launch 1-Click Engine"
-                >
-                  <Zap size={11} className="fill-[#101114] text-[#101114] shrink-0" />
-                  <span className="hidden sm:inline">1-Click Engine</span>
-                  <span className="sm:hidden">Engine</span>
-                </Link>
+              {/* 5. Right Action Area: [ Connect GitHub ] */}
+              <div className="flex items-center gap-1 sm:gap-3 shrink-0">
+                {gitGlowUser ? (
+                  <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#161B22] border border-[#30363D] text-[10.5px] sm:text-xs text-[#E6EDF3] shrink-0">
+                    {gitGlowUser.avatarUrl ? (
+                      <img src={gitGlowUser.avatarUrl} alt={gitGlowUser.githubUsername} className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full" />
+                    ) : (
+                      <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#D7FF36]" />
+                    )}
+                    <span className="font-bold truncate max-w-[70px] sm:max-w-none">@{gitGlowUser.githubUsername}</span>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleGitGlowConnect}
+                    className="h-7 sm:h-9 px-2 sm:px-4 rounded-full bg-[#161B22] hover:bg-[#21262D] border border-[#30363D] hover:border-[#D7FF36]/50 text-[#E6EDF3] hover:text-white text-[10.5px] sm:text-[13px] font-bold inline-flex items-center gap-1 sm:gap-2 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] cursor-pointer select-none shrink-0 shadow-sm"
+                    aria-label="Connect GitHub Account"
+                  >
+                    <Github className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#D7FF36] shrink-0" />
+                    <span className="hidden min-[480px]:inline">Connect GitHub</span>
+                    <span className="min-[480px]:hidden">Connect</span>
+                  </button>
+                )}
               </div>
             </div>
-
-            {/* Expanded 6-Card Feature Grid matching IMAGE 2 */}
-            <AnimatePresence>
-              {isGitGlowFeaturesOpen && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0, y: -6 }}
-                  animate={{ opacity: 1, height: 'auto', y: 0 }}
-                  exit={{ opacity: 0, height: 0, y: -6 }}
-                  transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-                  className="overflow-hidden pt-4 sm:pt-5"
-                >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                    {GITGLOW_FEATURES.map((item) => {
-                      const IconComponent = item.icon;
-                      return (
-                        <a
-                          key={item.title}
-                          href={item.link}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setIsGitGlowFeaturesOpen(false);
-                            if (item.link.startsWith('/')) {
-                              const [path, hash] = item.link.split('#');
-                              if (hash && location.pathname === path) {
-                                document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
-                              } else {
-                                navigate(item.link);
-                              }
-                            } else if (item.link.startsWith('#')) {
-                              const id = item.link.substring(1);
-                              document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-                            }
-                          }}
-                          className={cn(
-                            "p-4 sm:p-4.5 rounded-2xl transition-all duration-200 cursor-pointer group flex flex-col justify-between border border-white/5 hover:border-white/20 shadow-xs",
-                            item.cardBg
-                          )}
-                        >
-                          <div>
-                            <div className={cn("w-9 h-9 rounded-full flex items-center justify-center mb-3 shadow-2xs", item.circleBg)}>
-                              <IconComponent size={16} />
-                            </div>
-                            <h4 className="text-[15px] sm:text-[16px] font-bold text-white tracking-tight group-hover:text-white">
-                              {item.title}
-                            </h4>
-                            <p className="text-[12px] sm:text-[12.5px] text-white/70 leading-relaxed mt-1 font-normal">
-                              {item.desc}
-                            </p>
-                          </div>
-                        </a>
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         ) : (
           /* Standard Navbar for other pages */

@@ -195,7 +195,7 @@ export const GitGlowLogo: React.FC<GitGlowLogoProps> = ({
           <div className="flex items-baseline">
             <span
               className={cn(
-                'text-base sm:text-lg font-black tracking-tight transition-colors',
+                'text-sm sm:text-lg font-black tracking-tight transition-colors',
                 theme === 'dark'
                   ? 'text-white'
                   : theme === 'light'
@@ -205,7 +205,7 @@ export const GitGlowLogo: React.FC<GitGlowLogoProps> = ({
             >
               Git
             </span>
-            <span className="text-base sm:text-lg font-black tracking-tight text-[#84CC16] group-hover:text-[#D7FF36] transition-colors">
+            <span className="text-sm sm:text-lg font-black tracking-tight text-[#84CC16] group-hover:text-[#D7FF36] transition-colors">
               Glow
             </span>
           </div>
