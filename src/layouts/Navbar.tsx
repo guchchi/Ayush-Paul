@@ -244,7 +244,7 @@ export const Navbar = () => {
         isHomePage 
           ? "absolute top-10 md:top-14 left-4 md:left-6 right-4 md:right-6 z-[1000] bg-transparent border-none py-6"
           : (isGitGlow
-              ? "fixed top-3.5 sm:top-5 left-0 right-0 z-[1000] flex justify-center px-3 sm:px-4 pointer-events-none transition-all duration-300"
+              ? "fixed top-3 sm:top-5 left-0 right-0 z-[1000] flex justify-center px-2.5 sm:px-4 pointer-events-none transition-all duration-300"
               : "fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out"),
         !isHomePage && !isGitGlow && (isVisible ? "translate-y-0" : "-translate-y-full"),
         isGitGlow && (isVisible ? "translate-y-0 opacity-100" : "-translate-y-16 opacity-0 pointer-events-none"),
@@ -405,20 +405,20 @@ export const Navbar = () => {
             className={cn(
               "pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] select-none",
               isGitGlowFeaturesOpen
-                ? "w-[min(94vw,670px)] bg-[#191A1E] border border-white/12 rounded-[28px] shadow-[0_28px_64px_rgba(0,0,0,0.65),0_4px_20px_rgba(0,0,0,0.3)] p-4 sm:p-5"
-                : "w-auto max-w-[min(94vw,760px)] bg-[#191A1E]/95 backdrop-blur-xl border border-white/12 rounded-full shadow-[0_16px_40px_rgba(0,0,0,0.45),0_2px_8px_rgba(0,0,0,0.25)] px-3 py-2 sm:px-4 sm:py-2.5"
+                ? "w-[min(96vw,670px)] bg-[#191A1E] border border-white/12 rounded-[28px] shadow-[0_28px_64px_rgba(0,0,0,0.65),0_4px_20px_rgba(0,0,0,0.3)] p-4 sm:p-5 max-h-[85vh] overflow-y-auto"
+                : "w-auto max-w-[min(96vw,760px)] bg-[#191A1E]/95 backdrop-blur-xl border border-white/12 rounded-full shadow-[0_16px_40px_rgba(0,0,0,0.45),0_2px_8px_rgba(0,0,0,0.25)] px-2.5 py-1.5 sm:px-4 sm:py-2.5"
             )}
           >
             {/* Top Bar Row */}
-            <div className="flex items-center justify-between gap-3 sm:gap-6">
+            <div className="flex items-center justify-between gap-1.5 sm:gap-6 w-full">
               {/* Brand Logo */}
               <Link
                 to="/blueprints/gitglow"
-                className="flex items-center gap-2 group cursor-pointer select-none shrink-0"
+                className="flex items-center gap-1.5 sm:gap-2 group cursor-pointer select-none shrink-0"
                 onClick={() => setIsGitGlowFeaturesOpen(false)}
                 title="GitGlow Platform"
               >
-                <GitGlowLogo size={28} showWordmark theme="dark" animated />
+                <GitGlowLogo size={24} showWordmark theme="dark" animated className="gap-1.5 sm:gap-2.5" />
               </Link>
 
               {/* Center Navigation Links */}
@@ -428,7 +428,7 @@ export const Navbar = () => {
                   type="button"
                   onClick={() => setIsGitGlowFeaturesOpen(prev => !prev)}
                   className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium transition-colors cursor-pointer select-none",
+                    "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-[14px] font-medium transition-colors cursor-pointer select-none shrink-0",
                     isGitGlowFeaturesOpen
                       ? "text-[#D7FF36]"
                       : "text-white/80 hover:text-white"
@@ -437,7 +437,7 @@ export const Navbar = () => {
                 >
                   <span>Features</span>
                   <ChevronDown
-                    size={14}
+                    size={12}
                     className={cn(
                       "transition-transform duration-200 text-white/70",
                       isGitGlowFeaturesOpen && "rotate-180 text-[#D7FF36]"
@@ -453,7 +453,7 @@ export const Navbar = () => {
                     const el = document.getElementById('cabinet') || document.getElementById('achievements');
                     el?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none"
+                  className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none hidden min-[440px]:inline-flex shrink-0"
                 >
                   Badges
                 </a>
@@ -465,7 +465,7 @@ export const Navbar = () => {
                     const el = document.getElementById('missions') || document.getElementById('cabinet');
                     el?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none hidden min-[540px]:inline-flex"
+                  className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none hidden min-[540px]:inline-flex shrink-0"
                 >
                   Missions
                 </a>
@@ -476,18 +476,18 @@ export const Navbar = () => {
                     setIsGitGlowFeaturesOpen(false);
                     document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none hidden min-[480px]:inline-flex"
+                  className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none hidden min-[480px]:inline-flex shrink-0"
                 >
                   FAQ
                 </a>
               </nav>
 
               {/* Right Action Area */}
-              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
                 <Link
                   to="/blueprints/gitglow/learn"
                   onClick={() => setIsGitGlowFeaturesOpen(false)}
-                  className="text-xs sm:text-[13.5px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer px-2 hidden md:inline-flex items-center gap-1.5"
+                  className="text-xs sm:text-[13.5px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer px-2 hidden md:inline-flex items-center gap-1.5 shrink-0"
                 >
                   <BookOpen size={13} className="text-white/60" />
                   <span>Docs</span>
@@ -497,10 +497,10 @@ export const Navbar = () => {
                 <Link
                   to="/blueprints/gitglow/engine"
                   onClick={() => setIsGitGlowFeaturesOpen(false)}
-                  className="h-8 sm:h-9 px-3.5 sm:px-4 rounded-full bg-[#D7FF36] hover:bg-[#c8f722] text-[#101114] text-xs sm:text-[13px] font-extrabold tracking-tight inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_16px_rgba(215,255,54,0.35)] cursor-pointer select-none"
+                  className="h-7 sm:h-9 px-2.5 sm:px-4 rounded-full bg-[#D7FF36] hover:bg-[#c8f722] text-[#101114] text-xs sm:text-[13px] font-extrabold tracking-tight inline-flex items-center gap-1 sm:gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_16px_rgba(215,255,54,0.35)] cursor-pointer select-none shrink-0"
                   aria-label="Launch 1-Click Engine"
                 >
-                  <Zap size={13} className="fill-[#101114] text-[#101114] shrink-0" />
+                  <Zap size={11} className="fill-[#101114] text-[#101114] shrink-0" />
                   <span className="hidden sm:inline">1-Click Engine</span>
                   <span className="sm:hidden">Engine</span>
                 </Link>
