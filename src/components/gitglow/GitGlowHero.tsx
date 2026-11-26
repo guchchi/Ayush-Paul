@@ -184,17 +184,50 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                 {/* Mini Shelf Grid */}
                 <div className="grid grid-cols-3 gap-2.5 pt-1">
                   <div className="p-2.5 rounded-xl bg-[#0D1117] border border-[#30363D] flex flex-col items-center text-center">
-                    <span className="text-xl mb-1">🦈</span>
+                    <picture>
+                      <source type="image/webp" srcSet="/images/badges/pull-shark.webp" />
+                      <img
+                        src="/images/badges/pull-shark.png"
+                        alt="GitHub Pull Shark Achievement Badge"
+                        width={36}
+                        height={36}
+                        loading="eager"
+                        decoding="async"
+                        className="w-9 h-9 object-contain mb-1.5 drop-shadow-sm"
+                      />
+                    </picture>
                     <span className="text-[11px] font-bold text-[#E6EDF3]">Pull Shark</span>
                     <span className="text-[9px] text-[#D7FF36] mt-0.5">Earned ✓</span>
                   </div>
                   <div className="p-2.5 rounded-xl bg-[#0D1117] border border-[#30363D] flex flex-col items-center text-center">
-                    <span className="text-xl mb-1">⚡</span>
+                    <picture>
+                      <source type="image/webp" srcSet="/images/badges/quickdraw.webp" />
+                      <img
+                        src="/images/badges/quickdraw.png"
+                        alt="GitHub Quickdraw Achievement Badge"
+                        width={36}
+                        height={36}
+                        loading="eager"
+                        decoding="async"
+                        className="w-9 h-9 object-contain mb-1.5 drop-shadow-sm"
+                      />
+                    </picture>
                     <span className="text-[11px] font-bold text-[#E6EDF3]">Quickdraw</span>
                     <span className="text-[9px] text-[#D7FF36] mt-0.5">Earned ✓</span>
                   </div>
                   <div className="p-2.5 rounded-xl bg-[#0D1117] border border-[#30363D] flex flex-col items-center text-center">
-                    <span className="text-xl mb-1">🚀</span>
+                    <picture>
+                      <source type="image/webp" srcSet="/images/badges/yolo.webp" />
+                      <img
+                        src="/images/badges/yolo.png"
+                        alt="GitHub YOLO Achievement Badge"
+                        width={36}
+                        height={36}
+                        loading="eager"
+                        decoding="async"
+                        className="w-9 h-9 object-contain mb-1.5 drop-shadow-sm"
+                      />
+                    </picture>
                     <span className="text-[11px] font-bold text-[#E6EDF3]">YOLO</span>
                     <span className="text-[9px] text-[#388BFD] mt-0.5">Pending ⏱</span>
                   </div>

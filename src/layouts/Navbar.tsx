@@ -418,21 +418,21 @@ export const Navbar = () => {
           /* Floating Dynamic Island Capsule Navbar */
           <div
             ref={gitGlowNavRef}
-            className="pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] select-none w-auto max-w-[min(96vw,840px)] bg-[#191A1E]/95 backdrop-blur-xl border border-white/12 rounded-full shadow-[0_16px_40px_rgba(0,0,0,0.45),0_2px_8px_rgba(0,0,0,0.25)] px-3 py-1.5 sm:px-4 sm:py-2"
+            className="pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] select-none w-auto max-w-[min(96vw,860px)] bg-[#14161F]/90 sm:bg-[#161822]/90 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_16px_40px_rgba(0,0,0,0.5),0_2px_8px_rgba(0,0,0,0.25)] px-3 py-1.5 sm:px-5 sm:py-2"
           >
             {/* Top Bar Row */}
-            <div className="flex items-center justify-between gap-1 sm:gap-6 w-full">
+            <div className="flex items-center justify-between gap-1.5 sm:gap-6 md:gap-8 w-full">
               {/* 1. Brand Logo: [GitGlow] */}
               <Link
                 to="/blueprints/gitglow"
-                className="flex items-center gap-1 sm:gap-2 group cursor-pointer select-none shrink-0"
+                className="flex items-center gap-1.5 sm:gap-2 group cursor-pointer select-none shrink-0"
                 title="GitGlow Platform"
               >
-                <GitGlowLogo size={20} showWordmark theme="dark" animated className="gap-1 sm:gap-2" />
+                <GitGlowLogo size={22} showWordmark theme="dark" animated className="gap-1.5 sm:gap-2" />
               </Link>
 
               {/* 2, 3, 4. Center Navigation Links: Badges | How it works | Docs */}
-              <nav aria-label="GitGlow Navigation" className="flex items-center gap-0.5 sm:gap-2 shrink-0">
+              <nav aria-label="GitGlow Navigation" className="flex items-center gap-0.5 min-[380px]:gap-1 sm:gap-5 md:gap-7 shrink-0">
                 <a
                   href="#cabinet"
                   onClick={(e) => {
@@ -440,7 +440,7 @@ export const Navbar = () => {
                     const el = document.getElementById('cabinet') || document.getElementById('achievements');
                     el?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10.5px] sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none shrink-0"
+                  className="px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-sm font-medium text-[#c9d1d9] hover:text-white transition-colors cursor-pointer select-none shrink-0"
                 >
                   Badges
                 </a>
@@ -452,14 +452,14 @@ export const Navbar = () => {
                     const el = document.getElementById('trust') || document.getElementById('how-it-works');
                     el?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10.5px] sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none shrink-0"
+                  className="px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-sm font-medium text-[#c9d1d9] hover:text-white transition-colors cursor-pointer select-none shrink-0 whitespace-nowrap"
                 >
                   How it works
                 </a>
 
                 <Link
                   to="/blueprints/gitglow/learn"
-                  className="px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10.5px] sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none shrink-0"
+                  className="px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-sm font-medium text-[#c9d1d9] hover:text-white transition-colors cursor-pointer select-none shrink-0"
                 >
                   Docs
                 </Link>
@@ -468,24 +468,24 @@ export const Navbar = () => {
               {/* 5. Right Action Area: [ Connect GitHub ] */}
               <div className="flex items-center gap-1 sm:gap-3 shrink-0">
                 {gitGlowUser ? (
-                  <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#161B22] border border-[#30363D] text-[10.5px] sm:text-xs text-[#E6EDF3] shrink-0">
+                  <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-[#161B22] border border-[#D7FF36]/40 text-xs text-[#E6EDF3] shrink-0">
                     {gitGlowUser.avatarUrl ? (
                       <img src={gitGlowUser.avatarUrl} alt={gitGlowUser.githubUsername} className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full" />
                     ) : (
-                      <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#D7FF36]" />
+                      <User className="w-3.5 h-3.5 text-[#D7FF36]" />
                     )}
-                    <span className="font-bold truncate max-w-[70px] sm:max-w-none">@{gitGlowUser.githubUsername}</span>
+                    <span className="font-bold text-[#D7FF36] truncate max-w-[80px] sm:max-w-none">@{gitGlowUser.githubUsername}</span>
                   </div>
                 ) : (
                   <button
                     type="button"
                     onClick={handleGitGlowConnect}
-                    className="h-7 sm:h-9 px-2 sm:px-4 rounded-full bg-[#161B22] hover:bg-[#21262D] border border-[#30363D] hover:border-[#D7FF36]/50 text-[#E6EDF3] hover:text-white text-[10.5px] sm:text-[13px] font-bold inline-flex items-center gap-1 sm:gap-2 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] cursor-pointer select-none shrink-0 shadow-sm"
+                    className="h-7 min-[380px]:h-8 sm:h-9 px-2.5 min-[380px]:px-3 sm:px-5 rounded-full bg-[#D7FF36] hover:bg-[#cbf42e] text-[#0D1117] text-[11px] min-[380px]:text-xs sm:text-sm font-bold inline-flex items-center gap-1 min-[380px]:gap-1.5 sm:gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer select-none shrink-0 shadow-[0_0_20px_rgba(215,255,54,0.35)] hover:shadow-[0_0_25px_rgba(215,255,54,0.55)]"
                     aria-label="Connect GitHub Account"
                   >
-                    <Github className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#D7FF36] shrink-0" />
-                    <span className="hidden min-[480px]:inline">Connect GitHub</span>
-                    <span className="min-[480px]:hidden">Connect</span>
+                    <Github className="w-3 h-3 sm:w-4 sm:h-4 text-[#0D1117] shrink-0" />
+                    <span className="hidden min-[420px]:inline">Connect GitHub</span>
+                    <span className="min-[420px]:hidden">Connect</span>
                   </button>
                 )}
               </div>

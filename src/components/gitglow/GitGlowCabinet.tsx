@@ -37,12 +37,66 @@ interface GitGlowCabinetProps {
   onClaimRecommended?: (badgeId: string) => void;
 }
 
-const AUTOMATED_BADGES: { id: string; name: string; icon: string; time: string; difficulty: string; description: string }[] = [
-  { id: 'pull-shark', name: 'Pull Shark', icon: '🦈', time: '~5 min', difficulty: 'Easy', description: 'Merged 2+ pull requests into public repos.' },
-  { id: 'quickdraw', name: 'Quickdraw', icon: '⚡', time: '~2 min', difficulty: 'Very Easy', description: 'Closed an issue or pull request within 5 minutes.' },
-  { id: 'yolo', name: 'YOLO', icon: '🚀', time: '~2 min', difficulty: 'Easy', description: 'Merged a pull request directly without code review.' },
-  { id: 'pair-extraordinaire', name: 'Pair Extraordinaire', icon: '👥', time: '~5 min', difficulty: 'Medium', description: 'Co-authored a commit in a merged pull request.' },
-  { id: 'galaxy-brain', name: 'Galaxy Brain', icon: '🧠', time: '~5 min', difficulty: 'Medium', description: 'Accepted answer on a repository discussion.' },
+const AUTOMATED_BADGES: { 
+  id: string; 
+  name: string; 
+  image: string; 
+  webpImage: string; 
+  alt: string; 
+  time: string; 
+  difficulty: string; 
+  description: string;
+}[] = [
+  { 
+    id: 'pull-shark', 
+    name: 'Pull Shark', 
+    image: '/images/badges/pull-shark.png',
+    webpImage: '/images/badges/pull-shark.webp',
+    alt: 'GitHub Pull Shark Achievement Badge - Merged Pull Requests Trophy',
+    time: '~5 min', 
+    difficulty: 'Easy', 
+    description: 'Merged 2+ pull requests into public repos.' 
+  },
+  { 
+    id: 'quickdraw', 
+    name: 'Quickdraw', 
+    image: '/images/badges/quickdraw.png',
+    webpImage: '/images/badges/quickdraw.webp',
+    alt: 'GitHub Quickdraw Achievement Badge - Closed in under 5 minutes Trophy',
+    time: '~2 min', 
+    difficulty: 'Very Easy', 
+    description: 'Closed an issue or pull request within 5 minutes.' 
+  },
+  { 
+    id: 'yolo', 
+    name: 'YOLO', 
+    image: '/images/badges/yolo.png',
+    webpImage: '/images/badges/yolo.webp',
+    alt: 'GitHub YOLO Achievement Badge - Merge Without Code Review Trophy',
+    time: '~2 min', 
+    difficulty: 'Easy', 
+    description: 'Merged a pull request directly without code review.' 
+  },
+  { 
+    id: 'pair-extraordinaire', 
+    name: 'Pair Extraordinaire', 
+    image: '/images/badges/pair-extraordinaire.png',
+    webpImage: '/images/badges/pair-extraordinaire.webp',
+    alt: 'GitHub Pair Extraordinaire Achievement Badge - Co-authored Commit Trophy',
+    time: '~5 min', 
+    difficulty: 'Medium', 
+    description: 'Co-authored a commit in a merged pull request.' 
+  },
+  { 
+    id: 'galaxy-brain', 
+    name: 'Galaxy Brain', 
+    image: '/images/badges/galaxy-brain.png',
+    webpImage: '/images/badges/galaxy-brain.webp',
+    alt: 'GitHub Galaxy Brain Achievement Badge - Accepted Discussion Answer Trophy',
+    time: '~5 min', 
+    difficulty: 'Medium', 
+    description: 'Accepted answer on a repository discussion.' 
+  },
 ];
 
 export const GitGlowCabinet: React.FC<GitGlowCabinetProps> = ({
@@ -164,8 +218,19 @@ export const GitGlowCabinet: React.FC<GitGlowCabinetProps> = ({
         {/* Recommended Action Banner (If unearned badges exist) */}
         {firstAvailableBadge && (
           <div className="mb-8 p-4 rounded-2xl bg-gradient-to-r from-[#D7FF36]/10 via-[#161B22] to-[#161B22] border border-[#D7FF36]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{firstAvailableBadge.icon}</span>
+            <div className="flex items-center gap-3.5">
+              <picture className="w-10 h-10 shrink-0 flex items-center justify-center">
+                <source type="image/webp" srcSet={firstAvailableBadge.webpImage} />
+                <img
+                  src={firstAvailableBadge.image}
+                  alt={firstAvailableBadge.alt}
+                  width={40}
+                  height={40}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-10 h-10 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+                />
+              </picture>
               <div>
                 <div className="text-xs font-bold text-[#D7FF36] uppercase tracking-wider">Recommended Next Step</div>
                 <div className="text-sm font-bold text-[#E6EDF3]">
@@ -214,23 +279,43 @@ export const GitGlowCabinet: React.FC<GitGlowCabinetProps> = ({
                 {/* Central Trophy Art / Icon */}
                 <div className="relative my-4">
                   <div
-                    className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl transition-transform duration-200 group-hover:scale-110 ${
+                    className={`w-20 h-20 rounded-2xl flex items-center justify-center p-2 transition-all duration-300 group-hover:scale-105 relative ${
                       isEarned
-                        ? 'bg-gradient-to-tr from-[#F1E05A]/20 to-transparent border border-[#F1E05A]/40'
+                        ? 'bg-gradient-to-tr from-[#F1E05A]/15 via-[#161B22] to-transparent border border-[#F1E05A]/40 shadow-[0_4px_20px_rgba(241,224,90,0.15)]'
                         : isProcessing
-                        ? 'bg-gradient-to-tr from-[#388BFD]/20 to-transparent border border-[#388BFD]/40 animate-pulse'
-                        : 'bg-[#0D1117] border border-[#30363D] opacity-60'
+                        ? 'bg-gradient-to-tr from-[#388BFD]/15 via-[#161B22] to-transparent border border-[#388BFD]/40 shadow-[0_4px_16px_rgba(56,139,253,0.15)] animate-pulse'
+                        : 'bg-[#0D1117]/80 border border-[#30363D] opacity-70 group-hover:opacity-100'
                     }`}
                   >
-                    {isEarned ? (
-                      badge.icon
-                    ) : isProcessing ? (
-                      <span className="animate-spin text-2xl">⏳</span>
-                    ) : (
-                      <div className="relative">
-                        <span className="grayscale">{badge.icon}</span>
-                        <div className="absolute inset-0 flex items-center justify-center text-[#8B949E]">
-                          <Lock className="w-5 h-5 drop-shadow-md" />
+                    <picture className="w-full h-full flex items-center justify-center">
+                      <source type="image/webp" srcSet={badge.webpImage} />
+                      <img
+                        src={badge.image}
+                        alt={badge.alt}
+                        width={64}
+                        height={64}
+                        loading="lazy"
+                        decoding="async"
+                        className={`w-14 h-14 object-contain transition-all duration-300 drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] ${
+                          isEarned
+                            ? 'scale-100 filter-none'
+                            : isProcessing
+                            ? 'scale-95 opacity-80'
+                            : 'grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-95'
+                        }`}
+                      />
+                    </picture>
+
+                    {/* Status overlay icon */}
+                    {isProcessing && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-[#0D1117]/60 rounded-2xl backdrop-blur-xs">
+                        <Clock className="w-6 h-6 text-[#388BFD] animate-spin" />
+                      </div>
+                    )}
+                    {!isEarned && !isProcessing && (
+                      <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/25 group-hover:bg-transparent transition-colors">
+                        <div className="w-7 h-7 rounded-full bg-[#161B22]/90 border border-[#30363D] flex items-center justify-center text-[#8B949E] group-hover:text-[#D7FF36] group-hover:border-[#D7FF36]/50 shadow-md transition-colors">
+                          <Lock className="w-3.5 h-3.5" />
                         </div>
                       </div>
                     )}
@@ -286,15 +371,39 @@ export const GitGlowCabinet: React.FC<GitGlowCabinetProps> = ({
                     : 'bg-[#161B22]/60 border-[#30363D]'
                 }`}
               >
-                {/* Left: Icon */}
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-[#0D1117] border border-[#30363D] flex items-center justify-center text-2xl shrink-0">
-                    {isEarned ? (
-                      badge.icon
-                    ) : isProcessing ? (
-                      <span className="animate-spin text-xl">⏳</span>
-                    ) : (
-                      <span className="grayscale opacity-50">{badge.icon}</span>
+                {/* Left: Real Badge Artwork */}
+                <div className="flex items-center gap-3.5">
+                  <div
+                    className={`w-14 h-14 rounded-xl flex items-center justify-center p-1.5 shrink-0 relative ${
+                      isEarned
+                        ? 'bg-gradient-to-tr from-[#F1E05A]/20 via-[#161B22] to-transparent border border-[#F1E05A]/40'
+                        : isProcessing
+                        ? 'bg-gradient-to-tr from-[#388BFD]/20 via-[#161B22] to-transparent border border-[#388BFD]/40 animate-pulse'
+                        : 'bg-[#0D1117] border border-[#30363D] opacity-75'
+                    }`}
+                  >
+                    <picture className="w-full h-full flex items-center justify-center">
+                      <source type="image/webp" srcSet={badge.webpImage} />
+                      <img
+                        src={badge.image}
+                        alt={badge.alt}
+                        width={48}
+                        height={48}
+                        loading="lazy"
+                        decoding="async"
+                        className={`w-10 h-10 object-contain drop-shadow-md ${
+                          isEarned
+                            ? 'filter-none'
+                            : isProcessing
+                            ? 'opacity-85'
+                            : 'grayscale brightness-75'
+                        }`}
+                      />
+                    </picture>
+                    {isProcessing && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-[#0D1117]/60 rounded-xl">
+                        <Clock className="w-4 h-4 text-[#388BFD] animate-spin" />
+                      </div>
                     )}
                   </div>
                   <div>

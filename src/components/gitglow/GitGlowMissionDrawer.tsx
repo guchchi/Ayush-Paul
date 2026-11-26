@@ -110,13 +110,22 @@ export const GitGlowMissionDrawer: React.FC<GitGlowMissionDrawerProps> = ({
           {/* Header */}
           <div className="p-6 border-b border-[#30363D] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#0D1117] border border-[#30363D] flex items-center justify-center text-xl">
-                {badge.id === 'pull-shark' && '🦈'}
-                {badge.id === 'quickdraw' && '⚡'}
-                {badge.id === 'yolo' && '🚀'}
-                {badge.id === 'pair-extraordinaire' && '👥'}
-                {badge.id === 'galaxy-brain' && '🧠'}
-                {!['pull-shark', 'quickdraw', 'yolo', 'pair-extraordinaire', 'galaxy-brain'].includes(badge.id) && '🏆'}
+              <div className="w-12 h-12 rounded-xl bg-[#0D1117] border border-[#30363D] flex items-center justify-center p-1.5 shrink-0 shadow-inner">
+                <picture className="w-full h-full flex items-center justify-center">
+                  <source type="image/webp" srcSet={`/images/badges/${badge.id}.webp`} />
+                  <img
+                    src={`/images/badges/${badge.id}.png`}
+                    alt={`GitHub ${badge.name} Achievement Badge`}
+                    width={40}
+                    height={40}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-10 h-10 object-contain drop-shadow-sm"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                </picture>
               </div>
               <div>
                 <h3 className="text-lg font-bold text-[#E6EDF3] font-heading">{badge.name}</h3>
