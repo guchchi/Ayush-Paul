@@ -162,11 +162,13 @@ export function StyleguidePage() {
                 <Sparkles className="w-5 h-5 text-[var(--action)]" />
                 <span>Semantic & Purpose-Driven Colors</span>
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {semanticTokens.map(token => (
+              <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-5 gap-4">
+                {semanticTokens.map((token, idx) => (
                   <div
                     key={token.name}
-                    className="p-5 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3 relative overflow-hidden"
+                    className={`p-5 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3 relative overflow-hidden ${
+                      idx < 2 ? 'md:col-span-3 lg:col-span-1' : 'md:col-span-2 lg:col-span-1'
+                    }`}
                   >
                     <div className="flex items-center justify-between">
                       <div
@@ -234,7 +236,7 @@ export function StyleguidePage() {
                 <h3 className="text-xl font-bold font-heading text-[var(--text)] mt-1">Space Grotesk</h3>
                 <p className="text-xs text-[var(--text-muted)] mt-1 font-mono">self-hosted · Latin subset · swap</p>
                 <div className="mt-3 p-3 rounded-[var(--radius-control)] bg-[var(--bg)] border border-[var(--border)] font-heading text-lg font-bold">
-                  Make Your GitHub Profile Stand Out.
+                  Make Your GitHub Profile Stand Out in Minutes.
                 </div>
               </div>
 
@@ -271,7 +273,7 @@ export function StyleguidePage() {
                   <span>56-64px (desktop) / 36-40px (mobile) · 700</span>
                 </div>
                 <div className="type-hero-headline text-[var(--text)]">
-                  Make Your GitHub Profile Stand Out
+                  Make Your GitHub Profile Stand Out in Minutes.
                 </div>
               </div>
 
@@ -304,7 +306,7 @@ export function StyleguidePage() {
                   <span>16-18px (desktop) / 16px (mobile) · 400 · Line-height 1.6</span>
                 </div>
                 <p className="type-body text-[var(--text-muted)] max-w-[70ch]">
-                  GitGlow audits public GitHub repository activity using official GraphQL telemetry. It never asks for account passwords and strictly creates authentic code revisions in an isolated sandbox repository.
+                  GitGlow checks public GitHub activity. It never asks for your password. Every action happens on your own account.
                 </p>
               </div>
 
@@ -346,9 +348,9 @@ export function StyleguidePage() {
                   <span>Tabular Numerals (.tabular-nums)</span>
                   <span>Prevents layout jitter during score count-up</span>
                 </div>
-                <div className="flex items-center gap-4 text-3xl font-heading font-bold text-[var(--action)] tabular-nums">
-                  <span>Score: 84 / 100</span>
-                  <span className="text-xs font-mono text-[var(--text-muted)] font-normal">
+                <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4 text-2xl sm:text-3xl font-heading font-bold text-[var(--action)] tabular-nums">
+                  <span className="whitespace-nowrap">Score: 84 / 100</span>
+                  <span className="text-xs font-mono text-[var(--text-muted)] font-normal whitespace-nowrap">
                     (Numbers remain fixed in width)
                   </span>
                 </div>
@@ -601,7 +603,7 @@ export function StyleguidePage() {
                     type="text"
                     placeholder="Input (min 16px font-size)"
                     className="w-full py-2.5 px-4 rounded-[var(--radius-control)] bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] placeholder-[var(--text-muted)] text-base"
-                    defaultValue="github.com/torvalds"
+                    defaultValue="@octocat"
                   />
                 </div>
               </div>

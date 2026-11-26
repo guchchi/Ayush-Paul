@@ -13,6 +13,9 @@ export function BetaFeedbackButton() {
   }, []);
 
   if (!isVisible) return null;
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/styleguide')) {
+    return null;
+  }
 
   return (
     <AnimatePresence>
