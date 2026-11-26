@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Sparkles, Terminal, CheckCircle2, AlertCircle, Clock, ShieldCheck, Box, MoveRight, ArrowRight, RefreshCw, Lock } from 'lucide-react';
 
 export function StyleguidePage() {
-  const [activeTab, setActiveTab] = useState<'all' | 'colors' | 'typography' | 'spacing' | 'buttons' | 'motion'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'colors' | 'typography' | 'spacing' | 'scan-pills' | 'buttons' | 'motion'>('all');
 
   const surfaceTokens = [
     { name: '--bg', hex: '#0D1117', desc: 'Canvas background (soft charcoal, never pure black)', border: '#30363D' },
@@ -88,7 +88,7 @@ export function StyleguidePage() {
               Design Foundation Styleguide
             </h1>
             <p className="type-body text-[var(--text-muted)] mt-2 max-w-[70ch]">
-              Single source of truth for color tokens, typography scales, 8px grid spacing, border radii, and button samples.
+              Single source of truth for color tokens, typography scales, 8px grid spacing, border radii, scan inputs, and status pills.
             </p>
           </div>
 
@@ -101,7 +101,7 @@ export function StyleguidePage() {
 
         {/* Filter Navigation */}
         <div className="flex flex-wrap gap-2 mt-6">
-          {(['all', 'colors', 'typography', 'spacing', 'buttons', 'motion'] as const).map(tab => (
+          {(['all', 'colors', 'typography', 'spacing', 'scan-pills', 'buttons', 'motion'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -111,7 +111,7 @@ export function StyleguidePage() {
                   : 'bg-[var(--surface)] text-[var(--text-muted)] border border-[var(--border)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]'
               }`}
             >
-              {tab}
+              {tab === 'scan-pills' ? 'Scan & Pills' : tab}
             </button>
           ))}
         </div>
@@ -170,14 +170,14 @@ export function StyleguidePage() {
                       idx < 2 ? 'md:col-span-3 lg:col-span-1' : 'md:col-span-2 lg:col-span-1'
                     }`}
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-1.5">
                       <div
-                        className="h-14 w-24 rounded-[var(--radius-control)] border flex items-center justify-center font-mono text-xs font-bold shadow-sm"
+                        className="h-11 w-16 sm:w-20 shrink-0 rounded-[var(--radius-control)] border flex items-center justify-center font-mono text-xs font-bold shadow-sm"
                         style={{ backgroundColor: token.hex, color: token.textColor, borderColor: 'rgba(255,255,255,0.1)' }}
                       >
                         {token.hex}
                       </div>
-                      <span className="text-xs font-mono font-medium px-2.5 py-1 rounded-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)]">
+                      <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] whitespace-nowrap shrink-0">
                         {token.name}
                       </span>
                     </div>
@@ -337,7 +337,7 @@ export function StyleguidePage() {
                 </div>
                 <div className="type-terminal p-4 rounded-[var(--radius-control)] bg-[var(--bg)] border border-[var(--border)] text-[var(--action)] font-mono space-y-1">
                   <div>[14:22:01] ⚡ Initializing GitHub GraphQL scanner...</div>
-                  <div>[14:22:02] ✓ Found user profile: @ayushpaul</div>
+                  <div>[14:22:02] ✓ Found user profile: @octocat</div>
                   <div>[14:22:03] 🥇 Badges detected: Pull Shark (Earned), Quickdraw (Earned)</div>
                 </div>
               </div>
@@ -348,8 +348,8 @@ export function StyleguidePage() {
                   <span>Tabular Numerals (.tabular-nums)</span>
                   <span>Prevents layout jitter during score count-up</span>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4 text-2xl sm:text-3xl font-heading font-bold text-[var(--action)] tabular-nums">
-                  <span className="whitespace-nowrap">Score: 84 / 100</span>
+                <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4 font-heading font-bold text-[var(--action)] tabular-nums">
+                  <span className="text-xl sm:text-2xl md:text-3xl whitespace-nowrap shrink-0">Score: 84 / 100</span>
                   <span className="text-xs font-mono text-[var(--text-muted)] font-normal whitespace-nowrap">
                     (Numbers remain fixed in width)
                   </span>
@@ -416,11 +416,184 @@ export function StyleguidePage() {
           </section>
         )}
 
-        {/* SECTION 4: BUTTON SAMPLES */}
+        {/* SECTION 4: SCAN INPUT & PILLS (DESIGN.md §7.1, §3, §4, §10) */}
+        {(activeTab === 'all' || activeTab === 'scan-pills') && (
+          <section id="scan-pills" className="space-y-6">
+            <div className="border-b border-[var(--border)] pb-3">
+              <h2 className="type-section-title text-[var(--text)]">4. Scan Input & Pills (DESIGN.md §7.1, §3, §4, §10)</h2>
+              <p className="type-body text-[var(--text-muted)] mt-1">
+                Scan input in 4 functional states with &ge;16px text (preventing mobile zoom) and dual-coded status pills.
+              </p>
+            </div>
+
+            {/* Scan Input 4 States */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* 1. Default State */}
+              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-[var(--action)] font-bold">1. DEFAULT STATE</span>
+                  <span className="text-xs font-mono text-[var(--text-muted)]">&ge;16px font-size</span>
+                </div>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Clean state with placeholder <code className="bg-[var(--surface-2)] px-1 py-0.5 rounded text-[var(--text)]">github.com/username or @username</code> and primary lime CTA.
+                </p>
+                <div className="flex flex-col sm:flex-row items-stretch gap-2.5 pt-2">
+                  <input
+                    type="text"
+                    placeholder="github.com/username or @username"
+                    readOnly
+                    className="flex-1 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] placeholder-[var(--text-muted)] text-base focus-visible:outline-2 focus-visible:outline-[var(--action)] focus-visible:outline-offset-2"
+                  />
+                  <button className="py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all whitespace-nowrap">
+                    Audit Free
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. Focus State */}
+              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-[var(--action)] font-bold">2. FOCUS STATE (LIME RING)</span>
+                  <span className="text-xs font-mono text-[var(--action)]">Active focus ring</span>
+                </div>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Active keyboard or tap focus state: 2px electric lime outline with 2px offset for WCAG compliance.
+                </p>
+                <div className="flex flex-col sm:flex-row items-stretch gap-2.5 pt-2">
+                  <input
+                    type="text"
+                    defaultValue="@octocat"
+                    placeholder="github.com/username or @username"
+                    readOnly
+                    className="flex-1 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] text-[var(--text)] text-base outline-2 outline-[var(--action)] outline-offset-2 border-[var(--action)]"
+                  />
+                  <button className="py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all whitespace-nowrap">
+                    Audit Free
+                  </button>
+                </div>
+              </div>
+
+              {/* 3. Error State */}
+              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-[var(--danger)] font-bold">3. ERROR STATE</span>
+                  <span className="text-xs font-mono text-[var(--danger)]">Validation failed</span>
+                </div>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Invalid username or profile not found: red border and clear inline helper message.
+                </p>
+                <div className="space-y-2 pt-2">
+                  <div className="flex flex-col sm:flex-row items-stretch gap-2.5">
+                    <input
+                      type="text"
+                      defaultValue="github.com/invalid@@user"
+                      placeholder="github.com/username or @username"
+                      readOnly
+                      className="flex-1 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] text-[var(--text)] text-base border-2 border-[var(--danger)] focus-visible:outline-none"
+                    />
+                    <button className="py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all whitespace-nowrap">
+                      Audit Free
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-[var(--danger)] font-medium">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    <span>Check the username spelling</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Disabled State */}
+              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-[var(--text-muted)] font-bold">4. DISABLED (WHILE SCANNING)</span>
+                  <span className="text-xs font-mono text-[var(--processing)]">Background task running</span>
+                </div>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Active scan in-flight: input locked, button disabled with progress indicator to prevent duplicate submissions.
+                </p>
+                <div className="flex flex-col sm:flex-row items-stretch gap-2.5 pt-2">
+                  <input
+                    type="text"
+                    defaultValue="@octocat"
+                    placeholder="github.com/username or @username"
+                    disabled
+                    className="flex-1 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-muted)] text-base opacity-60 cursor-not-allowed"
+                  />
+                  <button
+                    disabled
+                    className="py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm opacity-60 cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
+                  >
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Audit Free</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Status Pills */}
+            <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-4">
+              <div className="border-b border-[var(--border)] pb-2 flex items-center justify-between">
+                <div>
+                  <h3 className="type-card-title text-[var(--text)]">Dual-Coded Status Pills</h3>
+                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                    Color is always accompanied by an explicit icon and label (DESIGN.md §3.2, §7.2, §10).
+                  </p>
+                </div>
+                <span className="text-xs font-mono text-[var(--text-muted)]">3 Defined States</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                {/* Earned Pill */}
+                <div className="p-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
+                  <span className="text-xs font-mono text-[var(--earned)] font-bold">EARNED (GOLD)</span>
+                  <div>
+                    <span className="type-label px-3.5 py-1.5 rounded-full bg-[rgba(245,196,81,0.12)] text-[var(--earned)] border border-[rgba(245,196,81,0.35)] inline-flex items-center gap-2 shadow-[var(--glow-earned)]">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>On your profile ✓</span>
+                    </span>
+                  </div>
+                  <p className="text-xs text-[var(--text-muted)] pt-1">
+                    Awarded and verified on GitHub profile.
+                  </p>
+                </div>
+
+                {/* Processing Pill */}
+                <div className="p-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
+                  <span className="text-xs font-mono text-[var(--processing)] font-bold">PROCESSING (BLUE)</span>
+                  <div>
+                    <span className="type-label px-3.5 py-1.5 rounded-full bg-[rgba(77,163,255,0.12)] text-[var(--processing)] border border-[rgba(77,163,255,0.35)] inline-flex items-center gap-2">
+                      <Clock className="w-4 h-4 animate-spin" />
+                      <span>Waiting for GitHub</span>
+                    </span>
+                  </div>
+                  <p className="text-xs text-[var(--text-muted)] pt-1">
+                    Event triggered, waiting on GitHub indexing (hours to days).
+                  </p>
+                </div>
+
+                {/* Available Pill */}
+                <div className="p-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
+                  <span className="text-xs font-mono text-[var(--text-muted)] font-bold">AVAILABLE (LOCK)</span>
+                  <div>
+                    <span className="type-label px-3.5 py-1.5 rounded-full bg-[var(--surface)] text-[var(--text-muted)] border border-[var(--border)] inline-flex items-center gap-2">
+                      <Lock className="w-4 h-4" />
+                      <span>Claim in ~2 min</span>
+                    </span>
+                  </div>
+                  <p className="text-xs text-[var(--text-muted)] pt-1">
+                    Locked / available to be claimed via 1-click bot.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* SECTION 5: BUTTON SAMPLES */}
         {(activeTab === 'all' || activeTab === 'buttons') && (
           <section id="buttons" className="space-y-6">
             <div className="border-b border-[var(--border)] pb-3">
-              <h2 className="type-section-title text-[var(--text)]">4. Button Samples (DESIGN.md §3, §5, §7.4)</h2>
+              <h2 className="type-section-title text-[var(--text)]">5. Button Samples (DESIGN.md §3, §5, §7.4)</h2>
               <p className="type-body text-[var(--text-muted)] mt-1">
                 Lime is action only. Buttons follow 12px radius, active scale-down, explicit state copy, and WCAG AAA contrast.
               </p>
@@ -577,11 +750,11 @@ export function StyleguidePage() {
           </section>
         )}
 
-        {/* SECTION 5: FOCUS RING, SHADOWS & MOTION */}
+        {/* SECTION 6: FOCUS RING, SHADOWS & MOTION */}
         {(activeTab === 'all' || activeTab === 'motion') && (
           <section id="motion" className="space-y-6">
             <div className="border-b border-[var(--border)] pb-3">
-              <h2 className="type-section-title text-[var(--text)]">5. Focus Ring, Shadows & Motion (DESIGN.md §3, §5)</h2>
+              <h2 className="type-section-title text-[var(--text)]">6. Focus Ring, Shadows & Motion (DESIGN.md §3, §5)</h2>
               <p className="type-body text-[var(--text-muted)] mt-1">
                 Lime focus ring, soft glow for earned and action items, 150-300ms transitions with cubic-bezier(0.2, 0.8, 0.2, 1).
               </p>
@@ -649,7 +822,7 @@ export function StyleguidePage() {
       {/* Footer */}
       <footer className="max-w-[1200px] mx-auto pt-8 mt-12 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[var(--text-muted)]">
         <div>GitGlow Design System · Phase 1 Foundation Approved</div>
-        <div>Complies with DESIGN.md Sections 3, 4, 5</div>
+        <div>Complies with DESIGN.md Sections 3, 4, 5, 7.1, 7.4, 10</div>
       </footer>
     </div>
   );
