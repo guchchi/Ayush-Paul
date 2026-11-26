@@ -97,6 +97,48 @@ input, select, textarea {
   font-size: 16px;
 }
 
+/* Scan Input Responsive Rules (DESIGN.md §4, §7.1, §9) */
+.scan-input-card {
+  container-type: inline-size;
+}
+
+.scan-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  align-items: stretch;
+  width: 100%;
+}
+
+.scan-input-field {
+  width: 100%;
+  min-width: 0;
+  font-size: 16px !important;
+}
+
+.scan-input-btn {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* Stacks vertically below 480px width; switches to side-by-side at 480px+ */
+@container (min-width: 480px) {
+  .scan-input-group {
+    flex-direction: row;
+  }
+  .scan-input-field {
+    flex: 1 1 0%;
+    width: auto;
+  }
+  .scan-input-btn {
+    width: auto;
+  }
+}
+
 /* Tabular Numerals for Scores, Timers & Counters */
 .tabular-nums {
   font-variant-numeric: tabular-nums;

@@ -429,101 +429,101 @@ export function StyleguidePage() {
             {/* Scan Input 4 States */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* 1. Default State */}
-              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="scan-input-card p-4 sm:p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <span className="text-xs font-mono text-[var(--action)] font-bold">1. DEFAULT STATE</span>
                   <span className="text-xs font-mono text-[var(--text-muted)]">&ge;16px font-size</span>
                 </div>
-                <p className="text-xs text-[var(--text-muted)]">
-                  Clean state with placeholder <code className="bg-[var(--surface-2)] px-1 py-0.5 rounded text-[var(--text)]">github.com/username or @username</code> and primary lime CTA.
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                  Clean state with placeholder <code className="bg-[var(--surface-2)] px-1 py-0.5 rounded text-[var(--text)] break-all">github.com/username or @username</code> and primary lime CTA.
                 </p>
-                <div className="flex flex-col xl:flex-row items-stretch gap-2.5 pt-2">
+                <div className="scan-input-group flex flex-col xl:flex-row items-stretch gap-2.5 pt-2">
                   <input
                     type="text"
                     placeholder="github.com/username or @username"
                     readOnly
-                    className="w-full xl:flex-1 min-w-0 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] placeholder-[var(--text-muted)] text-base focus-visible:outline-2 focus-visible:outline-[var(--action)] focus-visible:outline-offset-2"
+                    className="scan-input-field w-full xl:flex-1 min-w-0 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] placeholder-[var(--text-muted)] text-base focus-visible:outline-2 focus-visible:outline-[var(--action)] focus-visible:outline-offset-2"
                   />
-                  <button className="w-full xl:w-auto shrink-0 py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all whitespace-nowrap flex items-center justify-center">
+                  <button className="scan-input-btn w-full xl:w-auto shrink-0 py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all whitespace-nowrap flex items-center justify-center">
                     Audit Free
                   </button>
                 </div>
               </div>
 
               {/* 2. Focus State */}
-              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="scan-input-card p-4 sm:p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <span className="text-xs font-mono text-[var(--action)] font-bold">2. FOCUS STATE (LIME RING)</span>
                   <span className="text-xs font-mono text-[var(--action)]">Active focus ring</span>
                 </div>
-                <p className="text-xs text-[var(--text-muted)]">
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                   Active keyboard or tap focus state: 2px electric lime outline with 2px offset for WCAG compliance.
                 </p>
-                <div className="flex flex-col xl:flex-row items-stretch gap-2.5 pt-2">
+                <div className="scan-input-group flex flex-col xl:flex-row items-stretch gap-2.5 pt-2">
                   <input
                     type="text"
                     defaultValue="@octocat"
                     placeholder="github.com/username or @username"
                     readOnly
-                    className="w-full xl:flex-1 min-w-0 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] text-[var(--text)] text-base outline-2 outline-[var(--action)] outline-offset-2 border-[var(--action)]"
+                    className="scan-input-field w-full xl:flex-1 min-w-0 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] text-[var(--text)] text-base outline-2 outline-[var(--action)] outline-offset-2 border-[var(--action)]"
                   />
-                  <button className="w-full xl:w-auto shrink-0 py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all whitespace-nowrap flex items-center justify-center">
+                  <button className="scan-input-btn w-full xl:w-auto shrink-0 py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all whitespace-nowrap flex items-center justify-center">
                     Audit Free
                   </button>
                 </div>
               </div>
 
               {/* 3. Error State */}
-              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="scan-input-card p-4 sm:p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <span className="text-xs font-mono text-[var(--danger)] font-bold">3. ERROR STATE</span>
                   <span className="text-xs font-mono text-[var(--danger)]">Validation failed</span>
                 </div>
-                <p className="text-xs text-[var(--text-muted)]">
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                   Invalid username or profile not found: red border and clear inline helper message.
                 </p>
                 <div className="space-y-2 pt-2">
-                  <div className="flex flex-col xl:flex-row items-stretch gap-2.5">
+                  <div className="scan-input-group flex flex-col xl:flex-row items-stretch gap-2.5">
                     <input
                       type="text"
                       defaultValue="github.com/invalid@@user"
                       placeholder="github.com/username or @username"
                       readOnly
-                      className="w-full xl:flex-1 min-w-0 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] text-[var(--text)] text-base border-2 border-[var(--danger)] focus-visible:outline-none"
+                      className="scan-input-field w-full xl:flex-1 min-w-0 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] text-[var(--text)] text-base border-2 border-[var(--danger)] focus-visible:outline-none"
                     />
-                    <button className="w-full xl:w-auto shrink-0 py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all whitespace-nowrap flex items-center justify-center">
+                    <button className="scan-input-btn w-full xl:w-auto shrink-0 py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm shadow-[var(--glow-action)] hover:brightness-105 active:scale-[0.98] transition-all whitespace-nowrap flex items-center justify-center">
                       Audit Free
                     </button>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-[var(--danger)] font-medium">
-                    <AlertCircle className="w-3.5 h-3.5" />
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                     <span>Check the username spelling</span>
                   </div>
                 </div>
               </div>
 
               {/* 4. Disabled State */}
-              <div className="p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="scan-input-card p-4 sm:p-6 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <span className="text-xs font-mono text-[var(--text-muted)] font-bold">4. DISABLED (WHILE SCANNING)</span>
                   <span className="text-xs font-mono text-[var(--processing)]">Background task running</span>
                 </div>
-                <p className="text-xs text-[var(--text-muted)]">
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                   Active scan in-flight: input locked, button disabled with progress indicator to prevent duplicate submissions.
                 </p>
-                <div className="flex flex-col xl:flex-row items-stretch gap-2.5 pt-2">
+                <div className="scan-input-group flex flex-col xl:flex-row items-stretch gap-2.5 pt-2">
                   <input
                     type="text"
                     defaultValue="@octocat"
                     placeholder="github.com/username or @username"
                     disabled
-                    className="w-full xl:flex-1 min-w-0 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-muted)] text-base opacity-60 cursor-not-allowed"
+                    className="scan-input-field w-full xl:flex-1 min-w-0 py-3 px-4 rounded-[var(--radius-control)] bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-muted)] text-base opacity-60 cursor-not-allowed"
                   />
                   <button
                     disabled
-                    className="w-full xl:w-auto shrink-0 py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm opacity-60 cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
+                    className="scan-input-btn w-full xl:w-auto shrink-0 py-3 px-5 rounded-[var(--radius-control)] bg-[var(--action)] text-[var(--on-action)] font-bold text-sm opacity-60 cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
                   >
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <RefreshCw className="w-4 h-4 animate-spin shrink-0" />
                     <span>Audit Free</span>
                   </button>
                 </div>
