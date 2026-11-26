@@ -207,13 +207,7 @@ export const GitGlowHomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#0D1117] text-[#E6EDF3] selection:bg-[#D7FF36] selection:text-[#0D1117] overflow-x-hidden font-sans">
       
-      {/* 1. Slim Navbar */}
-      <GitGlowNavbar
-        connectedUser={connectedUser ? { username: connectedUser.githubUsername, avatarUrl: connectedUser.avatarUrl || undefined } : null}
-        onConnectGitHub={handleConnectGitHub}
-      />
-
-      {/* 2. Split Hero with Upper-Middle Scan Box */}
+      {/* Split Hero with Upper-Middle Scan Box */}
       <GitGlowHero
         onScan={handleScan}
         isScanning={isScanning}

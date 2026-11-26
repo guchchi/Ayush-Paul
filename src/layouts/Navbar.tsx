@@ -450,7 +450,8 @@ export const Navbar = () => {
                   onClick={(e) => {
                     e.preventDefault();
                     setIsGitGlowFeaturesOpen(false);
-                    document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
+                    const el = document.getElementById('cabinet') || document.getElementById('achievements');
+                    el?.scrollIntoView({ behavior: 'smooth' });
                   }}
                   className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none"
                 >
@@ -461,7 +462,8 @@ export const Navbar = () => {
                   onClick={(e) => {
                     e.preventDefault();
                     setIsGitGlowFeaturesOpen(false);
-                    document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
+                    const el = document.getElementById('missions') || document.getElementById('cabinet');
+                    el?.scrollIntoView({ behavior: 'smooth' });
                   }}
                   className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[14px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none hidden min-[540px]:inline-flex"
                 >

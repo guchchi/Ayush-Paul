@@ -43,7 +43,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
   };
 
   return (
-    <section className="relative pt-12 pb-16 md:pt-20 md:pb-24 overflow-hidden bg-[#0D1117] text-[#E6EDF3]">
+    <section className="relative pt-24 pb-16 sm:pt-28 md:pt-32 md:pb-24 overflow-hidden bg-[#0D1117] text-[#E6EDF3]">
       {/* Background Ambient Glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-[#D7FF36]/10 via-[#388BFD]/10 to-transparent blur-[120px] pointer-events-none rounded-full" />
 
