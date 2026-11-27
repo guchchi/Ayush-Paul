@@ -122,23 +122,23 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
   };
 
   return (
-    <section className="relative pt-20 pb-10 sm:pt-24 sm:pb-12 md:pt-24 md:pb-12 overflow-hidden bg-[#0D1117] text-[#E6EDF3]">
+    <section className="relative lg:min-h-[100svh] flex flex-col justify-center pt-[88px] pb-14 sm:pt-28 sm:pb-16 lg:pt-[108px] lg:pb-14 overflow-hidden bg-[#0D1117] text-[#E6EDF3]">
       {/* Subtle Ambient Spotlight Behind Right Showcase */}
       <div className="absolute top-1/3 right-1/4 w-[520px] h-[340px] bg-gradient-to-tr from-[#D7FF36]/8 via-[#388BFD]/8 to-transparent blur-[120px] pointer-events-none rounded-full" />
 
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+      <div className="max-w-[1200px] mx-auto w-full px-4 sm:px-6 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           
           {/* Left Column: High-Desire Copy & Scan Box */}
-          <div className="lg:col-span-7 space-y-4 sm:space-y-4.5 text-left">
+          <div className="lg:col-span-7 max-w-2xl mx-auto lg:mx-0 lg:max-w-none text-left">
             {/* Desirable Eyebrow */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161B22] border border-[#30363D] text-xs font-medium text-[#D7FF36]">
               <Sparkles className="w-3.5 h-3.5 shrink-0" />
               <span>Official GitHub Achievement Accelerator · Free Audit</span>
             </div>
 
-            {/* Punchy Value Proposition (Zero Orphan Words) */}
-            <h1 className="text-3xl sm:text-4xl lg:text-[42px] xl:text-[46px] font-bold font-heading tracking-tight text-[#E6EDF3] leading-[1.1]">
+            {/* Punchy 2-Line Value Proposition */}
+            <h1 className="mt-4 sm:mt-5 text-[28px] sm:text-4xl lg:text-[36px] xl:text-[42px] font-bold font-heading tracking-tight text-[#E6EDF3] leading-[1.12]">
               Claim Official GitHub Badges.{' '}
               <br className="hidden sm:inline" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D7FF36] via-[#B8F320] to-[#E6EDF3]">
@@ -147,13 +147,13 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
             </h1>
 
             {/* Persuasive Subtitle */}
-            <p className="text-sm sm:text-base text-[#8B949E] leading-relaxed max-w-xl">
+            <p className="mt-4 sm:mt-5 text-sm sm:text-base text-[#8B949E] leading-relaxed max-w-xl">
               Most developers leave their GitHub Achievements tab empty. Check which official medals you’re missing in 3 seconds, earn them naturally in ~2 minutes, and keep them on your profile forever.
             </p>
 
             {/* Primary Scan Box (Font >= 16px for Mobile Safety) */}
-            <div className="pt-1">
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch gap-2.5 max-w-xl">
+            <div className="mt-6 sm:mt-7">
+              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch gap-3 max-w-xl">
                 <div className="relative flex-1">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8B949E]">
                     <Search className="w-5 h-5" />
@@ -166,7 +166,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                       if (errorMsg) setErrorMsg('');
                     }}
                     placeholder="github.com/your-username"
-                    className="w-full pl-10 pr-4 py-3 bg-[#161B22] border border-[#30363D] focus:border-[#D7FF36] focus:ring-1 focus:ring-[#D7FF36] text-[#E6EDF3] placeholder-[#8B949E] rounded-[12px] text-base transition-all duration-200 outline-none"
+                    className="w-full pl-10 pr-4 py-3.5 bg-[#161B22] border border-[#30363D] focus:border-[#D7FF36] focus:ring-1 focus:ring-[#D7FF36] text-[#E6EDF3] placeholder-[#8B949E] rounded-[12px] text-base transition-all duration-200 outline-none"
                     autoCapitalize="none"
                     autoCorrect="off"
                     spellCheck="false"
@@ -175,7 +175,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                 <button
                   type="submit"
                   disabled={isScanning}
-                  className="px-6 py-3 bg-[#D7FF36] hover:bg-[#cbf42e] text-[#0D1117] font-bold rounded-[12px] text-sm transition-all duration-150 flex items-center justify-center gap-2 shrink-0 active:scale-[0.98] disabled:opacity-50 cursor-pointer shadow-[0_0_24px_rgba(215,255,54,0.28)]"
+                  className="px-6 py-3.5 bg-[#D7FF36] hover:bg-[#cbf42e] text-[#0D1117] font-bold rounded-[12px] text-sm transition-all duration-150 flex items-center justify-center gap-2 shrink-0 active:scale-[0.98] disabled:opacity-50 cursor-pointer shadow-[0_0_24px_rgba(215,255,54,0.28)]"
                 >
                   {isScanning ? (
                     <>
@@ -193,11 +193,11 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
 
               {/* Error Message */}
               {errorMsg && (
-                <p className="mt-2 text-xs text-rose-400 font-medium">{errorMsg}</p>
+                <p className="mt-2.5 text-xs text-rose-400 font-medium">{errorMsg}</p>
               )}
 
               {/* Quick Try Chips */}
-              <div className="mt-2.5 flex items-center gap-2 text-xs text-[#8B949E]">
+              <div className="mt-3.5 flex items-center gap-2 text-xs text-[#8B949E]">
                 <span>Quick try:</span>
                 <button
                   type="button"
@@ -217,7 +217,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
             </div>
 
             {/* Confident Trust Signals */}
-            <div className="pt-1 flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-[#8B949E]">
+            <div className="mt-5 sm:mt-6 flex flex-wrap items-center gap-y-2.5 gap-x-6 text-xs text-[#8B949E]">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#D7FF36]" />
                 <span>100% Official &amp; Permanent</span>
@@ -234,7 +234,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
           </div>
 
           {/* Right Column (Option A): Interactive Before / After GitHub Profile Transformation */}
-          <div className="lg:col-span-5 flex justify-center">
+          <div className="lg:col-span-5 flex justify-center lg:justify-end">
             <div
               onMouseEnter={() => setIsAutoPaused(true)}
               onMouseLeave={() => setIsAutoPaused(false)}
@@ -360,7 +360,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
 
                   {scannedUser ? (
                     /* Live Audited 5-Medal Row */
-                    <div className="grid grid-cols-5 gap-2 py-1">
+                    <div className="grid grid-cols-5 gap-1.5 sm:gap-2 py-1">
                       {HERO_BADGES.map((badge) => {
                         const isEarned = scannedUser.earnedBadgeIds.includes(badge.id);
                         const isPending = scannedUser.processingBadgeIds.includes(badge.id);
@@ -368,7 +368,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                         return (
                           <div key={badge.id} className="flex flex-col items-center text-center group/badge">
                             <div
-                              className={`relative w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                              className={`relative w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all ${
                                 isEarned
                                   ? 'ring-2 ring-[#D7FF36]/60 shadow-[0_0_16px_rgba(215,255,54,0.2)]'
                                   : isPending
@@ -385,7 +385,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                                   height={44}
                                   loading="eager"
                                   decoding="async"
-                                  className="w-11 h-11 object-contain"
+                                  className="w-9 h-9 sm:w-11 sm:h-11 object-contain"
                                 />
                               </picture>
                             </div>
@@ -418,10 +418,10 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                           exit={{ opacity: 0, y: -6 }}
                           transition={{ duration: 0.22 }}
                         >
-                          <div className="grid grid-cols-5 gap-2 py-1">
+                          <div className="grid grid-cols-5 gap-1.5 sm:gap-2 py-1">
                             {HERO_BADGES.map((badge) => (
                               <div key={badge.id} className="flex flex-col items-center text-center">
-                                <div className="relative w-12 h-12 rounded-full flex items-center justify-center bg-[#161B22] ring-1 ring-[#D7FF36]/35 shadow-[0_0_18px_rgba(215,255,54,0.14)]">
+                                <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-[#161B22] ring-1 ring-[#D7FF36]/35 shadow-[0_0_18px_rgba(215,255,54,0.14)]">
                                   <picture>
                                     <source type="image/webp" srcSet={badge.webp} />
                                     <img
@@ -431,7 +431,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                                       height={44}
                                       loading="eager"
                                       decoding="async"
-                                      className="w-11 h-11 object-contain"
+                                      className="w-9 h-9 sm:w-11 sm:h-11 object-contain"
                                     />
                                   </picture>
                                   {badge.tier && (
@@ -462,10 +462,10 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                           exit={{ opacity: 0, y: -6 }}
                           transition={{ duration: 0.22 }}
                         >
-                          <div className="grid grid-cols-5 gap-2 py-1">
+                          <div className="grid grid-cols-5 gap-1.5 sm:gap-2 py-1">
                             {HERO_BADGES.map((badge) => (
                               <div key={badge.id} className="flex flex-col items-center text-center">
-                                <div className="w-12 h-12 rounded-full border border-dashed border-[#30363D] bg-[#161B22]/50 flex items-center justify-center">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-dashed border-[#30363D] bg-[#161B22]/50 flex items-center justify-center">
                                   <Lock className="w-4 h-4 text-[#484F58]" />
                                 </div>
                                 <span className="mt-1.5 text-[10px] font-medium text-[#484F58] leading-tight">

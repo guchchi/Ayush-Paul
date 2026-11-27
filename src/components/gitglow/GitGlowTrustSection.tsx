@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 
 export const GitGlowTrustSection: React.FC = () => {
   return (
-    <section id="trust" className="py-16 md:py-24 bg-[#0D1117] text-[#E6EDF3]">
+    <section id="trust" className="scroll-mt-20 sm:scroll-mt-24 py-16 md:py-24 bg-[#0D1117] text-[#E6EDF3]">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         
         {/* Section Heading */}
