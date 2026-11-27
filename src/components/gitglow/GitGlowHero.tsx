@@ -43,23 +43,23 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
   };
 
   return (
-    <section className="relative pt-24 pb-16 sm:pt-28 md:pt-32 md:pb-24 overflow-hidden bg-[#0D1117] text-[#E6EDF3]">
+    <section className="relative pt-20 pb-10 sm:pt-24 sm:pb-12 md:pt-24 md:pb-12 overflow-hidden bg-[#0D1117] text-[#E6EDF3]">
       {/* Background Ambient Glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-[#D7FF36]/10 via-[#388BFD]/10 to-transparent blur-[120px] pointer-events-none rounded-full" />
 
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           
           {/* Left Column: Core Headline & Upper-Middle Scan Box */}
-          <div className="lg:col-span-7 space-y-6 text-left">
+          <div className="lg:col-span-7 space-y-4 sm:space-y-4.5 text-left">
             {/* Student & Dev Tag */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#161B22] border border-[#30363D] text-xs font-medium text-[#D7FF36]">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161B22] border border-[#30363D] text-xs font-medium text-[#D7FF36]">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Built for CS Students & Modern Developers</span>
             </div>
 
             {/* Headline with Space Grotesk */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-heading tracking-tight text-[#E6EDF3] leading-[1.1]">
+            <h1 className="text-3xl sm:text-4xl lg:text-[46px] xl:text-[52px] font-bold font-heading tracking-tight text-[#E6EDF3] leading-[1.08]">
               Grow Your GitHub Profile Credibility. <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D7FF36] via-[#B8F320] to-[#E6EDF3]">
                 Unlock Official Badges.
@@ -67,12 +67,12 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg text-[#8B949E] leading-relaxed max-w-xl">
+            <p className="text-sm sm:text-base text-[#8B949E] leading-relaxed max-w-xl">
               90% of developers have an empty achievements tab. Scan your profile in 3 seconds, see exactly which badges you qualify for, and claim them with 1-click legal automation.
             </p>
 
             {/* Upper-Middle Scan Box (Keyboard Safe on Mobile, Font >= 16px) */}
-            <div className="pt-2">
+            <div className="pt-1">
               <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch gap-2.5 max-w-xl">
                 <div className="relative flex-1">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8B949E]">
@@ -86,7 +86,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                       if (errorMsg) setErrorMsg('');
                     }}
                     placeholder="github.com/your-username"
-                    className="w-full pl-10 pr-4 py-3.5 bg-[#161B22] border border-[#30363D] focus:border-[#D7FF36] focus:ring-1 focus:ring-[#D7FF36] text-[#E6EDF3] placeholder-[#8B949E] rounded-xl text-base transition-all duration-200 outline-none"
+                    className="w-full pl-10 pr-4 py-3 bg-[#161B22] border border-[#30363D] focus:border-[#D7FF36] focus:ring-1 focus:ring-[#D7FF36] text-[#E6EDF3] placeholder-[#8B949E] rounded-xl text-base transition-all duration-200 outline-none"
                     autoCapitalize="none"
                     autoCorrect="off"
                     spellCheck="false"
@@ -95,7 +95,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                 <button
                   type="submit"
                   disabled={isScanning}
-                  className="px-6 py-3.5 bg-[#D7FF36] hover:bg-[#cbf42e] text-[#0D1117] font-bold rounded-xl text-sm transition-all duration-150 flex items-center justify-center gap-2 shrink-0 active:scale-[0.98] disabled:opacity-50 cursor-pointer shadow-[0_0_20px_rgba(215,255,54,0.25)]"
+                  className="px-6 py-3 bg-[#D7FF36] hover:bg-[#cbf42e] text-[#0D1117] font-bold rounded-xl text-sm transition-all duration-150 flex items-center justify-center gap-2 shrink-0 active:scale-[0.98] disabled:opacity-50 cursor-pointer shadow-[0_0_20px_rgba(215,255,54,0.25)]"
                 >
                   {isScanning ? (
                     <>
@@ -117,7 +117,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
               )}
 
               {/* Quick Try Chips */}
-              <div className="mt-3 flex items-center gap-2 text-xs text-[#8B949E]">
+              <div className="mt-2.5 flex items-center gap-2 text-xs text-[#8B949E]">
                 <span>Quick try:</span>
                 <button
                   type="button"
@@ -137,7 +137,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
             </div>
 
             {/* Anti-BS Trust Pills */}
-            <div className="pt-3 flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-[#8B949E]">
+            <div className="pt-1 flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-[#8B949E]">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#D7FF36]" />
                 <span>Real GitHub git activity</span>
@@ -155,10 +155,10 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
 
           {/* Right Column: Interactive 3D Showcase Card / Mini Cabinet Preview */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="relative w-full max-w-md p-6 rounded-2xl bg-[#161B22]/90 border border-[#30363D] shadow-2xl backdrop-blur-sm group hover:border-[#D7FF36]/40 transition-all duration-300">
+            <div className="relative w-full max-w-md p-5 rounded-2xl bg-[#161B22]/90 border border-[#30363D] shadow-2xl backdrop-blur-sm group hover:border-[#D7FF36]/40 transition-all duration-300">
               
               {/* Header inside card */}
-              <div className="flex items-center justify-between pb-4 border-b border-[#30363D]">
+              <div className="flex items-center justify-between pb-3.5 border-b border-[#30363D]">
                 <div className="flex items-center gap-2.5">
                   <GitGlowLogo size={28} showWordmark={false} />
                   <div>
