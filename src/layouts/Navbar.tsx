@@ -480,10 +480,10 @@ export const Navbar = () => {
                   <button
                     type="button"
                     onClick={handleGitGlowConnect}
-                    className="h-7 min-[380px]:h-8 sm:h-9 px-2.5 min-[380px]:px-3 sm:px-5 rounded-full bg-[#D7FF36] hover:bg-[#cbf42e] text-[#0D1117] text-[11px] min-[380px]:text-xs sm:text-sm font-bold inline-flex items-center gap-1 min-[380px]:gap-1.5 sm:gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer select-none shrink-0 shadow-[0_0_20px_rgba(215,255,54,0.35)] hover:shadow-[0_0_25px_rgba(215,255,54,0.55)]"
+                    className="h-7 min-[380px]:h-8 sm:h-9 px-2.5 min-[380px]:px-3 sm:px-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 hover:border-[#D7FF36]/50 text-[#E6EDF3] hover:text-white text-[11px] min-[380px]:text-xs sm:text-sm font-semibold inline-flex items-center gap-1 min-[380px]:gap-1.5 sm:gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer select-none shrink-0"
                     aria-label="Connect GitHub Account"
                   >
-                    <Github className="w-3 h-3 sm:w-4 sm:h-4 text-[#0D1117] shrink-0" />
+                    <Github className="w-3 h-3 sm:w-4 sm:h-4 text-[#D7FF36] shrink-0" />
                     <span className="hidden min-[420px]:inline">Connect GitHub</span>
                     <span className="min-[420px]:hidden">Connect</span>
                   </button>

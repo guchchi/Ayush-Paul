@@ -23,7 +23,7 @@ const PREVIEW_BADGES = [
     webp: '/images/badges/pull-shark.webp',
     png: '/images/badges/pull-shark.png',
     alt: 'GitHub Pull Shark Achievement Badge',
-    sampleStatus: 'earned' as const,
+    criteria: '2 merged PRs',
   },
   {
     id: 'quickdraw',
@@ -31,7 +31,7 @@ const PREVIEW_BADGES = [
     webp: '/images/badges/quickdraw.webp',
     png: '/images/badges/quickdraw.png',
     alt: 'GitHub Quickdraw Achievement Badge',
-    sampleStatus: 'earned' as const,
+    criteria: 'Issue < 5m',
   },
   {
     id: 'yolo',
@@ -39,7 +39,7 @@ const PREVIEW_BADGES = [
     webp: '/images/badges/yolo.webp',
     png: '/images/badges/yolo.png',
     alt: 'GitHub YOLO Achievement Badge',
-    sampleStatus: 'pending' as const,
+    criteria: '1st merged PR',
   },
 ];
 
@@ -91,23 +91,23 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
           
           {/* Left Column: Core Headline & Upper-Middle Scan Box */}
           <div className="lg:col-span-7 space-y-4 sm:space-y-4.5 text-left">
-            {/* Student & Dev Tag */}
+            {/* Safety & Mechanism Eyebrow */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161B22] border border-[#30363D] text-xs font-medium text-[#D7FF36]">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Built for CS Students & Modern Developers</span>
+              <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+              <span>Zero private-repo access · 100% GitHub-native workflows</span>
             </div>
 
             {/* Headline with Space Grotesk */}
             <h1 className="text-3xl sm:text-4xl lg:text-[46px] xl:text-[52px] font-bold font-heading tracking-tight text-[#E6EDF3] leading-[1.08]">
-              Grow Your GitHub Profile Credibility. <br />
+              Unlock Official GitHub Badges{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D7FF36] via-[#B8F320] to-[#E6EDF3]">
-                Unlock Official Badges.
+                Without Touching Your Real Repos.
               </span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-sm sm:text-base text-[#8B949E] leading-relaxed max-w-xl">
-              90% of developers have an empty achievements tab. Scan your profile in 3 seconds, see exactly which badges you qualify for, and claim them with 1-click legal automation.
+              Scan any public profile in 3 seconds to see missing achievements. Claim them via real PRs &amp; discussions in an isolated sandbox repo—or copy the CLI steps yourself.
             </p>
 
             {/* Upper-Middle Scan Box (Keyboard Safe on Mobile, Font >= 16px) */}
@@ -167,10 +167,10 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleQuickTry('guchchi')}
+                  onClick={() => handleQuickTry('torvalds')}
                   className="px-2 py-0.5 rounded-md bg-[#161B22] hover:bg-[#21262D] border border-[#30363D] text-[#E6EDF3] transition-colors cursor-pointer"
                 >
-                  @guchchi
+                  @torvalds
                 </button>
               </div>
             </div>
@@ -179,20 +179,20 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
             <div className="pt-1 flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-[#8B949E]">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#D7FF36]" />
-                <span>Real GitHub git activity</span>
+                <span>Public repos only</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Lock className="w-4 h-4 text-[#D7FF36]" />
-                <span>No password required</span>
+                <span>Never touches existing code</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Zap className="w-4 h-4 text-[#D7FF36]" />
-                <span>1-Click sandbox merge</span>
+                <span>CLI or 1-Click</span>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Interactive 3D Showcase Card / Mini Cabinet Preview */}
+          {/* Right Column: Sandbox Mechanism & Live Audit Card */}
           <div className="lg:col-span-5 flex justify-center">
             <div className="relative w-full max-w-md p-5 rounded-2xl bg-[#161B22]/90 border border-[#30363D] shadow-2xl backdrop-blur-sm group hover:border-[#D7FF36]/40 transition-all duration-300">
               
@@ -212,32 +212,38 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                   )}
                   <div>
                     <div className="text-xs font-bold text-[#E6EDF3] font-heading">
-                      {scannedUser ? `@${scannedUser.username}` : 'GitGlow Live Showcase'}
+                      {scannedUser ? `@${scannedUser.username}` : 'github.com/you'}
                     </div>
                     <div className="text-[11px] text-[#8B949E]">
                       {isScanning
                         ? 'Auditing GitHub GraphQL...'
                         : scannedUser
                           ? 'Live Profile Audit'
-                          : 'Sample Preview (Pre-Scan)'}
+                          : 'Isolated: /gitglow-sandbox'}
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#D7FF36]/10 border border-[#D7FF36]/20 text-[10px] font-bold text-[#D7FF36]">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#D7FF36] animate-pulse" />
-                  <span>{isScanning ? 'SCANNING' : scannedUser ? 'LIVE' : 'SAMPLE'}</span>
+                  <span>{isScanning ? 'SCANNING' : scannedUser ? 'LIVE' : 'SAFE SANDBOX'}</span>
                 </div>
               </div>
 
-              {/* Sample / Live Profile HUD */}
+              {/* Sandbox Mechanism / Live Profile HUD */}
               <div className="py-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="text-xs text-[#8B949E]">
-                    {scannedUser ? 'Profile Score' : 'Sample Score'}
+                    {scannedUser ? 'Profile Score' : 'Sandbox Scope'}
                   </div>
-                  <div className="text-xl font-bold font-heading text-[#D7FF36] tabular-nums">
-                    {scannedUser ? scannedUser.score : 85} <span className="text-xs text-[#8B949E]">/ 100</span>
-                  </div>
+                  {scannedUser ? (
+                    <div className="text-xl font-bold font-heading text-[#D7FF36] tabular-nums">
+                      {scannedUser.score} <span className="text-xs text-[#8B949E]">/ 100</span>
+                    </div>
+                  ) : (
+                    <div className="text-xs font-bold font-heading text-[#D7FF36]">
+                      1 Public Repo · Zero Private Access
+                    </div>
+                  )}
                 </div>
 
                 {/* Mini Shelf Grid */}
@@ -249,7 +255,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                         : scannedUser.processingBadgeIds.includes(badge.id)
                           ? 'pending'
                           : 'available'
-                      : badge.sampleStatus;
+                      : 'criteria';
 
                     return (
                       <div
@@ -271,6 +277,9 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                           />
                         </picture>
                         <span className="text-[11px] font-bold text-[#E6EDF3]">{badge.name}</span>
+                        {status === 'criteria' && (
+                          <span className="text-[9px] text-[#8B949E] mt-0.5">{badge.criteria}</span>
+                        )}
                         {status === 'earned' && (
                           <span className="text-[9px] text-[#D7FF36] mt-0.5">Earned ✓</span>
                         )}
@@ -292,13 +301,13 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                     <span className="truncate">
                       {scannedUser
                         ? `gh api users/${scannedUser.username} --jq .achievements`
-                        : 'gh pr merge --auto --merge'}
+                        : 'gh pr merge --sandbox'}
                     </span>
                   </div>
                   <div className="text-[11px] text-emerald-400 truncate">
                     {scannedUser
                       ? `✓ ${scannedUser.earnedBadgeIds.length} of 5 automated tracks verified`
-                      : '✓ Merged into main with verified co-author RFC'}
+                      : '✓ GitHub indexes official badge automatically'}
                   </div>
                 </div>
               </div>
