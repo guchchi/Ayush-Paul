@@ -106,11 +106,11 @@ export const GitGlowCabinet: React.FC<GitGlowCabinetProps> = ({
 }) => {
   const [showFormula, setShowFormula] = useState(false);
 
-  // Determine current states
+  // Determine current states (never show fake earned badges before user runs an audit)
   const isPreScan = !scannedUser;
-  const username = scannedUser ? scannedUser.username : 'example-dev';
-  const score = scannedUser ? scannedUser.score : 40;
-  const earnedIds = scannedUser ? scannedUser.earnedBadgeIds : ['quickdraw'];
+  const username = scannedUser ? scannedUser.username : '';
+  const score = scannedUser ? scannedUser.score : null;
+  const earnedIds = scannedUser ? scannedUser.earnedBadgeIds : [];
   const processingIds = scannedUser ? scannedUser.processingBadgeIds : [];
 
   const earnedCount = earnedIds.filter(id => AUTOMATED_BADGES.some(b => b.id === id)).length;
@@ -128,7 +128,7 @@ export const GitGlowCabinet: React.FC<GitGlowCabinetProps> = ({
               <span>Achievement Trophies</span>
               {isPreScan && (
                 <span className="px-2 py-0.5 rounded-full bg-[#161B22] border border-[#30363D] text-[10px] text-[#8B949E]">
-                  Sample Preview
+                  Ready to Audit
                 </span>
               )}
             </div>
@@ -155,7 +155,7 @@ export const GitGlowCabinet: React.FC<GitGlowCabinetProps> = ({
                   GitGlow Profile Score
                 </div>
                 <div className="text-2xl font-bold font-heading text-[#D7FF36] tabular-nums leading-none">
-                  {score} <span className="text-xs text-[#8B949E] font-normal">/ 100</span>
+                  {score !== null ? score : '--'} <span className="text-xs text-[#8B949E] font-normal">/ 100</span>
                 </div>
               </div>
               <button
@@ -212,11 +212,41 @@ export const GitGlowCabinet: React.FC<GitGlowCabinetProps> = ({
         {/* Mobile Pinned Progress Bar */}
         <div className="md:hidden mb-4 p-3 rounded-xl bg-[#161B22] border border-[#30363D] flex items-center justify-between text-xs">
           <span className="text-[#8B949E]">Trophy Progress:</span>
-          <span className="font-bold text-[#D7FF36] font-heading">{earnedCount} of 5 Earned</span>
+          <span className="font-bold text-[#D7FF36] font-heading">
+            {isPreScan ? 'Scan username to audit' : `${earnedCount} of 5 Earned`}
+          </span>
         </div>
 
-        {/* Recommended Action Banner (If unearned badges exist) */}
-        {firstAvailableBadge && (
+        {/* Recommended Action Banner */}
+        {isPreScan ? (
+          <div className="mb-8 p-4 rounded-2xl bg-gradient-to-r from-[#D7FF36]/10 via-[#161B22] to-[#161B22] border border-[#D7FF36]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 shrink-0 rounded-xl bg-[#161B22] border border-[#30363D] flex items-center justify-center">
+                <Trophy className="w-5 h-5 text-[#D7FF36]" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-[#D7FF36] uppercase tracking-wider">Start Your Free Audit</div>
+                <div className="text-sm font-bold text-[#E6EDF3] font-heading">
+                  Enter your GitHub username above to audit your profile & claim missing badges
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setTimeout(() => {
+                  const input = document.querySelector<HTMLInputElement>('section input[type="text"]');
+                  input?.focus();
+                }, 400);
+              }}
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#D7FF36] hover:bg-[#cbf42e] text-[#0D1117] font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-sm"
+            >
+              <span>Audit My Profile</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ) : firstAvailableBadge && (
           <div className="mb-8 p-4 rounded-2xl bg-gradient-to-r from-[#D7FF36]/10 via-[#161B22] to-[#161B22] border border-[#D7FF36]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
               <picture className="w-10 h-10 shrink-0 flex items-center justify-center">
