@@ -85,9 +85,9 @@ export const GitGlowHomePage: React.FC = () => {
     }
   }, [setConnectedUser]);
 
-  // Calculate profile score using exact 100-point transparent formula
-  const profileScore = useMemo(() => {
-    if (!scanAnalysis) return 40;
+  // Calculate profile score + projected potential score using exact 100-point formula
+  const { profileScore, potentialScore } = useMemo(() => {
+    if (!scanAnalysis) return { profileScore: 40, potentialScore: 100 };
 
     let total = 0;
     const liveBadges = scanAnalysis.liveEarnedAchievements || [];
@@ -113,7 +113,15 @@ export const GitGlowHomePage: React.FC = () => {
       total = 10;
     }
 
-    return Math.min(100, Math.max(10, total));
+    const currentScore = Math.min(100, Math.max(10, total));
+
+    // Projected score if remaining automated tracks (PRs + quick issue + Q&A) are claimed
+    const projectedPrPoints = earnedAutomatedCount < 5 && !liveBadges.includes('pull-shark') && !isBadgeOwned('pull-shark')
+      ? Math.max(prPoints, 10)
+      : prPoints;
+    const projectedScore = Math.min(100, Math.max(currentScore, 50 + projectedPrPoints + 15 + 15));
+
+    return { profileScore: currentScore, potentialScore: projectedScore };
   }, [scanAnalysis, isBadgeOwned]);
 
   // Determine active badge states for the cabinet
@@ -220,14 +228,22 @@ export const GitGlowHomePage: React.FC = () => {
       {/* 3. 5-Trophy Glass Cabinet */}
       <GitGlowCabinet
         isScanning={isScanning}
+        connectedUsername={connectedUser?.githubUsername || null}
+        onAuditUsername={handleScan}
         scannedUser={
           scanAnalysis
             ? {
                 username: scanAnalysis.user.login,
                 avatarUrl: scanAnalysis.user.avatar_url,
                 score: profileScore,
+                potentialScore,
                 earnedBadgeIds,
                 processingBadgeIds,
+                publicRepos: scanAnalysis.user.public_repos,
+                totalMergedPrs: scanAnalysis.totalMergedPrs,
+                totalIssuesClosed: scanAnalysis.totalIssuesClosed,
+                pullSharkTier: scanAnalysis.pullSharkTier,
+                badgeEvaluations: scanAnalysis.badgeEvaluations,
               }
             : null
         }
