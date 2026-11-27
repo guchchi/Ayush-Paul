@@ -48,7 +48,8 @@ const FAQS: FAQItem[] = [
 const UPCOMING_BADGES = [
   {
     name: 'Heart On Sleeve',
-    icon: '💜',
+    image: '/images/badges/heart-on-your-sleeve.png',
+    webpImage: '/images/badges/heart-on-your-sleeve.webp',
     category: 'Community Reaction',
     difficulty: 'Easy',
     status: 'In Development',
@@ -56,7 +57,8 @@ const UPCOMING_BADGES = [
   },
   {
     name: 'Public Sponsor',
-    icon: '💖',
+    image: '/images/badges/public-sponsor.png',
+    webpImage: '/images/badges/public-sponsor.webp',
     category: 'Open Source',
     difficulty: 'Special',
     status: 'In Development',
@@ -64,7 +66,8 @@ const UPCOMING_BADGES = [
   },
   {
     name: 'Open Sourcerer',
-    icon: '🧙',
+    image: '/images/badges/open-sourcerer.png',
+    webpImage: '/images/badges/open-sourcerer.webp',
     category: 'Ecosystem',
     difficulty: 'Hard',
     status: 'Planned',
@@ -111,7 +114,18 @@ export const GitGlowRoadmapFAQ: React.FC = () => {
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-3xl">{item.icon}</span>
+                    <picture>
+                      <source type="image/webp" srcSet={item.webpImage} />
+                      <img
+                        src={item.image}
+                        alt={`GitHub ${item.name} Achievement Badge`}
+                        width={44}
+                        height={44}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-11 h-11 object-contain drop-shadow-md"
+                      />
+                    </picture>
                     <span className="px-2.5 py-0.5 rounded-full bg-[#0D1117] border border-[#30363D] text-[10px] font-bold text-[#388BFD]">
                       {item.status}
                     </span>

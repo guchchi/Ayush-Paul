@@ -159,7 +159,7 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
         set({ connectedUser: null });
       },
 
-      targetUsername: 'guchchi',
+      targetUsername: '',
       testRepoName: DEFAULT_REPO_NAME,
       setTargetUsername: (username: string) => set({ targetUsername: username.trim().replace(/^@/, '') }),
       setTestRepoName: (repo: string) => set({ testRepoName: repo.trim() }),
@@ -446,7 +446,7 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
 
       reset: () => {
         set({
-          targetUsername: 'developer',
+          targetUsername: '',
           testRepoName: DEFAULT_REPO_NAME,
           isScanning: false,
           scanError: null,

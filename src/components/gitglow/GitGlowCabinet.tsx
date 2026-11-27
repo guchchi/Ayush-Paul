@@ -146,8 +146,8 @@ export const GitGlowCabinet: React.FC<GitGlowCabinetProps> = ({
               {scannedUser?.avatarUrl ? (
                 <img src={scannedUser.avatarUrl} alt={username} className="w-10 h-10 rounded-full border border-[#30363D]" />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-[#21262D] border border-[#30363D] flex items-center justify-center text-lg">
-                  🏆
+                <div className="w-10 h-10 rounded-full bg-[#21262D] border border-[#30363D] flex items-center justify-center">
+                  <Trophy className="w-5 h-5 text-[#D7FF36]" />
                 </div>
               )}
               <div>

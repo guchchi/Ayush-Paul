@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ShieldCheck, Lock, Zap, Search, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
 import { GitGlowLogo } from './GitGlowLogo';
@@ -7,15 +7,54 @@ interface GitGlowHeroProps {
   onScan: (username: string) => void;
   isScanning: boolean;
   initialUsername?: string;
+  scannedUser?: {
+    username: string;
+    avatarUrl?: string;
+    score: number;
+    earnedBadgeIds: string[];
+    processingBadgeIds: string[];
+  } | null;
 }
+
+const PREVIEW_BADGES = [
+  {
+    id: 'pull-shark',
+    name: 'Pull Shark',
+    webp: '/images/badges/pull-shark.webp',
+    png: '/images/badges/pull-shark.png',
+    alt: 'GitHub Pull Shark Achievement Badge',
+    sampleStatus: 'earned' as const,
+  },
+  {
+    id: 'quickdraw',
+    name: 'Quickdraw',
+    webp: '/images/badges/quickdraw.webp',
+    png: '/images/badges/quickdraw.png',
+    alt: 'GitHub Quickdraw Achievement Badge',
+    sampleStatus: 'earned' as const,
+  },
+  {
+    id: 'yolo',
+    name: 'YOLO',
+    webp: '/images/badges/yolo.webp',
+    png: '/images/badges/yolo.png',
+    alt: 'GitHub YOLO Achievement Badge',
+    sampleStatus: 'pending' as const,
+  },
+];
 
 export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
   onScan,
   isScanning,
   initialUsername = '',
+  scannedUser = null,
 }) => {
   const [usernameInput, setUsernameInput] = useState(initialUsername);
   const [errorMsg, setErrorMsg] = useState('');
+
+  useEffect(() => {
+    setUsernameInput(initialUsername);
+  }, [initialUsername]);
 
   const cleanUsername = (raw: string): string => {
     let cleaned = raw.trim();
@@ -160,86 +199,107 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
               {/* Header inside card */}
               <div className="flex items-center justify-between pb-3.5 border-b border-[#30363D]">
                 <div className="flex items-center gap-2.5">
-                  <GitGlowLogo size={28} showWordmark={false} />
+                  {scannedUser?.avatarUrl ? (
+                    <img
+                      src={scannedUser.avatarUrl}
+                      alt={scannedUser.username}
+                      width={28}
+                      height={28}
+                      className="w-7 h-7 rounded-full border border-[#30363D] object-cover"
+                    />
+                  ) : (
+                    <GitGlowLogo size={28} showWordmark={false} />
+                  )}
                   <div>
-                    <div className="text-xs font-bold text-[#E6EDF3] font-heading">GitGlow Live Showcase</div>
-                    <div className="text-[11px] text-[#8B949E]">Official Achievement Simulator</div>
+                    <div className="text-xs font-bold text-[#E6EDF3] font-heading">
+                      {scannedUser ? `@${scannedUser.username}` : 'GitGlow Live Showcase'}
+                    </div>
+                    <div className="text-[11px] text-[#8B949E]">
+                      {isScanning
+                        ? 'Auditing GitHub GraphQL...'
+                        : scannedUser
+                          ? 'Live Profile Audit'
+                          : 'Sample Preview (Pre-Scan)'}
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#D7FF36]/10 border border-[#D7FF36]/20 text-[10px] font-bold text-[#D7FF36]">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#D7FF36] animate-pulse" />
-                  <span>ONLINE</span>
+                  <span>{isScanning ? 'SCANNING' : scannedUser ? 'LIVE' : 'SAMPLE'}</span>
                 </div>
               </div>
 
-              {/* Sample Profile HUD */}
+              {/* Sample / Live Profile HUD */}
               <div className="py-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="text-xs text-[#8B949E]">Preview Score</div>
+                  <div className="text-xs text-[#8B949E]">
+                    {scannedUser ? 'Profile Score' : 'Sample Score'}
+                  </div>
                   <div className="text-xl font-bold font-heading text-[#D7FF36] tabular-nums">
-                    85 <span className="text-xs text-[#8B949E]">/ 100</span>
+                    {scannedUser ? scannedUser.score : 85} <span className="text-xs text-[#8B949E]">/ 100</span>
                   </div>
                 </div>
 
                 {/* Mini Shelf Grid */}
                 <div className="grid grid-cols-3 gap-2.5 pt-1">
-                  <div className="p-2.5 rounded-xl bg-[#0D1117] border border-[#30363D] flex flex-col items-center text-center">
-                    <picture>
-                      <source type="image/webp" srcSet="/images/badges/pull-shark.webp" />
-                      <img
-                        src="/images/badges/pull-shark.png"
-                        alt="GitHub Pull Shark Achievement Badge"
-                        width={36}
-                        height={36}
-                        loading="eager"
-                        decoding="async"
-                        className="w-9 h-9 object-contain mb-1.5 drop-shadow-sm"
-                      />
-                    </picture>
-                    <span className="text-[11px] font-bold text-[#E6EDF3]">Pull Shark</span>
-                    <span className="text-[9px] text-[#D7FF36] mt-0.5">Earned ✓</span>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-[#0D1117] border border-[#30363D] flex flex-col items-center text-center">
-                    <picture>
-                      <source type="image/webp" srcSet="/images/badges/quickdraw.webp" />
-                      <img
-                        src="/images/badges/quickdraw.png"
-                        alt="GitHub Quickdraw Achievement Badge"
-                        width={36}
-                        height={36}
-                        loading="eager"
-                        decoding="async"
-                        className="w-9 h-9 object-contain mb-1.5 drop-shadow-sm"
-                      />
-                    </picture>
-                    <span className="text-[11px] font-bold text-[#E6EDF3]">Quickdraw</span>
-                    <span className="text-[9px] text-[#D7FF36] mt-0.5">Earned ✓</span>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-[#0D1117] border border-[#30363D] flex flex-col items-center text-center">
-                    <picture>
-                      <source type="image/webp" srcSet="/images/badges/yolo.webp" />
-                      <img
-                        src="/images/badges/yolo.png"
-                        alt="GitHub YOLO Achievement Badge"
-                        width={36}
-                        height={36}
-                        loading="eager"
-                        decoding="async"
-                        className="w-9 h-9 object-contain mb-1.5 drop-shadow-sm"
-                      />
-                    </picture>
-                    <span className="text-[11px] font-bold text-[#E6EDF3]">YOLO</span>
-                    <span className="text-[9px] text-[#388BFD] mt-0.5">Pending ⏱</span>
-                  </div>
+                  {PREVIEW_BADGES.map((badge) => {
+                    const status = scannedUser
+                      ? scannedUser.earnedBadgeIds.includes(badge.id)
+                        ? 'earned'
+                        : scannedUser.processingBadgeIds.includes(badge.id)
+                          ? 'pending'
+                          : 'available'
+                      : badge.sampleStatus;
+
+                    return (
+                      <div
+                        key={badge.id}
+                        className="p-2.5 rounded-xl bg-[#0D1117] border border-[#30363D] flex flex-col items-center text-center"
+                      >
+                        <picture>
+                          <source type="image/webp" srcSet={badge.webp} />
+                          <img
+                            src={badge.png}
+                            alt={badge.alt}
+                            width={36}
+                            height={36}
+                            loading="eager"
+                            decoding="async"
+                            className={`w-9 h-9 object-contain mb-1.5 drop-shadow-sm transition-opacity ${
+                              status === 'available' ? 'opacity-45 grayscale' : ''
+                            }`}
+                          />
+                        </picture>
+                        <span className="text-[11px] font-bold text-[#E6EDF3]">{badge.name}</span>
+                        {status === 'earned' && (
+                          <span className="text-[9px] text-[#D7FF36] mt-0.5">Earned ✓</span>
+                        )}
+                        {status === 'pending' && (
+                          <span className="text-[9px] text-[#388BFD] mt-0.5">Pending ⏱</span>
+                        )}
+                        {status === 'available' && (
+                          <span className="text-[9px] text-[#8B949E] mt-0.5">Available</span>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Simulated Terminal Step */}
                 <div className="p-3 rounded-lg bg-[#0D1117] border border-[#30363D] font-code text-xs text-[#8B949E] space-y-1">
                   <div className="flex items-center gap-1.5 text-[#E6EDF3]">
                     <span className="text-[#D7FF36]">$</span>
-                    <span>gh pr merge --auto --merge</span>
+                    <span className="truncate">
+                      {scannedUser
+                        ? `gh api users/${scannedUser.username} --jq .achievements`
+                        : 'gh pr merge --auto --merge'}
+                    </span>
                   </div>
-                  <div className="text-[11px] text-emerald-400">✓ Merged into main with verified co-author RFC</div>
+                  <div className="text-[11px] text-emerald-400 truncate">
+                    {scannedUser
+                      ? `✓ ${scannedUser.earnedBadgeIds.length} of 5 automated tracks verified`
+                      : '✓ Merged into main with verified co-author RFC'}
+                  </div>
                 </div>
               </div>
 

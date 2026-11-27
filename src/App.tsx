@@ -1,5 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
-import { Routes, Route, Navigate, useParams } from "react-router-dom";
+import { Routes, Route, Navigate, useParams, useLocation } from "react-router-dom";
 import { AnimatePresence } from "motion/react";
 
 // --- Layouts ---
@@ -83,6 +83,8 @@ const RedirectWithSlug = () => {
 };
 
 export default function App() {
+  const location = useLocation();
+  const isGitGlowRoute = location.pathname.startsWith('/blueprints/gitglow');
   const [showConfigWarning, setShowConfigWarning] = useState(true);
   const [isIdle, setIsIdle] = useState(false);
   const { isConfigured, projectId, databaseId } = getFirebaseStatus();
@@ -214,15 +216,19 @@ export default function App() {
             </Routes>
           </Suspense>
 
-          <ScrollToTopButton />
-          {isIdle && (
-            <Suspense fallback={null}>
-              <CookieConsent />
-            </Suspense>
-          )}
-          <BetaFeedbackButton />
+          {!isGitGlowRoute && (
+            <>
+              <ScrollToTopButton />
+              {isIdle && (
+                <Suspense fallback={null}>
+                  <CookieConsent />
+                </Suspense>
+              )}
+              <BetaFeedbackButton />
 
-          {import.meta.env.DEV && <DevTestTools />}
+              {import.meta.env.DEV && <DevTestTools />}
+            </>
+          )}
         </div>
     </ErrorBoundary>
   );

@@ -63,14 +63,6 @@ export const GitGlowHomePage: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Initial auto-scan if target exists or default to guchchi
-  useEffect(() => {
-    if (!scanAnalysis && !isScanning) {
-      const user = targetUsername || 'guchchi';
-      runScan(user);
-    }
-  }, []);
-
   // Handle Scan action
   const handleScan = useCallback(async (username: string) => {
     setTargetUsername(username);
@@ -212,6 +204,17 @@ export const GitGlowHomePage: React.FC = () => {
         onScan={handleScan}
         isScanning={isScanning}
         initialUsername={targetUsername || ''}
+        scannedUser={
+          scanAnalysis
+            ? {
+                username: scanAnalysis.user.login,
+                avatarUrl: scanAnalysis.user.avatar_url,
+                score: profileScore,
+                earnedBadgeIds,
+                processingBadgeIds,
+              }
+            : null
+        }
       />
 
       {/* 3. 5-Trophy Glass Cabinet */}

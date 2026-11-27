@@ -81,11 +81,34 @@ export const GitGlowFooter: React.FC<GitGlowFooterProps> = ({ onScan, isScanning
               Achievements
             </h4>
             <ul className="space-y-2 text-xs text-[#8B949E]">
-              <li><Link to="/blueprints/gitglow/badges/pull-shark" className="hover:text-[#D7FF36] transition-colors">Pull Shark (🦈)</Link></li>
-              <li><Link to="/blueprints/gitglow/badges/quickdraw" className="hover:text-[#D7FF36] transition-colors">Quickdraw (⚡)</Link></li>
-              <li><Link to="/blueprints/gitglow/badges/yolo" className="hover:text-[#D7FF36] transition-colors">YOLO (🚀)</Link></li>
-              <li><Link to="/blueprints/gitglow/badges/pair-extraordinaire" className="hover:text-[#D7FF36] transition-colors">Pair Extraordinaire (👥)</Link></li>
-              <li><Link to="/blueprints/gitglow/badges/galaxy-brain" className="hover:text-[#D7FF36] transition-colors">Galaxy Brain (🧠)</Link></li>
+              {[
+                { id: 'pull-shark', label: 'Pull Shark' },
+                { id: 'quickdraw', label: 'Quickdraw' },
+                { id: 'yolo', label: 'YOLO' },
+                { id: 'pair-extraordinaire', label: 'Pair Extraordinaire' },
+                { id: 'galaxy-brain', label: 'Galaxy Brain' },
+              ].map((badge) => (
+                <li key={badge.id}>
+                  <Link
+                    to={`/blueprints/gitglow/badges/${badge.id}`}
+                    className="inline-flex items-center gap-2 hover:text-[#D7FF36] transition-colors"
+                  >
+                    <picture>
+                      <source type="image/webp" srcSet={`/images/badges/${badge.id}.webp`} />
+                      <img
+                        src={`/images/badges/${badge.id}.png`}
+                        alt={`GitHub ${badge.label} Badge`}
+                        width={18}
+                        height={18}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-[18px] h-[18px] object-contain shrink-0"
+                      />
+                    </picture>
+                    <span>{badge.label}</span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
