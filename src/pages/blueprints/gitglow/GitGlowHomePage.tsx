@@ -219,6 +219,7 @@ export const GitGlowHomePage: React.FC = () => {
 
       {/* 3. 5-Trophy Glass Cabinet */}
       <GitGlowCabinet
+        isScanning={isScanning}
         scannedUser={
           scanAnalysis
             ? {
@@ -260,8 +261,8 @@ export const GitGlowHomePage: React.FC = () => {
         isProcessing={selectedDrawerBadgeId ? processingBadgeIds.includes(selectedDrawerBadgeId) : false}
       />
 
-      {/* Floating Sticky Mobile Pill (Ergonomic helper: max 2 sticky elements) */}
-      {showStickyPill && (
+      {/* Floating Sticky Mobile Pill (Only before user has audited, so it never covers badge actions) */}
+      {showStickyPill && !scanAnalysis && (
         <div className="fixed bottom-5 right-5 z-40 md:hidden">
           <button
             type="button"
