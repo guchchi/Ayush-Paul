@@ -18,7 +18,7 @@ export const GitGlowFooter: React.FC<GitGlowFooterProps> = ({ onScan, isScanning
   };
 
   return (
-    <footer className="bg-[#0D1117] text-[#E6EDF3] border-t border-[#30363D] pt-16 pb-12">
+    <footer className="bg-[#0D1117] text-[#E6EDF3] pt-16 pb-12">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 space-y-16">
         
         {/* Bottom Final CTA (Second Scan Input) */}

@@ -85,7 +85,7 @@ export const GitGlowRoadmapFAQ: React.FC = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-[#0D1117] text-[#E6EDF3] border-t border-[#30363D]">
+    <section className="py-16 md:py-24 bg-[#0D1117] text-[#E6EDF3]">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 space-y-20">
         
         {/* ─── Part 1: Coming Soon Roadmap (Only Achievable Badges) ─── */}

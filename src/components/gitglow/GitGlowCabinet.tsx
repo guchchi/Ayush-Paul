@@ -117,7 +117,7 @@ export const GitGlowCabinet: React.FC<GitGlowCabinetProps> = ({
   const firstAvailableBadge = AUTOMATED_BADGES.find(b => !earnedIds.includes(b.id) && !processingIds.includes(b.id));
 
   return (
-    <section id="cabinet" className="py-16 md:py-24 bg-[#0D1117] text-[#E6EDF3] border-t border-[#30363D]">
+    <section id="cabinet" className="py-16 md:py-24 bg-[#0D1117] text-[#E6EDF3]">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         
         {/* Section Header */}
