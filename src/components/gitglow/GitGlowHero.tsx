@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { ShieldCheck, Lock, Zap, Search, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
-import { GitGlowLogo } from './GitGlowLogo';
+import { motion, AnimatePresence } from 'motion/react';
+import {
+  ShieldCheck,
+  Lock,
+  Search,
+  ArrowRight,
+  Sparkles,
+  CheckCircle2,
+  Award,
+  Github,
+} from 'lucide-react';
 
 interface GitGlowHeroProps {
   onScan: (username: string) => void;
@@ -16,30 +24,46 @@ interface GitGlowHeroProps {
   } | null;
 }
 
-const PREVIEW_BADGES = [
+const HERO_BADGES = [
   {
     id: 'pull-shark',
     name: 'Pull Shark',
+    tier: '×2',
     webp: '/images/badges/pull-shark.webp',
     png: '/images/badges/pull-shark.png',
     alt: 'GitHub Pull Shark Achievement Badge',
-    criteria: '2 merged PRs',
   },
   {
     id: 'quickdraw',
     name: 'Quickdraw',
+    tier: null,
     webp: '/images/badges/quickdraw.webp',
     png: '/images/badges/quickdraw.png',
     alt: 'GitHub Quickdraw Achievement Badge',
-    criteria: 'Issue < 5m',
   },
   {
     id: 'yolo',
     name: 'YOLO',
+    tier: null,
     webp: '/images/badges/yolo.webp',
     png: '/images/badges/yolo.png',
     alt: 'GitHub YOLO Achievement Badge',
-    criteria: '1st merged PR',
+  },
+  {
+    id: 'pair-extraordinaire',
+    name: 'Pair',
+    tier: null,
+    webp: '/images/badges/pair-extraordinaire.webp',
+    png: '/images/badges/pair-extraordinaire.png',
+    alt: 'GitHub Pair Extraordinaire Achievement Badge',
+  },
+  {
+    id: 'galaxy-brain',
+    name: 'Galaxy',
+    tier: null,
+    webp: '/images/badges/galaxy-brain.webp',
+    png: '/images/badges/galaxy-brain.png',
+    alt: 'GitHub Galaxy Brain Achievement Badge',
   },
 ];
 
@@ -51,10 +75,26 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
 }) => {
   const [usernameInput, setUsernameInput] = useState(initialUsername);
   const [errorMsg, setErrorMsg] = useState('');
+  const [previewMode, setPreviewMode] = useState<'after' | 'before'>('after');
+  const [isAutoPaused, setIsAutoPaused] = useState(false);
 
   useEffect(() => {
     setUsernameInput(initialUsername);
   }, [initialUsername]);
+
+  // Gently toggle Before/After in pre-scan mode unless hovered or manually clicked
+  useEffect(() => {
+    if (scannedUser || isScanning || isAutoPaused) return;
+    const timer = setInterval(() => {
+      setPreviewMode((prev) => (prev === 'after' ? 'before' : 'after'));
+    }, 4200);
+    return () => clearInterval(timer);
+  }, [scannedUser, isScanning, isAutoPaused]);
+
+  const handleToggleMode = (mode: 'after' | 'before') => {
+    setPreviewMode(mode);
+    setIsAutoPaused(true);
+  };
 
   const cleanUsername = (raw: string): string => {
     let cleaned = raw.trim();
@@ -83,34 +123,35 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
 
   return (
     <section className="relative pt-20 pb-10 sm:pt-24 sm:pb-12 md:pt-24 md:pb-12 overflow-hidden bg-[#0D1117] text-[#E6EDF3]">
-      {/* Background Ambient Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-[#D7FF36]/10 via-[#388BFD]/10 to-transparent blur-[120px] pointer-events-none rounded-full" />
+      {/* Subtle Ambient Spotlight Behind Right Showcase */}
+      <div className="absolute top-1/3 right-1/4 w-[520px] h-[340px] bg-gradient-to-tr from-[#D7FF36]/8 via-[#388BFD]/8 to-transparent blur-[120px] pointer-events-none rounded-full" />
 
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           
-          {/* Left Column: Core Headline & Upper-Middle Scan Box */}
+          {/* Left Column: High-Desire Copy & Scan Box */}
           <div className="lg:col-span-7 space-y-4 sm:space-y-4.5 text-left">
-            {/* Safety & Mechanism Eyebrow */}
+            {/* Desirable Eyebrow */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161B22] border border-[#30363D] text-xs font-medium text-[#D7FF36]">
-              <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-              <span>Zero private-repo access · 100% GitHub-native workflows</span>
+              <Sparkles className="w-3.5 h-3.5 shrink-0" />
+              <span>Official GitHub Achievement Accelerator · Free Audit</span>
             </div>
 
-            {/* Headline with Space Grotesk */}
-            <h1 className="text-3xl sm:text-4xl lg:text-[46px] xl:text-[52px] font-bold font-heading tracking-tight text-[#E6EDF3] leading-[1.08]">
-              Unlock Official GitHub Badges{' '}
+            {/* Punchy Value Proposition (Zero Orphan Words) */}
+            <h1 className="text-3xl sm:text-4xl lg:text-[42px] xl:text-[46px] font-bold font-heading tracking-tight text-[#E6EDF3] leading-[1.1]">
+              Claim Official GitHub Badges.{' '}
+              <br className="hidden sm:inline" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D7FF36] via-[#B8F320] to-[#E6EDF3]">
-                Without Touching Your Real Repos.
+                Make Your Profile <span className="sm:whitespace-nowrap">Stand Out.</span>
               </span>
             </h1>
 
-            {/* Subtitle */}
+            {/* Persuasive Subtitle */}
             <p className="text-sm sm:text-base text-[#8B949E] leading-relaxed max-w-xl">
-              Scan any public profile in 3 seconds to see missing achievements. Claim them via real PRs &amp; discussions in an isolated sandbox repo—or copy the CLI steps yourself.
+              Most developers leave their GitHub Achievements tab empty. Check which official medals you’re missing in 3 seconds, earn them naturally in ~2 minutes, and keep them on your profile forever.
             </p>
 
-            {/* Upper-Middle Scan Box (Keyboard Safe on Mobile, Font >= 16px) */}
+            {/* Primary Scan Box (Font >= 16px for Mobile Safety) */}
             <div className="pt-1">
               <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch gap-2.5 max-w-xl">
                 <div className="relative flex-1">
@@ -125,7 +166,7 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                       if (errorMsg) setErrorMsg('');
                     }}
                     placeholder="github.com/your-username"
-                    className="w-full pl-10 pr-4 py-3 bg-[#161B22] border border-[#30363D] focus:border-[#D7FF36] focus:ring-1 focus:ring-[#D7FF36] text-[#E6EDF3] placeholder-[#8B949E] rounded-xl text-base transition-all duration-200 outline-none"
+                    className="w-full pl-10 pr-4 py-3 bg-[#161B22] border border-[#30363D] focus:border-[#D7FF36] focus:ring-1 focus:ring-[#D7FF36] text-[#E6EDF3] placeholder-[#8B949E] rounded-[12px] text-base transition-all duration-200 outline-none"
                     autoCapitalize="none"
                     autoCorrect="off"
                     spellCheck="false"
@@ -134,16 +175,16 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                 <button
                   type="submit"
                   disabled={isScanning}
-                  className="px-6 py-3 bg-[#D7FF36] hover:bg-[#cbf42e] text-[#0D1117] font-bold rounded-xl text-sm transition-all duration-150 flex items-center justify-center gap-2 shrink-0 active:scale-[0.98] disabled:opacity-50 cursor-pointer shadow-[0_0_20px_rgba(215,255,54,0.25)]"
+                  className="px-6 py-3 bg-[#D7FF36] hover:bg-[#cbf42e] text-[#0D1117] font-bold rounded-[12px] text-sm transition-all duration-150 flex items-center justify-center gap-2 shrink-0 active:scale-[0.98] disabled:opacity-50 cursor-pointer shadow-[0_0_24px_rgba(215,255,54,0.28)]"
                 >
                   {isScanning ? (
                     <>
                       <div className="w-4 h-4 border-2 border-[#0D1117] border-t-transparent rounded-full animate-spin" />
-                      <span>Scanning...</span>
+                      <span>Auditing...</span>
                     </>
                   ) : (
                     <>
-                      <span>Audit Profile Free</span>
+                      <span>See My Missing Badges</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
@@ -161,161 +202,303 @@ export const GitGlowHero: React.FC<GitGlowHeroProps> = ({
                 <button
                   type="button"
                   onClick={() => handleQuickTry('octocat')}
-                  className="px-2 py-0.5 rounded-md bg-[#161B22] hover:bg-[#21262D] border border-[#30363D] text-[#E6EDF3] transition-colors cursor-pointer"
+                  className="px-2.5 py-0.5 rounded-[8px] bg-[#161B22] hover:bg-[#21262D] border border-[#30363D] text-[#E6EDF3] transition-colors cursor-pointer"
                 >
                   @octocat
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickTry('torvalds')}
-                  className="px-2 py-0.5 rounded-md bg-[#161B22] hover:bg-[#21262D] border border-[#30363D] text-[#E6EDF3] transition-colors cursor-pointer"
+                  className="px-2.5 py-0.5 rounded-[8px] bg-[#161B22] hover:bg-[#21262D] border border-[#30363D] text-[#E6EDF3] transition-colors cursor-pointer"
                 >
                   @torvalds
                 </button>
               </div>
             </div>
 
-            {/* Anti-BS Trust Pills */}
+            {/* Confident Trust Signals */}
             <div className="pt-1 flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-[#8B949E]">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#D7FF36]" />
-                <span>Public repos only</span>
+                <span>100% Official &amp; Permanent</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Lock className="w-4 h-4 text-[#D7FF36]" />
-                <span>Never touches existing code</span>
+                <span>Zero Password Needed</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Zap className="w-4 h-4 text-[#D7FF36]" />
-                <span>CLI or 1-Click</span>
+                <ShieldCheck className="w-4 h-4 text-[#D7FF36]" />
+                <span>Safe Isolated Workflow</span>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Sandbox Mechanism & Live Audit Card */}
+          {/* Right Column (Option A): Interactive Before / After GitHub Profile Transformation */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="relative w-full max-w-md p-5 rounded-2xl bg-[#161B22]/90 border border-[#30363D] shadow-2xl backdrop-blur-sm group hover:border-[#D7FF36]/40 transition-all duration-300">
-              
-              {/* Header inside card */}
-              <div className="flex items-center justify-between pb-3.5 border-b border-[#30363D]">
-                <div className="flex items-center gap-2.5">
+            <div
+              onMouseEnter={() => setIsAutoPaused(true)}
+              onMouseLeave={() => setIsAutoPaused(false)}
+              className="relative w-full max-w-md rounded-[16px] bg-[#161B22]/95 border border-[#30363D] shadow-[0_24px_60px_rgba(0,0,0,0.55)] backdrop-blur-md overflow-hidden transition-colors duration-300 hover:border-[#D7FF36]/35"
+            >
+              {/* Top Bar: GitHub Profile Identity + Segmented Before/After Toggle */}
+              <div className="px-4 py-3 bg-[#0D1117]/70 border-b border-[#30363D] flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   {scannedUser?.avatarUrl ? (
                     <img
                       src={scannedUser.avatarUrl}
                       alt={scannedUser.username}
-                      width={28}
-                      height={28}
-                      className="w-7 h-7 rounded-full border border-[#30363D] object-cover"
+                      width={26}
+                      height={26}
+                      className="w-6 h-6 rounded-full border border-[#30363D] object-cover shrink-0"
                     />
                   ) : (
-                    <GitGlowLogo size={28} showWordmark={false} />
+                    <div className="w-6 h-6 rounded-full bg-[#21262D] border border-[#30363D] flex items-center justify-center shrink-0">
+                      <Github className="w-3.5 h-3.5 text-[#E6EDF3]" />
+                    </div>
                   )}
-                  <div>
-                    <div className="text-xs font-bold text-[#E6EDF3] font-heading">
-                      {scannedUser ? `@${scannedUser.username}` : 'github.com/you'}
-                    </div>
-                    <div className="text-[11px] text-[#8B949E]">
-                      {isScanning
-                        ? 'Auditing GitHub GraphQL...'
-                        : scannedUser
-                          ? 'Live Profile Audit'
-                          : 'Isolated: /gitglow-sandbox'}
-                    </div>
+                  <span className="text-xs font-semibold text-[#E6EDF3] truncate">
+                    {scannedUser ? `github.com/${scannedUser.username}` : 'github.com/you'}
+                  </span>
+                </div>
+
+                {scannedUser || isScanning ? (
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D7FF36]/10 border border-[#D7FF36]/30 text-[10px] font-bold text-[#D7FF36] shrink-0">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D7FF36] animate-pulse" />
+                    <span>{isScanning ? 'AUDITING' : 'LIVE AUDIT'}</span>
                   </div>
-                </div>
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#D7FF36]/10 border border-[#D7FF36]/20 text-[10px] font-bold text-[#D7FF36]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#D7FF36] animate-pulse" />
-                  <span>{isScanning ? 'SCANNING' : scannedUser ? 'LIVE' : 'SAFE SANDBOX'}</span>
-                </div>
+                ) : (
+                  <div
+                    role="tablist"
+                    aria-label="Compare GitHub profile before and after GitGlow"
+                    className="inline-flex items-center p-0.5 rounded-[10px] bg-[#0D1117] border border-[#30363D] text-[11px] shrink-0"
+                  >
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={previewMode === 'before'}
+                      onClick={() => handleToggleMode('before')}
+                      className={`px-2.5 py-1 rounded-[8px] font-semibold transition-all cursor-pointer ${
+                        previewMode === 'before'
+                          ? 'bg-[#21262D] text-[#E6EDF3] shadow-xs'
+                          : 'text-[#8B949E] hover:text-[#E6EDF3]'
+                      }`}
+                    >
+                      Before
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={previewMode === 'after'}
+                      onClick={() => handleToggleMode('after')}
+                      className={`px-2.5 py-1 rounded-[8px] font-semibold transition-all cursor-pointer ${
+                        previewMode === 'after'
+                          ? 'bg-[#D7FF36] text-[#0D1117] shadow-xs'
+                          : 'text-[#8B949E] hover:text-[#E6EDF3]'
+                      }`}
+                    >
+                      After GitGlow
+                    </button>
+                  </div>
+                )}
               </div>
 
-              {/* Sandbox Mechanism / Live Profile HUD */}
-              <div className="py-4 space-y-3">
+              {/* Card Body */}
+              <div className="p-4 sm:p-5 space-y-3.5">
+                {/* Profile Strip */}
                 <div className="flex items-center justify-between">
-                  <div className="text-xs text-[#8B949E]">
-                    {scannedUser ? 'Profile Score' : 'Sandbox Scope'}
+                  <div>
+                    <div className="text-[11px] font-medium text-[#8B949E]">
+                      {scannedUser
+                        ? 'Profile Credibility Score'
+                        : previewMode === 'after'
+                          ? 'Profile Impact'
+                          : 'Current First Impression'}
+                    </div>
+                    <div className="text-sm font-bold text-[#E6EDF3] font-heading mt-0.5">
+                      {scannedUser
+                        ? `${scannedUser.earnedBadgeIds.length} of 5 Official Badges Earned`
+                        : previewMode === 'after'
+                          ? 'Standout Developer Shelf'
+                          : 'Empty Achievements Section'}
+                    </div>
                   </div>
                   {scannedUser ? (
-                    <div className="text-xl font-bold font-heading text-[#D7FF36] tabular-nums">
-                      {scannedUser.score} <span className="text-xs text-[#8B949E]">/ 100</span>
+                    <div className="text-right">
+                      <span className="text-xl font-bold font-heading text-[#D7FF36] tabular-nums">
+                        {scannedUser.score}
+                      </span>
+                      <span className="text-xs text-[#8B949E]"> / 100</span>
                     </div>
                   ) : (
-                    <div className="text-xs font-bold font-heading text-[#D7FF36]">
-                      1 Public Repo · Zero Private Access
-                    </div>
+                    <span
+                      className={`px-2.5 py-1 rounded-[8px] text-[10px] font-bold uppercase tracking-wider border ${
+                        previewMode === 'after'
+                          ? 'bg-[#D7FF36]/10 border-[#D7FF36]/30 text-[#D7FF36]'
+                          : 'bg-[#0D1117] border-[#30363D] text-[#8B949E]'
+                      }`}
+                    >
+                      {previewMode === 'after' ? '5 / 5 Unlocked' : '0 Medals'}
+                    </span>
                   )}
                 </div>
 
-                {/* Mini Shelf Grid */}
-                <div className="grid grid-cols-3 gap-2.5 pt-1">
-                  {PREVIEW_BADGES.map((badge) => {
-                    const status = scannedUser
-                      ? scannedUser.earnedBadgeIds.includes(badge.id)
-                        ? 'earned'
-                        : scannedUser.processingBadgeIds.includes(badge.id)
-                          ? 'pending'
-                          : 'available'
-                      : 'criteria';
-
-                    return (
-                      <div
-                        key={badge.id}
-                        className="p-2.5 rounded-xl bg-[#0D1117] border border-[#30363D] flex flex-col items-center text-center"
-                      >
-                        <picture>
-                          <source type="image/webp" srcSet={badge.webp} />
-                          <img
-                            src={badge.png}
-                            alt={badge.alt}
-                            width={36}
-                            height={36}
-                            loading="eager"
-                            decoding="async"
-                            className={`w-9 h-9 object-contain mb-1.5 drop-shadow-sm transition-opacity ${
-                              status === 'available' ? 'opacity-45 grayscale' : ''
-                            }`}
-                          />
-                        </picture>
-                        <span className="text-[11px] font-bold text-[#E6EDF3]">{badge.name}</span>
-                        {status === 'criteria' && (
-                          <span className="text-[9px] text-[#8B949E] mt-0.5">{badge.criteria}</span>
-                        )}
-                        {status === 'earned' && (
-                          <span className="text-[9px] text-[#D7FF36] mt-0.5">Earned ✓</span>
-                        )}
-                        {status === 'pending' && (
-                          <span className="text-[9px] text-[#388BFD] mt-0.5">Pending ⏱</span>
-                        )}
-                        {status === 'available' && (
-                          <span className="text-[9px] text-[#8B949E] mt-0.5">Available</span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Simulated Terminal Step */}
-                <div className="p-3 rounded-lg bg-[#0D1117] border border-[#30363D] font-code text-xs text-[#8B949E] space-y-1">
-                  <div className="flex items-center gap-1.5 text-[#E6EDF3]">
-                    <span className="text-[#D7FF36]">$</span>
-                    <span className="truncate">
+                {/* Authentic GitHub-Style Achievements Container */}
+                <div className="p-3.5 sm:p-4 rounded-[12px] bg-[#0D1117] border border-[#30363D]">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-semibold text-[#E6EDF3] flex items-center gap-1.5">
+                      <Award className="w-3.5 h-3.5 text-[#D7FF36]" />
+                      <span>Achievements</span>
+                    </span>
+                    <span className="text-[10px] text-[#8B949E]">
                       {scannedUser
-                        ? `gh api users/${scannedUser.username} --jq .achievements`
-                        : 'gh pr merge --sandbox'}
+                        ? 'Verified via GitHub API'
+                        : previewMode === 'after'
+                          ? 'Earned natively in ~2 min'
+                          : 'Default GitHub view'}
                     </span>
                   </div>
-                  <div className="text-[11px] text-emerald-400 truncate">
-                    {scannedUser
-                      ? `✓ ${scannedUser.earnedBadgeIds.length} of 5 automated tracks verified`
-                      : '✓ GitHub indexes official badge automatically'}
-                  </div>
+
+                  {scannedUser ? (
+                    /* Live Audited 5-Medal Row */
+                    <div className="grid grid-cols-5 gap-2 py-1">
+                      {HERO_BADGES.map((badge) => {
+                        const isEarned = scannedUser.earnedBadgeIds.includes(badge.id);
+                        const isPending = scannedUser.processingBadgeIds.includes(badge.id);
+
+                        return (
+                          <div key={badge.id} className="flex flex-col items-center text-center group/badge">
+                            <div
+                              className={`relative w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                                isEarned
+                                  ? 'ring-2 ring-[#D7FF36]/60 shadow-[0_0_16px_rgba(215,255,54,0.2)]'
+                                  : isPending
+                                    ? 'ring-2 ring-[#388BFD]/60'
+                                    : 'opacity-30 grayscale'
+                              }`}
+                            >
+                              <picture>
+                                <source type="image/webp" srcSet={badge.webp} />
+                                <img
+                                  src={badge.png}
+                                  alt={badge.alt}
+                                  width={44}
+                                  height={44}
+                                  loading="eager"
+                                  decoding="async"
+                                  className="w-11 h-11 object-contain"
+                                />
+                              </picture>
+                            </div>
+                            <span className="mt-1.5 text-[10px] font-semibold text-[#E6EDF3] leading-tight">
+                              {badge.name}
+                            </span>
+                            <span
+                              className={`text-[9px] mt-0.5 font-medium ${
+                                isEarned
+                                  ? 'text-[#D7FF36]'
+                                  : isPending
+                                    ? 'text-[#388BFD]'
+                                    : 'text-[#8B949E]'
+                              }`}
+                            >
+                              {isEarned ? 'Earned' : isPending ? 'Pending' : 'Missing'}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    /* Interactive Before / After Transformation */
+                    <AnimatePresence mode="wait">
+                      {previewMode === 'after' ? (
+                        <motion.div
+                          key="after"
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          transition={{ duration: 0.22 }}
+                        >
+                          <div className="grid grid-cols-5 gap-2 py-1">
+                            {HERO_BADGES.map((badge) => (
+                              <div key={badge.id} className="flex flex-col items-center text-center">
+                                <div className="relative w-12 h-12 rounded-full flex items-center justify-center bg-[#161B22] ring-1 ring-[#D7FF36]/35 shadow-[0_0_18px_rgba(215,255,54,0.14)]">
+                                  <picture>
+                                    <source type="image/webp" srcSet={badge.webp} />
+                                    <img
+                                      src={badge.png}
+                                      alt={badge.alt}
+                                      width={44}
+                                      height={44}
+                                      loading="eager"
+                                      decoding="async"
+                                      className="w-11 h-11 object-contain"
+                                    />
+                                  </picture>
+                                  {badge.tier && (
+                                    <span className="absolute -bottom-0.5 -right-1 px-1 py-px rounded-full bg-[#D7FF36] text-[#0D1117] text-[9px] font-extrabold leading-none shadow-sm">
+                                      {badge.tier}
+                                    </span>
+                                  )}
+                                </div>
+                                <span className="mt-1.5 text-[10px] font-semibold text-[#E6EDF3] leading-tight">
+                                  {badge.name}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="mt-3 pt-2.5 border-t border-[#21262D] flex items-center justify-between text-[11px] text-emerald-400">
+                            <span className="flex items-center gap-1.5 font-medium">
+                              <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                              <span>Awarded natively on github.com</span>
+                            </span>
+                            <span className="text-[#8B949E] text-[10px]">Permanent</span>
+                          </div>
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="before"
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          transition={{ duration: 0.22 }}
+                        >
+                          <div className="grid grid-cols-5 gap-2 py-1">
+                            {HERO_BADGES.map((badge) => (
+                              <div key={badge.id} className="flex flex-col items-center text-center">
+                                <div className="w-12 h-12 rounded-full border border-dashed border-[#30363D] bg-[#161B22]/50 flex items-center justify-center">
+                                  <Lock className="w-4 h-4 text-[#484F58]" />
+                                </div>
+                                <span className="mt-1.5 text-[10px] font-medium text-[#484F58] leading-tight">
+                                  {badge.name}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="mt-3 pt-2.5 border-t border-[#21262D] flex items-center justify-between text-[11px] text-[#8B949E]">
+                            <span>No achievements displayed to visitors</span>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleMode('after')}
+                              className="text-[#D7FF36] font-semibold hover:underline cursor-pointer"
+                            >
+                              See After →
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  )}
                 </div>
               </div>
 
-              {/* Bottom Card Footer */}
-              <div className="pt-3 border-t border-[#30363D] flex items-center justify-between text-[11px] text-[#8B949E]">
-                <span>5 Verified Automated Tracks</span>
-                <span className="text-[#E6EDF3] font-medium">Ready in ~2 min</span>
+              {/* Bottom Footer Strip */}
+              <div className="px-4 sm:px-5 py-2.5 bg-[#0D1117]/50 border-t border-[#30363D] flex items-center justify-between text-[11px] text-[#8B949E]">
+                <span>5 Official GitHub Badges Ready</span>
+                <span className="text-[#E6EDF3] font-semibold">
+                  {scannedUser
+                    ? `${Math.max(0, 5 - scannedUser.earnedBadgeIds.length)} claimable below`
+                    : 'Free 3-sec check'}
+                </span>
               </div>
             </div>
           </div>
