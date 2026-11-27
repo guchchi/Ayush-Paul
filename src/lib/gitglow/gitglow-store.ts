@@ -462,27 +462,26 @@ export const useGitGlowStore = create<GitGlowStoreState>()(
     }),
     {
       name: 'gitglow-user-progress',
-      version: 6,
+      version: 7,
       migrate: (persistedState: any, version: number) => {
-        // Invalidate stale/legacy scanAnalysis and manual overrides
-        if (!version || version < 6) {
+        // Invalidate stale/legacy default 'guchchi' targetUsername and scanAnalysis
+        if (!version || version < 7) {
           return {
             ...persistedState,
+            targetUsername: '',
             scanAnalysis: null,
-            manualOwnershipOverrides: {},
+            manualOwnershipOverrides: !version || version < 6 ? {} : (persistedState?.manualOwnershipOverrides || {}),
             indexingQueuedBadges: persistedState?.indexingQueuedBadges || {},
           };
         }
         return persistedState;
       },
       partialize: (state) => ({
-        targetUsername: state.targetUsername,
         testRepoName: state.testRepoName,
         completedMissionIds: state.completedMissionIds,
         manualOwnershipOverrides: state.manualOwnershipOverrides,
         indexingQueuedBadges: state.indexingQueuedBadges,
         badgeStepStatus: state.badgeStepStatus,
-        scanAnalysis: sanitizeScanAnalysis(state.scanAnalysis),
         quizAnswers: state.quizAnswers,
         connectedUser: state.connectedUser,
       }),
